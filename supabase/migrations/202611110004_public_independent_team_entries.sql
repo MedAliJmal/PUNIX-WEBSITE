@@ -43,13 +43,14 @@ with check (
 
 create or replace view public.public_tournament_registrations
 with (security_barrier=true) as
-select r.id, r.tournament_id, r.team_id, r.team_name, r.in_game_name,
+select r.id, r.tournament_id, r.team_id, r.in_game_name,
        r.status, r.created_at,
        case
          when r.team_name <> '' then r.team_name
          when r.team_id is not null then tm.team_name
          else r.in_game_name
-       end as display_name
+       end as display_name,
+       r.team_name
 from public.tournament_registrations r
 left join public.teams tm on tm.id = r.team_id
 where r.status = 'confirmed';
