@@ -69,9 +69,28 @@ create policy "PUNIX users register themselves" on public.tournament_registratio
  user_id=(select auth.uid()) and status='pending' and reviewed_at is null and reviewed_by is null and exists(
   select 1 from public.tournaments t where t.id=tournament_id and t.status='upcoming' and t.registration_open
   and(t.registration_deadline is null or t.registration_deadline>now())
-  and((t.entry_type='solo' and team_id is null) or(t.entry_type='team' and team_id is not null and private.is_team_captain(team_id,(select auth.uid()),t.game_name)))
+  and((t.entry_type='solo' and team_id is null) or(t.entry_type='team' and team_id is not null and private.is_team_captain(team_id,t.game_name)))
  )
 );
+create or replace function private.enforce_tournament_capacity()
+returns trigger language plpgsql security definer set search_path=''
+as $
+declare v_limit integer; v_count integer;
+begin
+ select max_participants into v_limit from public.tournaments where id=new.tournament_id for update;
+ if v_limit is not null then
+  select count(*) into v_count from public.tournament_registrations
+   where tournament_id=new.tournament_id and status in('pending','confirmed');
+  if v_count>=v_limit then raise exception 'This tournament has reached its entry limit.'; end if;
+ end if;
+ return new;
+end;
+$;
+revoke all on function private.enforce_tournament_capacity() from public,anon,authenticated;
+drop trigger if exists enforce_punix_tournament_capacity on public.tournament_registrations;
+create trigger enforce_punix_tournament_capacity before insert on public.tournament_registrations
+for each row execute function private.enforce_tournament_capacity();
+
 drop policy if exists "Users read own tournament entries; admins read all" on public.tournament_registrations;
 create policy "Users read own tournament entries; admins read all" on public.tournament_registrations for select to authenticated using(user_id=(select auth.uid()) or(select private.has_role('admin')));
 drop policy if exists "Users withdraw own pending tournament entries" on public.tournament_registrations;
