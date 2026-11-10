@@ -20,3 +20,7 @@
 .pnx-main-nav a[data-nav="admin"]{display:none!important}
 .pnx-main-nav a[data-nav="admin"].pnx-admin-visible{display:inline-flex!important}
 @media(max-width:820px){.pnx-main-nav a[data-nav="admin"].pnx-admin-visible{display:flex!important}}
+
+
+/* Ensure a hidden guest-only CTA cannot be made visible by button display rules. */
+.pnx-register-guest[hidden] { display: none !important; }
