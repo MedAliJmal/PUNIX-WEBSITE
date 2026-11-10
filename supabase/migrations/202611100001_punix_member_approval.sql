@@ -3,10 +3,21 @@
 -- profiles receive the default status 'pending'.
 -- Only admins can review membership through the protected RPC below.
 
+-- Add the status column as nullable first so this backfill is safe if the
+-- script is re-run later: only rows that predate this migration (NULL status)
+-- are grandfathered. New signup-trigger-created profiles get 'pending'.
 alter table public.profiles
-  add column if not exists membership_status text not null default 'pending',
+  add column if not exists membership_status text,
   add column if not exists membership_reviewed_at timestamptz,
   add column if not exists membership_reviewed_by uuid references auth.users(id) on delete set null;
+
+update public.profiles
+set membership_status = 'approved'
+where membership_status is null;
+
+alter table public.profiles
+  alter column membership_status set default 'pending',
+  alter column membership_status set not null;
 
 alter table public.profiles
   drop constraint if exists profiles_membership_status_check;
@@ -15,11 +26,8 @@ alter table public.profiles
   add constraint profiles_membership_status_check
   check (membership_status in ('pending', 'approved', 'rejected'));
 
--- The only existing PUNIX member is the founder. Preserve all existing profile
--- visibility/division settings, but grandfather existing profiles as approved.
-update public.profiles
-set membership_status = 'approved'
-where membership_status = 'pending';
+-- Existing profiles are approved once by the NULL-only backfill above.
+-- Existing visibility/division settings are preserved.
 
 create index if not exists profiles_membership_status_idx
   on public.profiles (membership_status);
