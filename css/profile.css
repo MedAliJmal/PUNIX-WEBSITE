@@ -105,3 +105,10 @@
 
 /* Admin-controlled membership information */
 .membership-help{margin:14px 0 2px;color:#929fa1;font-size:11px;line-height:1.7}
+
+
+.reapply-wrap{margin-top:16px;padding:15px;border:1px solid rgba(216,182,110,.28);background:rgba(216,182,110,.06)}
+.reapply-wrap[hidden]{display:none!important}
+.reapply-wrap p{margin:0 0 12px;color:#b7c0bd;font:400 11px/1.6 Inter,Arial,sans-serif}
+.reapply-wrap button{cursor:pointer}
+.reapply-wrap button:disabled{opacity:.55;cursor:wait}
