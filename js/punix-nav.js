@@ -18,21 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const memberLink = header.querySelector('.pnx-nav-cta');
+  const guestRegisterLink = document.querySelector('.pnx-register-guest');
+  const setGuestRegisterVisibility = visible => {
+    if (!guestRegisterLink) return;
+    guestRegisterLink.hidden = !visible;
+    guestRegisterLink.setAttribute('aria-hidden', String(!visible));
+  };
   const adminLinks = header.querySelectorAll('[data-nav="admin"]');
-  const showAdminLinks = (show) => adminLinks.forEach(link => {
+  const showAdminLinks = show => adminLinks.forEach(link => {
     link.classList.toggle('pnx-admin-visible', Boolean(show));
     if (show) link.removeAttribute('aria-hidden');
     else link.setAttribute('aria-hidden', 'true');
   });
 
-  // Default to hidden. Only reveal after Supabase confirms an admin role.
+  // Keep registration hidden until Supabase confirms the visitor is signed out.
+  setGuestRegisterVisibility(false);
   showAdminLinks(false);
 
   const config = window.PUNIX_SUPABASE_CONFIG;
-  if (!window.supabase || !config?.url || !config?.publishableKey) return;
+  if (!window.supabase || !config?.url || !config?.publishableKey) {
+    setGuestRegisterVisibility(true);
+    return;
+  }
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
-  const renderMemberLink = (signedIn) => {
+  const renderMemberLink = signedIn => {
     if (!memberLink) return;
     memberLink.href = signedIn ? 'profile.html' : 'auth.html';
     memberLink.innerHTML = signedIn
@@ -42,34 +52,27 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let roleCheckId = 0;
-  const updateNavigation = async (session) => {
+  const updateNavigation = async session => {
     const currentCheck = ++roleCheckId;
     const signedIn = Boolean(session?.user?.id);
     renderMemberLink(signedIn);
+    setGuestRegisterVisibility(!signedIn);
     showAdminLinks(false);
     if (!signedIn) return;
 
     try {
-      const { data, error } = await client
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
+      const { data, error } = await client.from('user_roles')
+        .select('role').eq('user_id', session.user.id).maybeSingle();
       if (currentCheck !== roleCheckId) return;
-      const isAdmin = !error && ['admin', 'super_admin'].includes(data?.role);
-      showAdminLinks(isAdmin);
+      showAdminLinks(!error && ['admin', 'super_admin'].includes(data?.role));
     } catch (_) {
-      // Fail closed: a failed role lookup must never expose the admin link.
       if (currentCheck === roleCheckId) showAdminLinks(false);
     }
   };
 
   client.auth.getSession().then(({ data, error }) => {
-    if (!error) updateNavigation(data.session);
-    else updateNavigation(null);
+    updateNavigation(error ? null : data.session);
   }).catch(() => updateNavigation(null));
 
-  client.auth.onAuthStateChange((_event, session) => {
-    updateNavigation(session);
-  });
+  client.auth.onAuthStateChange((_event, session) => updateNavigation(session));
 });
