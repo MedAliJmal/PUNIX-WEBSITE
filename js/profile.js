@@ -81,13 +81,22 @@
     if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
     byId('avatar-fallback').textContent = name.charAt(0).toUpperCase();
 
-    const avatar = profile.avatar_url || (['male','female'].includes(profile.gender) ? `assets/images/punix-avatar-${profile.gender}.svg` : '');
+    const defaultAvatar = ['male','female'].includes(profile.gender)
+      ? new URL(`/assets/images/punix-avatar-${profile.gender}.png`, window.location.origin).href
+      : '';
+    const avatar = profile.avatar_url || defaultAvatar;
     const img = byId('avatar-preview');
     if (avatar) {
+      img.onerror = () => {
+        img.onerror = null;
+        img.style.display = 'none';
+        byId('avatar-fallback').style.display = 'block';
+        byId('view-avatar').textContent = 'Avatar image unavailable';
+      };
       img.src = avatar;
       img.style.display = 'block';
       byId('avatar-fallback').style.display = 'none';
-      byId('view-avatar').textContent = profile.avatar_url ? 'Custom avatar connected' : 'Default PUNIX avatar';
+      byId('view-avatar').textContent = profile.avatar_url && profile.avatar_url !== defaultAvatar ? 'Custom avatar connected' : 'Default PUNIX avatar';
     } else {
       img.removeAttribute('src');
       img.style.display = 'none';
@@ -146,11 +155,20 @@
     if (error) throw error;
 
     savedProfile = { ...data };
-    // Recover the required signup choice from Supabase auth metadata if an older trigger did not copy it.
-    if (!savedProfile.gender && ['male', 'female'].includes(currentUser.user_metadata?.gender)) {
-      const { error: genderError } = await client.from('profiles').update({ gender: currentUser.user_metadata.gender }).eq('id', currentUser.id);
-      if (genderError) throw genderError;
-      savedProfile.gender = currentUser.user_metadata.gender;
+    // Restore signup metadata into the profile row when older account-creation triggers omitted it.
+    const signupGender = currentUser.user_metadata?.gender;
+    const signupAvatar = currentUser.user_metadata?.avatar_url;
+    const defaultAvatar = ['male','female'].includes(signupGender)
+      ? new URL(`/assets/images/punix-avatar-${signupGender}.png`, window.location.origin).href
+      : '';
+    const avatarToSave = savedProfile.avatar_url || (typeof signupAvatar === 'string' && signupAvatar.startsWith(window.location.origin + '/assets/images/punix-avatar-') && signupAvatar.endsWith('.png') ? signupAvatar : defaultAvatar);
+    const profilePatch = {};
+    if (!savedProfile.gender && ['male', 'female'].includes(signupGender)) profilePatch.gender = signupGender;
+    if (!savedProfile.avatar_url && avatarToSave) profilePatch.avatar_url = avatarToSave;
+    if (Object.keys(profilePatch).length) {
+      const { error: profileError } = await client.from('profiles').update(profilePatch).eq('id', currentUser.id);
+      if (profileError) throw profileError;
+      savedProfile = { ...savedProfile, ...profilePatch };
     }
     fillForm(savedProfile);
     renderProfile(savedProfile);
