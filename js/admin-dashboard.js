@@ -120,6 +120,14 @@
       const division = ['community', 'creators', 'competitive'].includes(member.directory_division) ? member.directory_division : 'community';
       const date = member.account_created_at ? new Date(member.account_created_at).toLocaleDateString() : '—';
       const lastSeen = member.last_sign_in_at ? new Date(member.last_sign_in_at).toLocaleString() : 'Never signed in';
+      let avatarUrl = '';
+      try {
+        const parsedAvatar = new URL(member.avatar_url || '');
+        if (parsedAvatar.protocol === 'https:') avatarUrl = parsedAvatar.href;
+      } catch { /* Invalid or missing avatar URL: show placeholder. */ }
+      const avatarPreview = member.has_profile ? (avatarUrl
+        ? `<div class="pnx-admin-avatar-review"><img data-avatar-preview src="${escapeHtml(avatarUrl)}" alt="Applicant profile image" loading="lazy" referrerpolicy="no-referrer"><a href="${escapeHtml(avatarUrl)}" target="_blank" rel="noopener noreferrer">OPEN FULL IMAGE ↗</a></div>`
+        : '<div class="pnx-admin-avatar-review is-empty"><span>NO PROFILE IMAGE</span></div>') : '';
       const actions = member.has_profile ? `
         <label>ASSIGN DIVISION
           <select data-member-division>
@@ -134,6 +142,7 @@
           ${status !== 'pending' ? '<button type="button" data-member-action="pending">RETURN TO PENDING</button>' : ''}
         </div>` : '<p class="pnx-account-no-profile">No PUNIX profile is linked to this auth account.</p>';
       return `<article class="pnx-admin-member-card" data-member-id="${escapeHtml(member.user_id)}">
+        ${avatarPreview}
         <div class="pnx-admin-member-info">
           <span class="pnx-admin-member-status status-${escapeHtml(status)}">${escapeHtml(status.replace('_',' ').toUpperCase())}</span>
           <h3>${escapeHtml(member.display_name || 'PUNIX Member')}</h3>
@@ -145,6 +154,11 @@
         <div class="pnx-admin-member-actions">${actions}</div>
       </article>`;
     }).join('');
+
+    target.querySelectorAll('[data-avatar-preview]').forEach(image => image.addEventListener('error', () => {
+      image.closest('.pnx-admin-avatar-review')?.classList.add('is-broken');
+      image.remove();
+    }, { once: true }));
 
     target.querySelectorAll('[data-member-action]').forEach(button => button.addEventListener('click', async () => {
       const card = button.closest('[data-member-id]');
