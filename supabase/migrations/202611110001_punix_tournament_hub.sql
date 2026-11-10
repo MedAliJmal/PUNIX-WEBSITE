@@ -65,6 +65,15 @@ $$;
 revoke all on function private.is_team_captain(uuid,uuid,text) from public,anon;
 grant execute on function private.is_team_captain(uuid,uuid,text) to authenticated;
 
+-- Backward-compatible two-argument helper for policies created by earlier SQL copies.
+create or replace function private.is_team_captain(p_team_id uuid,p_game_name text)
+returns boolean language sql stable security definer set search_path=''
+as $
+ select private.is_team_captain(p_team_id,(select auth.uid()),p_game_name);
+$;
+revoke all on function private.is_team_captain(uuid,text) from public,anon;
+grant execute on function private.is_team_captain(uuid,text) to authenticated;
+
 drop policy if exists "PUNIX users register themselves" on public.tournament_registrations;
 create policy "PUNIX users register themselves" on public.tournament_registrations for insert to authenticated with check(
  user_id=(select auth.uid()) and status='pending' and reviewed_at is null and reviewed_by is null and exists(
