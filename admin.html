@@ -101,6 +101,12 @@
             <input id="member-account-search" type="search" placeholder="Search username, email or account ID…" autocomplete="off">
             <span id="member-search-count">—</span>
           </div>
+          <div class="pnx-membership-filters" role="group" aria-label="Filter accounts by membership status">
+            <button type="button" data-membership-filter="all" aria-pressed="true">ALL ACCOUNTS <span data-filter-count>0</span></button>
+            <button type="button" data-membership-filter="pending" aria-pressed="false">PENDING APPLICATIONS <span data-filter-count>0</span></button>
+            <button type="button" data-membership-filter="approved" aria-pressed="false">APPROVED <span data-filter-count>0</span></button>
+            <button type="button" data-membership-filter="rejected" aria-pressed="false">REJECTED <span data-filter-count>0</span></button>
+          </div>
           <p id="member-review-message" class="pnx-member-review-message" role="status">Loading member accounts…</p>
           <div id="admin-member-list" class="pnx-admin-member-list"></div>
         </section>
