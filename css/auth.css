@@ -7,3 +7,10 @@
 .auth-submit{width:100%;margin-top:5px;cursor:pointer}.auth-submit:disabled{opacity:.55;cursor:wait}.auth-message{min-height:20px;color:var(--teal);font-size:12px;line-height:1.6}.auth-message.error{color:#ff8585}.auth-legal,.auth-back{color:#7f898e;font-size:10px;line-height:1.7;text-align:center}.auth-back{margin-top:22px;color:var(--gold-bright)}
 .auth-brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--gold-bright);font-family:var(--font-display);font-weight:900;font-size:30px;letter-spacing:2px}.auth-brand img{width:42px;height:42px;object-fit:contain}.auth-human{display:grid;gap:8px;padding:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.1)}.auth-human-label{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#c7ccce}.auth-human-help{font-size:10px;color:#7f898e;margin:0}.auth-human #turnstile-container{min-height:65px}.auth-submit:disabled{opacity:.5;cursor:not-allowed}
 #forgot-password-link{justify-self:start;border:0;background:transparent;padding:0;color:var(--gold-bright);font:700 10px var(--font-body);letter-spacing:.8px;text-decoration:underline;cursor:pointer}#forgot-password-link:hover{color:var(--teal)}
+
+/* Gender-linked PUNIX gold avatar preview */
+.auth-avatar-choice{display:flex;align-items:center;gap:14px;padding:12px 14px;border:1px solid rgba(221,174,72,.45);background:linear-gradient(110deg,rgba(221,174,72,.10),rgba(255,255,255,.02));}
+.auth-avatar-choice[hidden]{display:none!important}
+.auth-avatar-choice img{width:76px;height:76px;flex:0 0 76px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);box-shadow:0 0 22px rgba(221,174,72,.22)}
+.auth-avatar-choice div{display:grid;gap:6px}.auth-avatar-choice strong{color:var(--gold-bright);font-size:10px;letter-spacing:1.1px}.auth-avatar-choice span{color:var(--muted);font-size:11px;line-height:1.6;letter-spacing:0;font-weight:500}
+#auth-form select{width:100%;background:#090c10;border:1px solid rgba(255,255,255,.15);color:var(--text);padding:14px 13px;font:500 13px var(--font-body);outline:none}#auth-form select:focus{border-color:var(--gold)}
