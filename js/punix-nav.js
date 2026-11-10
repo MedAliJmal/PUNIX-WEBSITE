@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let roleCheckId = 0;
   const updateNavigation = async session => {
+    window.PUNIX_AUTH_SESSION = session || null;
     const currentCheck = ++roleCheckId;
     const signedIn = Boolean(session?.user?.id);
     renderMemberLink(signedIn);
