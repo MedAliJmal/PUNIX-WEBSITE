@@ -289,3 +289,8 @@ h2 { font:800 clamp(48px,6.4vw,78px)/.88 var(--font-display); letter-spacing:-.5
   .kick-video-grid { grid-template-columns:1fr; }
   .kick-videos-empty { min-height:200px; }
 }
+
+/* PUNIX typography — Bank Gothic across every page title */
+body :is(h1, h2, h3) {
+  font-family: var(--font-display) !important;
+}
