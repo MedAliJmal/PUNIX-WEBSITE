@@ -19,6 +19,9 @@
   const nameLabel = document.querySelector('#name-label');
   const genderInput = document.querySelector('#gender');
   const genderLabel = document.querySelector('#gender-label');
+  const avatarChoice = document.querySelector('#auth-avatar-choice');
+  const avatarPreview = document.querySelector('#auth-avatar-preview');
+  const avatarTitle = document.querySelector('#auth-avatar-title');
   const emailInput = document.querySelector('#email');
   const password = document.querySelector('#password');
   const title = document.querySelector('#auth-title');
@@ -27,6 +30,15 @@
   const forgotLink = document.querySelector('#forgot-password-link');
 
   function setMessage(text, isError = false) { message.textContent = text; message.classList.toggle('error', isError); }
+  function updateGenderAvatar() {
+    const selected = genderInput.value;
+    const avatar = selected === 'female' ? 'assets/images/punix-avatar-female.svg' : 'assets/images/punix-avatar-male.svg';
+    avatarPreview.src = avatar;
+    avatarPreview.alt = selected === 'female' ? 'PUNIX girl default avatar' : 'PUNIX boy default avatar';
+    avatarTitle.textContent = selected === 'female' ? 'GOLD FEMALE AVATAR' : 'GOLD MALE AVATAR';
+    avatarChoice.hidden = !selected;
+  }
+  genderInput.addEventListener('change', updateGenderAvatar);
   function updateSubmit() { submit.disabled = !captchaToken; }
   function resetCaptcha() { captchaToken = ''; updateSubmit(); if (window.turnstile && widgetId !== null) window.turnstile.reset(widgetId); }
   function setMode(nextMode) {
@@ -39,6 +51,7 @@
     nameInput.required = signingUp;
     genderLabel.hidden = !signingUp;
     genderInput.required = signingUp;
+    avatarChoice.hidden = !signingUp || !genderInput.value;
     password.closest('label').hidden = mode === 'forgot';
     password.required = mode !== 'forgot';
     emailInput.required = true;
@@ -89,7 +102,8 @@
         const displayName = nameInput.value.trim();
         const gender = genderInput.value;
         if (!['male', 'female'].includes(gender)) throw new Error('Please select your gender.');
-        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender }, emailRedirectTo: `${window.location.origin}${window.location.pathname.replace(/auth\.html$/, 'auth.html')}` } });
+        const avatarUrl = gender === 'female' ? 'assets/images/punix-avatar-female.svg' : 'assets/images/punix-avatar-male.svg';
+        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(avatarUrl, window.location.href).href }, emailRedirectTo: `${window.location.origin}${window.location.pathname.replace(/auth\.html$/, 'auth.html')}` } });
         if (error) throw error;
         setMessage(data.session ? 'Account created. You are signed in.' : 'Account created. Check your email to confirm your address, then sign in.');
       } else {
