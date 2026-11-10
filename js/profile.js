@@ -16,7 +16,7 @@
   }
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
-  const fields = ['display_name','avatar_url','bio','twitch_url','kick_url','youtube_url','tiktok_url'];
+  const fields = ['display_name','gender','avatar_url','bio','twitch_url','kick_url','youtube_url','tiktok_url'];
   let currentUser = null;
   let savedProfile = {};
 
@@ -36,7 +36,7 @@
   }
 
   const fieldIds = {
-    display_name: 'display-name', avatar_url: 'avatar-url', bio: 'bio',
+    display_name: 'display-name', gender: 'gender', avatar_url: 'avatar-url', bio: 'bio',
     twitch_url: 'twitch-url', kick_url: 'kick-url',
     youtube_url: 'youtube-url', tiktok_url: 'tiktok-url'
   };
@@ -67,6 +67,7 @@
     const name = profile.display_name || 'PUNIX MEMBER';
     byId('preview-name').textContent = name;
     byId('view-display-name').textContent = name;
+    byId('view-gender').textContent = profile.gender === 'male' ? 'Male' : profile.gender === 'female' ? 'Female' : 'Not set';
     byId('preview-bio').textContent = profile.bio || 'No bio added yet.';
     byId('view-bio').textContent = profile.bio || 'No bio added yet.';
     const status = profile.membership_status || 'pending';
@@ -144,6 +145,12 @@
     if (error) throw error;
 
     savedProfile = { ...data };
+    // Recover the required signup choice from Supabase auth metadata if an older trigger did not copy it.
+    if (!savedProfile.gender && ['male', 'female'].includes(currentUser.user_metadata?.gender)) {
+      const { error: genderError } = await client.from('profiles').update({ gender: currentUser.user_metadata.gender }).eq('id', currentUser.id);
+      if (genderError) throw genderError;
+      savedProfile.gender = currentUser.user_metadata.gender;
+    }
     fillForm(savedProfile);
     renderProfile(savedProfile);
     byId('member-since').textContent = data.created_at
@@ -169,6 +176,7 @@
       const values = readForm();
       const payload = {
         display_name: values.display_name,
+        gender: values.gender,
         avatar_url: validOptionalUrl(values.avatar_url, 'Avatar URL'),
         bio: values.bio,
         twitch_url: validOptionalUrl(values.twitch_url, 'Twitch URL'),
@@ -178,6 +186,7 @@
         updated_at: new Date().toISOString()
       };
       if (!payload.display_name) throw new Error('Please enter a display name.');
+      if (!['male', 'female'].includes(payload.gender)) throw new Error('Please select your gender.');
 
       const { error } = await client.from('profiles').update(payload).eq('id', currentUser.id);
       if (error) throw error;
