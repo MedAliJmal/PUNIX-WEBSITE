@@ -54,16 +54,22 @@ revoke all on public.tournaments,public.tournament_registrations,public.tourname
 grant select,insert,update,delete on public.tournaments,public.tournament_registrations,public.tournament_matches to authenticated;
 drop policy if exists "PUNIX admins manage tournaments" on public.tournaments;
 create policy "PUNIX admins manage tournaments" on public.tournaments for all to authenticated using((select private.has_role('admin'))) with check((select private.has_role('admin')));
+create or replace function private.is_team_captain(p_team_id uuid,p_user_id uuid,p_game_name text)
+returns boolean language sql stable security definer set search_path=''
+as $
+ select exists(select 1 from public.teams tm join public.team_members m on m.team_id=tm.id
+  where tm.id=p_team_id and lower(tm.game_name)=lower(p_game_name) and tm.status in('active','recruiting')
+  and m.user_id=p_user_id and m.member_role='captain');
+$;
+revoke all on function private.is_team_captain(uuid,uuid,text) from public,anon;
+grant execute on function private.is_team_captain(uuid,uuid,text) to authenticated;
+
 drop policy if exists "PUNIX users register themselves" on public.tournament_registrations;
 create policy "PUNIX users register themselves" on public.tournament_registrations for insert to authenticated with check(
  user_id=(select auth.uid()) and status='pending' and reviewed_at is null and reviewed_by is null and exists(
   select 1 from public.tournaments t where t.id=tournament_id and t.status='upcoming' and t.registration_open
   and(t.registration_deadline is null or t.registration_deadline>now())
-  and((t.entry_type='solo' and team_id is null) or(t.entry_type='team' and team_id is not null and exists(
-   select 1 from public.teams tm join public.team_members m on m.team_id=tm.id
-   where tm.id=team_id and lower(tm.game_name)=lower(t.game_name) and tm.status in('active','recruiting')
-   and m.user_id=(select auth.uid()) and m.member_role='captain'
-  )))
+  and((t.entry_type='solo' and team_id is null) or(t.entry_type='team' and team_id is not null and private.is_team_captain(team_id,(select auth.uid()),t.game_name)))
  )
 );
 drop policy if exists "Users read own tournament entries; admins read all" on public.tournament_registrations;
