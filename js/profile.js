@@ -21,6 +21,7 @@
   let savedProfile = {};
 
   const byId = id => document.getElementById(id);
+  const defaultAvatarForGender = gender => new URL(gender === 'female' ? 'assets/images/punix-avatar-female.svg' : 'assets/images/punix-avatar-male.svg', window.location.href).href;
   const setMessage = (text, error = false) => {
     message.textContent = text;
     message.classList.toggle('error', error);
@@ -81,7 +82,7 @@
     if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
     byId('avatar-fallback').textContent = name.charAt(0).toUpperCase();
 
-    const avatar = profile.avatar_url || '';
+    const avatar = profile.avatar_url || (['male', 'female'].includes(profile.gender) ? defaultAvatarForGender(profile.gender) : '');
     const img = byId('avatar-preview');
     if (avatar) {
       img.src = avatar;
@@ -146,11 +147,20 @@
     if (error) throw error;
 
     savedProfile = { ...data };
-    // Recover the required signup choice from Supabase auth metadata if an older trigger did not copy it.
-    if (!savedProfile.gender && ['male', 'female'].includes(currentUser.user_metadata?.gender)) {
-      const { error: genderError } = await client.from('profiles').update({ gender: currentUser.user_metadata.gender }).eq('id', currentUser.id);
-      if (genderError) throw genderError;
-      savedProfile.gender = currentUser.user_metadata.gender;
+    // Recover signup gender and its matching default avatar if the profile trigger did not copy them.
+    const signupGender = currentUser.user_metadata?.gender;
+    const syncPayload = {};
+    if (!savedProfile.gender && ['male', 'female'].includes(signupGender)) {
+      savedProfile.gender = signupGender;
+      syncPayload.gender = signupGender;
+    }
+    if (!savedProfile.avatar_url && ['male', 'female'].includes(savedProfile.gender)) {
+      savedProfile.avatar_url = defaultAvatarForGender(savedProfile.gender);
+      syncPayload.avatar_url = savedProfile.avatar_url;
+    }
+    if (Object.keys(syncPayload).length) {
+      const { error: syncError } = await client.from('profiles').update(syncPayload).eq('id', currentUser.id);
+      if (syncError) throw syncError;
     }
     fillForm(savedProfile);
     renderProfile(savedProfile);
