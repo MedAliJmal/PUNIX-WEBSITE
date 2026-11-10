@@ -70,7 +70,7 @@ create policy "PUNIX users register themselves" on public.tournament_registratio
  user_id=(select auth.uid()) and status='pending' and reviewed_at is null and reviewed_by is null and exists(
   select 1 from public.tournaments t where t.id=tournament_id and t.status='upcoming' and t.registration_open
   and(t.registration_deadline is null or t.registration_deadline>now())
-  and((t.entry_type='solo' and team_id is null) or(t.entry_type='team' and team_id is not null and private.is_team_captain(team_id,t.game_name)))
+  and((t.entry_type='solo' and team_id is null) or(t.entry_type='team' and team_id is not null and private.is_team_captain(team_id,(select auth.uid()),t.game_name)))
  )
 );
 create or replace function private.enforce_tournament_capacity()
