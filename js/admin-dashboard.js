@@ -93,14 +93,15 @@
     }
     target.innerHTML = members.map(member => {
       const status = member.membership_status || 'pending';
-      const division = member.directory_division === 'competitive' ? 'competitive' : 'creators';
+      const division = ['community', 'creators', 'competitive'].includes(member.directory_division) ? member.directory_division : 'community';
       const date = member.account_created_at ? new Date(member.account_created_at).toLocaleDateString() : '—';
       const lastSeen = member.last_sign_in_at ? new Date(member.last_sign_in_at).toLocaleString() : 'Never signed in';
       const actions = member.has_profile ? `
         <label>ASSIGN DIVISION
           <select data-member-division>
-            <option value="creators" ${division === 'creators' ? 'selected' : ''}>Creators / Streamers</option>
-            <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Players</option>
+            <option value="community" ${division === 'community' ? 'selected' : ''}>Community Member</option>
+            <option value="creators" ${division === 'creators' ? 'selected' : ''}>Streamer</option>
+            <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Player</option>
           </select>
         </label>
         <div class="pnx-update-actions">
@@ -125,7 +126,7 @@
       const card = button.closest('[data-member-id]');
       const userId = card?.dataset.memberId;
       const status = button.dataset.memberAction;
-      const division = card?.querySelector('[data-member-division]')?.value || 'creators';
+      const division = card?.querySelector('[data-member-division]')?.value || 'community';
       if (!userId) return;
       if (status === 'rejected' && !confirm('Reject this PUNIX membership request?')) return;
       button.disabled = true;
