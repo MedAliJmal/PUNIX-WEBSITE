@@ -106,6 +106,23 @@ select id,title,game_name,format,entry_type,status,registration_open,max_partici
 from public.tournaments
 where status<>'draft';
 
-revoke all on public.public_tournaments from public,anon,authenticated;
-grant select on public.public_tournaments to anon,authenticated;
+-- Keep the existing public registration columns in their original order,
+-- then append a public-safe roster (in-game names only; never Discord handles).
+create or replace view public.public_tournament_registrations with(security_barrier=true) as
+select r.id,r.tournament_id,r.team_id,r.in_game_name,r.status,r.created_at,
+       coalesce(nullif(r.team_name,''),case when r.team_id is not null then tm.team_name else r.in_game_name end) as display_name,
+       r.team_name,
+       case when coalesce(r.team_name,'')<>'' then
+         jsonb_build_array(jsonb_build_object('role','starter','in_game_name',r.in_game_name))
+         || coalesce((
+           select jsonb_agg(jsonb_build_object('role',p.player->>'role','in_game_name',p.player->>'in_game_name') order by p.ordinality)
+           from jsonb_array_elements(r.roster) with ordinality as p(player,ordinality)
+         ),'[]'::jsonb)
+       else '[]'::jsonb end as roster_public
+from public.tournament_registrations r
+left join public.teams tm on tm.id=r.team_id
+where r.status='confirmed';
+
+revoke all on public.public_tournaments,public.public_tournament_registrations from public,anon,authenticated;
+grant select on public.public_tournaments,public.public_tournament_registrations to anon,authenticated;
 notify pgrst,'reload schema';
