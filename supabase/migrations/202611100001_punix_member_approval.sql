@@ -27,6 +27,8 @@ create index if not exists profiles_membership_status_idx
 -- Authenticated members may edit personal/profile content only.
 -- Membership status, directory visibility, and division are admin-controlled.
 revoke update on public.profiles from authenticated;
+revoke update (is_public, directory_division, membership_status, membership_reviewed_at, membership_reviewed_by)
+  on public.profiles from authenticated;
 grant update (
   display_name,
   avatar_url,
