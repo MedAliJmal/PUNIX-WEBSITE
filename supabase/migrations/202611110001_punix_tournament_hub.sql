@@ -44,7 +44,8 @@ create table if not exists public.tournament_matches (
  status text not null default 'scheduled' check(status in ('scheduled','live','completed')),
  created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
  unique(tournament_id,round_number,match_number),
- check(participant_a_id is null or participant_b_id is null or participant_a_id<>participant_b_id)
+ check(participant_a_id is null or participant_b_id is null or participant_a_id<>participant_b_id),
+ check(winner_registration_id is null or winner_registration_id=participant_a_id or winner_registration_id=participant_b_id)
 );
 create index if not exists tournament_matches_order_idx on public.tournament_matches(tournament_id,round_number,match_number);
 alter table public.tournaments enable row level security;
