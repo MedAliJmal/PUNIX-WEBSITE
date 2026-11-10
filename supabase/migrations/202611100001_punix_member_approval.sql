@@ -119,3 +119,50 @@ comment on function public.admin_review_member(uuid, text, text) is
   'Admin-only RPC for approving, rejecting, or returning a PUNIX membership to pending.';
 
 notify pgrst, 'reload schema';
+
+
+-- Admin-only account directory. This intentionally exposes auth email only to
+-- verified PUNIX admins, so the admin can search all registered accounts.
+create or replace function public.admin_list_accounts()
+returns table (
+  user_id uuid,
+  email text,
+  account_created_at timestamptz,
+  last_sign_in_at timestamptz,
+  display_name text,
+  bio text,
+  avatar_url text,
+  membership_status text,
+  directory_division text,
+  has_profile boolean
+)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not coalesce((select private.has_role('admin')), false) then
+    raise exception 'Administrator access required'
+      using errcode = '42501';
+  end if;
+
+  return query
+  select
+    u.id,
+    u.email::text,
+    u.created_at,
+    u.last_sign_in_at,
+    coalesce(p.display_name, nullif(u.raw_user_meta_data ->> 'display_name', ''), 'PUNIX Member'),
+    coalesce(p.bio, ''),
+    coalesce(p.avatar_url, ''),
+    case when p.id is null then 'no_profile' else p.membership_status end,
+    p.directory_division,
+    (p.id is not null)
+  from auth.users u
+  left join public.profiles p on p.id = u.id
+  order by u.created_at desc;
+end;
+$$;
+
+revoke all on function public.admin_list_accounts() from public, anon;
+grant execute on function public.admin_list_accounts() to authenticated;
