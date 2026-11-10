@@ -73,7 +73,7 @@
     byId('view-membership-status').textContent = status === 'approved' ? 'Approved' : status === 'rejected' ? 'Not approved' : 'Pending review';
     byId('view-directory-visibility').textContent = status === 'approved' && profile.is_public ? 'Listed publicly' : 'Not listed';
     byId('view-directory-division').textContent = status === 'approved'
-      ? (profile.directory_division === 'competitive' ? 'Competitive Players' : 'Creators / Streamers')
+      ? (profile.directory_division === 'competitive' ? 'Competitive Player' : profile.directory_division === 'creators' ? 'Streamer' : 'Community Member')
       : 'Assigned after approval';
     const statusBadge = document.querySelector('.profile-heading .member-status');
     if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
