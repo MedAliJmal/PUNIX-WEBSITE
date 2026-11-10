@@ -78,17 +78,41 @@
   }
 
   let cachedAccounts = [];
+  let activeMembershipFilter = 'all';
 
   function renderMemberAccounts() {
     const target = $('admin-member-list');
     const search = ($('member-account-search')?.value || '').trim().toLowerCase();
-    const members = cachedAccounts.filter(member => [
-      member.display_name, member.email, member.user_id, member.bio,
-      member.membership_status, member.directory_division
-    ].some(value => String(value || '').toLowerCase().includes(search)));
+    const profileAccounts = cachedAccounts.filter(member => member.has_profile);
+    const counts = {
+      all: cachedAccounts.length,
+      pending: profileAccounts.filter(member => (member.membership_status || 'pending') === 'pending').length,
+      approved: profileAccounts.filter(member => member.membership_status === 'approved').length,
+      rejected: profileAccounts.filter(member => member.membership_status === 'rejected').length
+    };
+    document.querySelectorAll('[data-membership-filter]').forEach(button => {
+      const filter = button.dataset.membershipFilter;
+      button.setAttribute('aria-pressed', String(filter === activeMembershipFilter));
+      const count = button.querySelector('[data-filter-count]');
+      if (count) count.textContent = counts[filter] ?? 0;
+    });
+    const members = cachedAccounts.filter(member => {
+      const status = member.has_profile ? (member.membership_status || 'pending') : 'no_profile';
+      const matchesStatus = activeMembershipFilter === 'all' || status === activeMembershipFilter;
+      const matchesSearch = [
+        member.display_name, member.email, member.user_id, member.bio,
+        member.membership_status, member.directory_division
+      ].some(value => String(value || '').toLowerCase().includes(search));
+      return matchesStatus && matchesSearch;
+    });
     $('member-search-count').textContent = `SHOWING ${members.length} OF ${cachedAccounts.length} ACCOUNTS`;
     if (!members.length) {
-      target.innerHTML = '<p class="pnx-recent-empty">No accounts match your search.</p>';
+      const emptyMessage = activeMembershipFilter === 'pending'
+        ? 'No pending applications right now.'
+        : activeMembershipFilter === 'all'
+          ? 'No accounts match your search.'
+          : `No ${activeMembershipFilter} accounts match your search.`;
+      target.innerHTML = `<p class="pnx-recent-empty">${emptyMessage}</p>`;
       return;
     }
     target.innerHTML = members.map(member => {
@@ -245,6 +269,12 @@
       $('refresh-stats').addEventListener('click', loadStats);
       $('refresh-members').addEventListener('click', loadMembers);
       $('member-account-search').addEventListener('input', renderMemberAccounts);
+      document.querySelectorAll('[data-membership-filter]').forEach(button => {
+        button.addEventListener('click', () => {
+          activeMembershipFilter = button.dataset.membershipFilter || 'all';
+          renderMemberAccounts();
+        });
+      });
       const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
       openSection(initial);
       await loadStats();
