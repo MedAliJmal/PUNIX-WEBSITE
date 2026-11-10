@@ -1,0 +1,21 @@
+PUNIX MEDIA CENTER — COMBINED PACKAGE
+Includes the Media Center V2 project plus the Kick live-detection fix.
+
+Included behavior:
+- Homepage sidebar places LIVE Twitch/Kick/YouTube channels before offline/social channels while preserving admin sort order within each group.
+- Kick sync resolves the channel slug and uses Kick public v1 livestream endpoint filtered by broadcaster_user_id.
+- Admin sync displays per-channel Kick results and cooldown feedback.
+
+Installation:
+1. Back up your current website/project folder.
+2. Replace the project files with the files in this archive, keeping your own Supabase project URL and publishable/anon key configuration unchanged.
+3. Deploy the updated Edge Function:
+   supabase functions deploy punix-media-sync
+   Or paste the updated supabase/functions/punix-media-sync/index.ts into the Supabase Dashboard Edge Function editor and deploy.
+4. Keep KICK_CLIENT_ID and KICK_CLIENT_SECRET configured in Supabase Edge Function Secrets.
+5. No new database migration is included or required for these code changes.
+6. Hard-refresh the homepage (Ctrl+F5) to see the channel ordering.
+
+Important:
+- Do not expose KICK_CLIENT_SECRET in frontend files or send it in chat.
+- The existing database migrations remain in supabase/migrations; do not rerun them if already applied.

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b0e">
+  <meta name="description" content="PUNIX administration control dashboard.">
+  <title>Admin Dashboard | PUNIX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/punix-nav.css">
+  <link rel="stylesheet" href="css/admin-dashboard.css">
+  <link rel="stylesheet" href="css/admin-teams.css">
+</head>
+<body class="pnx-admin-page">
+
+<header class="pnx-site-header">
+  <a class="pnx-brand" href="index.html#top" aria-label="PUNIX home">
+    <img src="assets/images/punix-logo-original.png" alt="PUNIX">
+  </a>
+
+  <button class="pnx-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="pnx-main-nav" aria-label="Main navigation">
+    <a href="index.html#top" data-nav="home">Home</a>
+    <a href="index.html#creators" data-nav="creators">Creators</a>
+    <a href="index.html#watch" data-nav="watch">Watch</a>
+    <a href="index.html#community" data-nav="community">Community</a>
+    <a href="index.html#news" data-nav="news">News</a>
+    <a href="members.html" data-nav="members">Members</a>
+    <a href="teams.html" data-nav="teams">Teams</a>
+    <a href="admin.html" data-nav="admin" aria-current="page">Admin Dashboard</a>
+  </nav>
+
+  <div class="pnx-nav-actions">
+    <a class="pnx-nav-cta" href="auth.html">LOG IN <span>↗</span></a>
+  </div>
+</header>
+
+
+<main class="pnx-admin-wrap">
+  <div id="dashboard-gate" class="pnx-admin-gate" role="status">VERIFYING ADMIN ACCESS…</div>
+  <div id="admin-app" hidden>
+    <div class="pnx-admin-heading">
+      <div>
+        <p class="pnx-admin-kicker">PUNIX ORGANIZATION / CONTROL ROOM</p>
+        <h1>ADMIN <span>CONTROL</span></h1>
+        <p class="pnx-admin-intro">Manage the organization, competitive divisions and team rosters from one place.</p>
+      </div>
+      <div class="pnx-admin-status"><span class="pnx-status-dot"></span> ADMIN SESSION VERIFIED</div>
+    </div>
+
+    <div class="pnx-admin-layout">
+      <aside class="pnx-admin-sidebar" aria-label="Admin sections">
+        <p class="pnx-sidebar-label">CONTROL PANEL</p>
+        <button class="pnx-admin-nav-item is-active" type="button" data-section="overview"><span>01</span> Overview</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="teams"><span>02</span> Team Management</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>03</span> Latest Updates</button>
+        <div class="pnx-sidebar-foot"><span class="pnx-sidebar-mark">P</span><small>CREATE. BUILD.<br>COMPETE. CONQUER.</small></div>
+      </aside>
+
+      <div class="pnx-admin-content">
+        <section id="overview-section" class="pnx-admin-section" aria-labelledby="overview-title">
+          <div class="pnx-section-heading">
+            <div><p class="pnx-admin-kicker">01 / ORGANIZATION SNAPSHOT</p><h2 id="overview-title">OVERVIEW</h2></div>
+            <button class="pnx-refresh-btn" id="refresh-stats" type="button">↻ REFRESH DATA</button>
+          </div>
+          <div class="pnx-stat-grid">
+            <article class="pnx-stat-card"><span class="pnx-stat-label">REGISTERED MEMBERS</span><strong id="stat-members">—</strong><small>All PUNIX accounts</small></article>
+            <article class="pnx-stat-card"><span class="pnx-stat-label">TOTAL TEAMS</span><strong id="stat-teams">—</strong><small>Created competitive teams</small></article>
+            <article class="pnx-stat-card"><span class="pnx-stat-label">ACTIVE TEAMS</span><strong id="stat-active-teams">—</strong><small>Currently published as active</small></article>
+            <article class="pnx-stat-card"><span class="pnx-stat-label">ROSTER POSITIONS</span><strong id="stat-roster">—</strong><small>Assigned team memberships</small></article>
+          </div>
+          <div class="pnx-overview-grid">
+            <section class="pnx-overview-panel">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">COMPETITIVE DIVISION</p><h3>RECENT TEAMS</h3></div><button class="pnx-text-action" type="button" data-open-section="teams">MANAGE TEAMS ↗</button></div>
+              <div id="recent-teams" class="pnx-recent-teams"><p>Loading team data…</p></div>
+            </section>
+            <section class="pnx-overview-panel pnx-quick-panel">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">QUICK ACCESS</p><h3>ADMIN SHORTCUTS</h3></div></div>
+              <a href="members.html"><span>01</span><div><strong>MEMBERS DIRECTORY</strong><small>Browse registered public members</small></div><b>↗</b></a>
+              <a href="teams.html"><span>02</span><div><strong>PUBLIC TEAMS</strong><small>Preview published team pages</small></div><b>↗</b></a>
+              <button type="button" data-open-section="teams"><span>03</span><div><strong>TEAM MANAGEMENT</strong><small>Create and update team rosters</small></div><b>↗</b></button>
+            </section>
+          </div>
+          <p class="pnx-admin-footnote">Administrative data is visible only to verified PUNIX administrators. Public pages continue to use the existing published views.</p>
+        </section>
+
+        <section id="teams-section" class="pnx-admin-section" hidden aria-labelledby="teams-title">
+          <div class="pnx-section-heading pnx-team-section-heading">
+            <div><p class="pnx-admin-kicker">02 / COMPETITIVE DIVISION</p><h2 id="teams-title">TEAM MANAGEMENT</h2><p>Create squads for each game and build rosters from registered PUNIX members.</p></div>
+            <button class="button" id="new-team-btn" type="button">+ CREATE TEAM</button>
+          </div>
+          <div id="admin-message" class="admin-message" role="status">Checking team management access…</div>
+          <div class="admin-layout" id="admin-layout" hidden>
+            <section class="admin-panel team-list-panel">
+              <div class="panel-heading"><div><span class="panel-index">01 / ROSTERS</span><h2>EXISTING TEAMS</h2></div><span id="team-total" class="panel-count">0 TEAMS</span></div>
+              <div id="admin-team-list" class="admin-team-list"></div>
+            </section>
+            <section class="admin-panel team-editor-panel">
+              <div class="panel-heading"><div><span class="panel-index">02 / TEAM BUILDER</span><h2 id="editor-title">CREATE A TEAM</h2></div></div>
+              <form id="team-form">
+                <input type="hidden" id="team-id">
+                <div class="form-grid">
+                  <label>TEAM NAME<input id="team-name" maxlength="80" placeholder="PUNIX Warriors" required></label>
+                  <label>GAME<input id="game-name" maxlength="60" placeholder="VALORANT" required></label>
+                  <label>DIVISION<select id="team-division"><option value="men">Men's Team</option><option value="women">Women's Team</option><option value="mixed">Mixed Team</option><option value="open">Open Division</option></select></label>
+                  <label>STATUS<select id="team-status"><option value="active">Active — public</option><option value="recruiting">Recruiting — public</option><option value="inactive">Inactive — hidden</option></select></label>
+                  <label class="full-field">TEAM LOGO URL <span class="optional">(optional, https://)</span><input id="team-logo" type="url" placeholder="https://…"></label>
+                  <label class="full-field">DESCRIPTION <span class="optional">(optional)</span><textarea id="team-description" rows="3" maxlength="500" placeholder="A short introduction to this roster…"></textarea></label>
+                  <label>DISPLAY ORDER<input id="team-order" type="number" min="0" max="999" value="0"></label>
+                </div>
+                <div class="roster-picker-head"><div><span class="panel-index">03 / ROSTER</span><h3>SELECT MEMBERS</h3><p>Choose existing accounts. Search by their public display name.</p></div><span id="selected-count" class="panel-count">0 SELECTED</span></div>
+                <input id="member-search" class="member-search" type="search" placeholder="Search PUNIX members…">
+                <div id="member-picker" class="member-picker"><p>Loading registered members…</p></div>
+                <div class="form-actions"><button class="button" id="save-team-btn" type="submit">SAVE TEAM <span>↗</span></button><button class="button button-outline" id="cancel-edit-btn" type="button">CLEAR FORM</button></div>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="updates-section" class="pnx-admin-section" hidden aria-labelledby="updates-title">
+          <div class="pnx-section-heading pnx-team-section-heading">
+            <div><p class="pnx-admin-kicker">03 / HOMEPAGE CONTENT</p><h2 id="updates-title">LATEST UPDATES</h2><p>Create, edit, publish and remove the news cards displayed in the homepage's LATEST UPDATES section.</p></div>
+          </div>
+          <div class="pnx-updates-layout">
+            <section class="pnx-overview-panel pnx-update-editor">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">CONTENT EDITOR</p><h3 id="update-editor-title">ADD AN UPDATE</h3></div></div>
+              <form id="update-form">
+                <input type="hidden" id="update-id">
+                <div class="pnx-update-form-grid">
+                  <label>HEADLINE<input id="update-title" maxlength="120" required placeholder="A new chapter begins"></label>
+                  <label>CATEGORY<input id="update-category" maxlength="40" required placeholder="ANNOUNCEMENTS"></label>
+                  <label class="pnx-update-wide">SHORT DETAILS<textarea id="update-summary" rows="3" maxlength="300" required placeholder="Write a short update for the homepage…"></textarea></label>
+                  <label>DATE<input id="update-date" type="date" required></label>
+                  <label>DISPLAY ORDER<input id="update-order" type="number" min="0" max="999" value="0"></label>
+                  <label class="pnx-update-wide">IMAGE URL <span class="optional">(optional, https:// or local assets path)</span><input id="update-image" type="text" maxlength="500" placeholder="assets/images/update.jpg"></label>
+                  <label class="pnx-update-wide">BUTTON LINK <span class="optional">(optional, https:// or site page/anchor)</span><input id="update-link" type="text" maxlength="500" placeholder="https://… or #community"></label>
+                  <label>BUTTON LABEL<input id="update-link-label" maxlength="35" placeholder="READ MORE"></label>
+                  <label class="pnx-update-publish"><input id="update-published" type="checkbox" checked> PUBLISH ON HOMEPAGE</label>
+                </div>
+                <div class="form-actions"><button class="button" id="save-update-btn" type="submit">PUBLISH UPDATE <span>↗</span></button><button class="button button-outline" id="cancel-update-btn" type="button">CLEAR FORM</button></div>
+                <p id="update-form-message" class="pnx-update-message" role="status"></p>
+              </form>
+            </section>
+            <section class="pnx-overview-panel pnx-update-list-panel">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">HOMEPAGE NEWS FEED</p><h3>EXISTING UPDATES</h3></div><button class="pnx-text-action" id="refresh-updates" type="button">↻ REFRESH</button></div>
+              <div id="admin-updates-list" class="pnx-admin-updates-list"><p class="pnx-recent-empty">Loading updates…</p></div>
+            </section>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/punix-nav.js" defer></script>
+<script src="js/admin-dashboard.js" defer></script>
+<script src="js/admin-teams.js" defer></script>
+<script src="js/admin-media-link.js" defer></script>
+</body>
+</html>

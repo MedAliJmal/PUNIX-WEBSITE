@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090c10"><title>My Profile | PUNIX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/profile.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script><script src="js/profile.js" defer></script>
+<link rel="stylesheet" href="css/punix-nav.css">
+</head>
+<body class="profile-page">
+  
+<header class="pnx-site-header">
+  <a class="pnx-brand" href="index.html#top" aria-label="PUNIX home">
+    <img src="assets/images/punix-logo-original.png" alt="PUNIX">
+  </a>
+
+  <button class="pnx-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="pnx-main-nav" aria-label="Main navigation">
+    <a href="index.html#top" data-nav="home">Home</a>
+    <a href="index.html#creators" data-nav="creators">Creators</a>
+    <a href="index.html#watch" data-nav="watch">Watch</a>
+    <a href="index.html#community" data-nav="community">Community</a>
+    <a href="index.html#news" data-nav="news">News</a>
+    <a href="members.html" data-nav="members">Members</a>
+    <a href="teams.html" data-nav="teams">Teams</a>
+    <a href="admin.html" data-nav="admin">Admin Dashboard</a>
+  </nav>
+
+  <div class="pnx-nav-actions">
+    <a class="pnx-nav-cta" href="profile.html">MY PROFILE <span>↗</span></a>
+    <button class="pnx-nav-signout" id="sign-out" type="button">SIGN OUT ↗</button>
+  </div>
+</header>
+
+  <main class="profile-shell">
+    <div class="profile-heading">
+      <div><p class="eyebrow">PUNIX NETWORK / MEMBER AREA</p><h1>YOUR <span>IDENTITY.</span></h1><p class="profile-lead">Your PUNIX member identity and creator presence.</p></div>
+      <div class="member-status"><span class="status-dot"></span> MEMBER ACCOUNT</div>
+    </div>
+
+    <div class="profile-grid">
+      <aside class="profile-preview panel">
+        <div class="identity-card-top">
+          <div class="identity-card-brand">
+            <img src="assets/images/punix-logo-original.png" alt="PUNIX emblem">
+            <div><strong>PUNIX</strong><span>OFFICIAL NETWORK</span></div>
+          </div>
+          <span class="identity-card-label">MEMBER<br>IDENTITY</span>
+        </div>
+        <div class="identity-card-rule"><span></span><span></span><span></span></div>
+        <p class="panel-kicker">MEMBER PROFILE</p>
+        <div class="avatar-wrap"><img id="avatar-preview" src="" alt="Profile avatar"><span id="avatar-fallback">P</span></div>
+        <h2 id="preview-name">PUNIX MEMBER</h2>
+        <p id="preview-bio" class="preview-bio">No bio added yet.</p>
+        <div class="preview-divider"></div>
+        <p class="panel-kicker">CONNECTED PLATFORMS</p>
+        <div id="preview-socials" class="preview-socials"><span>No links added yet</span></div>
+        <div class="member-since"><span>MEMBER SINCE</span><strong id="member-since">—</strong></div>
+        <div class="identity-card-footer"><span>INSPIRED BY PUNIC HERITAGE</span><strong>BUILT FOR THE FUTURE.</strong></div>
+      </aside>
+
+      <section class="profile-editor panel">
+        <div class="editor-heading">
+          <div><p class="panel-kicker">ACCOUNT</p><h2>PROFILE DETAILS</h2></div>
+          <button class="button profile-edit" id="edit-profile" type="button">EDIT PROFILE <span>↗</span></button>
+        </div>
+        <p id="profile-message" class="profile-message" role="status" aria-live="polite">Loading your profile…</p>
+
+        <section id="profile-view" class="profile-view" aria-live="polite">
+          <div class="detail-group">
+            <p class="detail-heading">PERSONAL INFORMATION</p>
+            <div class="detail-row"><span>DISPLAY NAME</span><strong id="view-display-name">—</strong></div>
+            <div class="detail-row detail-bio"><span>ABOUT ME</span><p id="view-bio">No bio added yet.</p></div>
+          </div>
+          <div class="detail-group">
+            <p class="detail-heading">CREATOR CHANNELS</p>
+            <div class="detail-row"><span>TWITCH</span><a id="view-twitch" class="detail-link" hidden></a><strong id="empty-twitch">Not connected</strong></div>
+            <div class="detail-row"><span>KICK</span><a id="view-kick" class="detail-link" hidden></a><strong id="empty-kick">Not connected</strong></div>
+            <div class="detail-row"><span>YOUTUBE</span><a id="view-youtube" class="detail-link" hidden></a><strong id="empty-youtube">Not connected</strong></div>
+            <div class="detail-row"><span>TIKTOK</span><a id="view-tiktok" class="detail-link" hidden></a><strong id="empty-tiktok">Not connected</strong></div>
+          </div>
+          <div class="detail-group">
+            <p class="detail-heading">PUBLIC DIRECTORY</p>
+            <div class="detail-row"><span>VISIBILITY</span><strong id="view-directory-visibility">Not listed</strong></div>
+            <div class="detail-row"><span>DIVISION</span><strong id="view-directory-division">Creators</strong></div>
+          </div>
+          <div class="detail-group">
+            <p class="detail-heading">PROFILE IMAGE</p>
+            <div class="detail-row"><span>AVATAR</span><strong id="view-avatar">No avatar added</strong></div>
+          </div>
+        </section>
+
+        <form id="profile-form" hidden>
+          <div class="edit-mode-heading"><span class="edit-mode-indicator"></span> EDITING YOUR PROFILE</div>
+          <div class="form-row">
+            <label>DISPLAY NAME<input id="display-name" name="display_name" type="text" maxlength="60" required placeholder="Your creator name"></label>
+            <label>AVATAR IMAGE URL<input id="avatar-url" name="avatar_url" type="url" maxlength="500" placeholder="https://…"></label>
+          </div>
+          <label>YOUR BIO <span class="field-note">MAX 300 CHARACTERS</span><textarea id="bio" name="bio" maxlength="300" rows="4" placeholder="Tell the PUNIX community who you are and what you create…"></textarea></label>
+          <div class="directory-preferences">
+            <div class="social-heading"><div><p class="panel-kicker">PUBLIC ROSTER</p><h3>DIRECTORY VISIBILITY</h3></div><span>OPTIONAL</span></div>
+            <label class="directory-opt-in"><input id="is-public" name="is_public" type="checkbox"><span><strong>Show my profile in the public PUNIX directory</strong><small>Your display name, avatar, bio, division and connected social links will be visible to visitors. Your email and account details stay private.</small></span></label>
+            <label class="division-select-label">MY DIVISION
+              <select id="directory-division" name="directory_division">
+                <option value="creators">Creators / Streamers</option>
+                <option value="competitive">Competitive Players</option>
+              </select>
+            </label>
+          </div>
+          <div class="social-heading"><div><p class="panel-kicker">YOUR CHANNELS</p><h3>CONNECT YOUR PLATFORMS</h3></div><span>OPTIONAL</span></div>
+          <div class="form-row"><label>TWITCH URL<input id="twitch-url" name="twitch_url" type="url" placeholder="https://twitch.tv/username"></label><label>KICK URL<input id="kick-url" name="kick_url" type="url" placeholder="https://kick.com/username"></label></div>
+          <div class="form-row"><label>YOUTUBE URL<input id="youtube-url" name="youtube_url" type="url" placeholder="https://youtube.com/@username"></label><label>TIKTOK URL<input id="tiktok-url" name="tiktok_url" type="url" placeholder="https://tiktok.com/@username"></label></div>
+          <div class="form-actions">
+            <button class="button profile-save" id="save-profile" type="submit">SAVE CHANGES <span>↗</span></button>
+            <button class="profile-cancel" id="cancel-edit" type="button">CANCEL</button>
+            <span class="save-hint">Your changes will be saved to your PUNIX account.</span>
+          </div>
+        </form>
+      </section>
+    </div>
+    <p class="profile-footnote">PUNIX — INSPIRED BY PUNIC HERITAGE. BUILT FOR THE FUTURE.</p>
+  </main>
+<script src="js/punix-nav.js" defer></script>
+</body>
+</html>

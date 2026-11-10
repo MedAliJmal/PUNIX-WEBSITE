@@ -1,0 +1,73 @@
+/* PUNIX Admin Dashboard — isolated styles */
+.pnx-admin-page{background:#080b0e;color:#e9eceb;min-height:100vh}
+.pnx-admin-wrap{width:min(1500px,100%);margin:0 auto;padding:54px clamp(18px,4vw,58px) 90px;box-sizing:border-box}
+.pnx-admin-wrap *{box-sizing:border-box}
+.pnx-admin-gate{max-width:760px;margin:55px auto;padding:22px;border:1px solid rgba(39,197,192,.35);background:#101619;color:#c8d4d3;font:800 11px/1.7 Inter,Arial,sans-serif;letter-spacing:1.2px;text-align:center}
+.pnx-admin-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:35px;padding-bottom:27px;border-bottom:1px solid rgba(255,255,255,.09)}
+.pnx-admin-kicker{margin:0 0 9px;color:#35c4bd;font:800 9px/1.4 Inter,Arial,sans-serif;letter-spacing:1.8px;text-transform:uppercase}
+.pnx-admin-heading h1{margin:0;font:900 clamp(48px,7vw,82px)/.88 var(--font-display,Impact,sans-serif);letter-spacing:.2px;color:#f1f0e9}
+.pnx-admin-heading h1 span{color:#d8b66e}
+.pnx-admin-intro{max-width:610px;margin:15px 0 0;color:#9da7a8;font:400 13px/1.7 Inter,Arial,sans-serif}
+.pnx-admin-status{display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid rgba(53,196,189,.24);color:#9dcac6;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:1.1px;white-space:nowrap}
+.pnx-status-dot{width:7px;height:7px;border-radius:50%;background:#36c5a4;box-shadow:0 0 12px rgba(54,197,164,.65)}
+.pnx-admin-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:start}
+.pnx-admin-sidebar{position:sticky;top:20px;min-height:440px;padding:18px 13px;background:linear-gradient(160deg,#12191c,#0b0f12);border:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column}
+.pnx-sidebar-label{margin:4px 10px 15px;color:#657174;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:1.6px}
+.pnx-admin-nav-item{display:flex;align-items:center;gap:13px;width:100%;padding:14px 11px;border:1px solid transparent;background:transparent;color:#aeb8b9;text-align:left;font:700 11px/1.3 Inter,Arial,sans-serif;cursor:pointer;transition:.2s}
+.pnx-admin-nav-item span{color:#667477;font:800 9px/1 Inter,Arial,sans-serif}
+.pnx-admin-nav-item:hover{color:#f1e5c8;background:rgba(255,255,255,.035)}
+.pnx-admin-nav-item.is-active{color:#f0d28f;background:rgba(201,164,91,.09);border-color:rgba(201,164,91,.22)}
+.pnx-admin-nav-item.is-active span{color:#35c4bd}
+.pnx-sidebar-foot{display:flex;align-items:center;gap:10px;margin:auto 8px 6px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08)}
+.pnx-sidebar-mark{display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(201,164,91,.55);color:#d8b66e;font:900 21px/1 var(--font-display,Impact,sans-serif)}
+.pnx-sidebar-foot small{color:#697477;font:800 7px/1.6 Inter,Arial,sans-serif;letter-spacing:1px}
+.pnx-admin-content{min-width:0}
+.pnx-admin-section{min-width:0}
+.pnx-section-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin:0 0 22px}
+.pnx-section-heading h2{margin:0;color:#f0efe8;font:900 clamp(32px,4vw,47px)/.9 var(--font-display,Impact,sans-serif)}
+.pnx-refresh-btn{padding:11px 13px;border:1px solid rgba(53,196,189,.35);background:transparent;color:#7bd4ce;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:1px;cursor:pointer}
+.pnx-refresh-btn:hover{background:rgba(53,196,189,.08)}
+.pnx-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.pnx-stat-card{min-width:0;min-height:145px;padding:19px;background:linear-gradient(145deg,#141b1e,#0d1215);border:1px solid rgba(255,255,255,.09);position:relative;overflow:hidden}
+.pnx-stat-card:after{content:"";position:absolute;right:-24px;bottom:-38px;width:95px;height:95px;border:1px solid rgba(201,164,91,.11);transform:rotate(45deg)}
+.pnx-stat-label{display:block;color:#8c999b;font:800 8px/1.5 Inter,Arial,sans-serif;letter-spacing:1.1px}
+.pnx-stat-card strong{display:block;margin:17px 0 7px;color:#e6c57f;font:900 43px/.9 var(--font-display,Impact,sans-serif);font-variant-numeric:tabular-nums}
+.pnx-stat-card small{color:#748083;font:500 9px/1.5 Inter,Arial,sans-serif}
+.pnx-overview-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(260px,.8fr);gap:14px}
+.pnx-overview-panel{min-width:0;padding:20px;background:linear-gradient(145deg,#12191c,#0c1013);border:1px solid rgba(255,255,255,.09)}
+.pnx-panel-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:15px;margin-bottom:13px;border-bottom:1px solid rgba(255,255,255,.08)}
+.pnx-panel-top h3{margin:0;color:#e9e9e2;font:800 25px/.95 var(--font-display,Impact,sans-serif)}
+.pnx-text-action{border:0;background:transparent;color:#d6b36d;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:.8px;cursor:pointer}
+.pnx-recent-teams{display:grid;gap:8px}
+.pnx-recent-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.018)}
+.pnx-recent-row div{min-width:0;display:grid;gap:5px}.pnx-recent-row strong{color:#e5e7e2;font:700 16px/1.1 var(--font-display,Impact,sans-serif);overflow-wrap:anywhere}.pnx-recent-row small{color:#8b999b;font:700 8px/1.3 Inter,Arial,sans-serif;letter-spacing:.8px}.pnx-recent-status{color:#78c9bf;font:800 8px/1 Inter,Arial,sans-serif;white-space:nowrap}
+.pnx-recent-empty{margin:0;padding:18px 4px;color:#859193;font:400 11px/1.7 Inter,Arial,sans-serif}
+.pnx-quick-panel>a,.pnx-quick-panel>button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 2px;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;text-align:left;text-decoration:none;color:inherit;cursor:pointer}
+.pnx-quick-panel>a:last-child,.pnx-quick-panel>button:last-child{border-bottom:0}
+.pnx-quick-panel>a>span,.pnx-quick-panel>button>span{color:#35c4bd;font:800 9px/1 Inter,Arial,sans-serif}
+.pnx-quick-panel a div,.pnx-quick-panel button div{display:grid;gap:5px;min-width:0;flex:1}
+.pnx-quick-panel strong{color:#e5e7e2;font:800 9px/1.2 Inter,Arial,sans-serif;letter-spacing:.7px}
+.pnx-quick-panel small{color:#829092;font:400 9px/1.4 Inter,Arial,sans-serif}
+.pnx-quick-panel b{color:#d8b66e;font-size:13px}
+.pnx-quick-panel>a:hover strong,.pnx-quick-panel>button:hover strong{color:#e2c17c}
+.pnx-admin-footnote{margin:17px 0 0;color:#667477;font:400 9px/1.6 Inter,Arial,sans-serif}
+.pnx-team-section-heading p:not(.pnx-admin-kicker){max-width:620px;margin:10px 0 0;color:#9da7a8;font:400 12px/1.6 Inter,Arial,sans-serif}
+.pnx-team-section-heading>.button{white-space:nowrap;cursor:pointer}
+#teams-section .admin-layout{grid-template-columns:minmax(240px,.8fr) minmax(0,1.5fr)}
+#teams-section .admin-page{padding:0}
+#teams-section .admin-message{margin-bottom:16px}
+#teams-section[hidden],#overview-section[hidden],#admin-app[hidden]{display:none!important}
+@media(max-width:1120px){.pnx-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pnx-overview-grid{grid-template-columns:1fr}#teams-section .admin-layout{grid-template-columns:1fr}}
+@media(max-width:820px){.pnx-admin-wrap{padding-top:35px}.pnx-admin-layout{grid-template-columns:1fr;gap:16px}.pnx-admin-sidebar{position:static;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:10px}.pnx-sidebar-label,.pnx-sidebar-foot{display:none}.pnx-admin-nav-item{justify-content:center;padding:12px 7px;font-size:10px}.pnx-admin-heading{align-items:flex-start;flex-direction:column}.pnx-admin-status{align-self:flex-start}.pnx-section-heading{align-items:flex-start}}
+@media(max-width:560px){.pnx-admin-wrap{padding:30px 15px 65px}.pnx-admin-heading h1{font-size:53px}.pnx-stat-grid{gap:8px}.pnx-stat-card{min-height:126px;padding:14px}.pnx-stat-card strong{font-size:37px}.pnx-overview-panel{padding:15px}.pnx-panel-top{align-items:flex-start;flex-direction:column}.pnx-section-heading{flex-direction:column;align-items:stretch}.pnx-refresh-btn{align-self:flex-start}.pnx-team-section-heading>.button{align-self:flex-start}}
+
+/* Latest Updates admin editor */
+.pnx-updates-layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:14px;align-items:start}
+.pnx-update-editor,.pnx-update-list-panel{min-width:0}
+.pnx-update-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.pnx-update-form-grid label{display:grid;gap:7px;color:#9ca9aa;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:1px;min-width:0}
+.pnx-update-form-grid input:not([type=checkbox]),.pnx-update-form-grid textarea{width:100%;min-width:0;box-sizing:border-box;padding:12px;border:1px solid rgba(255,255,255,.12);background:#090e11;color:#edf0eb;font:500 11px/1.5 Inter,Arial,sans-serif;outline:none}
+.pnx-update-form-grid input:focus,.pnx-update-form-grid textarea:focus{border-color:rgba(53,196,189,.7)}
+.pnx-update-form-grid textarea{resize:vertical}.pnx-update-wide{grid-column:1/-1}.pnx-update-publish{display:flex!important;align-items:center;gap:9px!important;letter-spacing:.5px!important}.pnx-update-publish input{accent-color:#35c4bd}.pnx-update-message{min-height:18px;margin:12px 0 0;color:#79d0c8;font:500 10px/1.5 Inter,Arial,sans-serif}.pnx-admin-updates-list{display:grid;gap:9px}.pnx-admin-update-row{padding:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);display:grid;gap:9px}.pnx-admin-update-top{display:flex;justify-content:space-between;gap:10px}.pnx-admin-update-row strong{color:#e9e9e2;font:800 18px/1.05 var(--font-display,Impact,sans-serif)}.pnx-admin-update-row small{color:#899799;font:700 8px/1.5 Inter,Arial,sans-serif;letter-spacing:.7px}.pnx-admin-update-row p{margin:0;color:#9aa5a6;font:400 10px/1.6 Inter,Arial,sans-serif}.pnx-update-status{color:#75d0c6;font:800 8px/1 Inter,Arial,sans-serif;white-space:nowrap}.pnx-update-status.is-draft{color:#d8b66e}.pnx-update-actions{display:flex;gap:8px;flex-wrap:wrap}.pnx-update-actions button{padding:7px 10px;border:1px solid rgba(255,255,255,.13);background:transparent;color:#d7c18e;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:.7px;cursor:pointer}.pnx-update-actions button.delete{color:#e38b83}.pnx-update-actions button:hover{background:rgba(255,255,255,.06)}
+@media(max-width:1120px){.pnx-updates-layout{grid-template-columns:1fr}}
+@media(max-width:560px){.pnx-update-form-grid{grid-template-columns:1fr}.pnx-update-wide{grid-column:auto}}

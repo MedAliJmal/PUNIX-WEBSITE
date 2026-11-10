@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090c10"><title>Member Access | PUNIX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/auth.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script><script src="js/auth.js" defer></script>
+<link rel="stylesheet" href="css/punix-nav.css">
+</head>
+<body class="auth-page">
+
+<header class="pnx-site-header">
+  <a class="pnx-brand" href="index.html#top" aria-label="PUNIX home">
+    <img src="assets/images/punix-logo-original.png" alt="PUNIX">
+  </a>
+
+  <button class="pnx-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="pnx-main-nav" aria-label="Main navigation">
+    <a href="index.html#top" data-nav="home">Home</a>
+    <a href="index.html#creators" data-nav="creators">Creators</a>
+    <a href="index.html#watch" data-nav="watch">Watch</a>
+    <a href="index.html#community" data-nav="community">Community</a>
+    <a href="index.html#news" data-nav="news">News</a>
+    <a href="members.html" data-nav="members">Members</a>
+    <a href="teams.html" data-nav="teams" aria-current="page">Teams</a>
+    <a href="admin.html" data-nav="admin">Admin Dashboard</a>
+  </nav>
+
+  <div class="pnx-nav-actions">
+    <a class="pnx-nav-cta" href="auth.html">MEMBER ACCESS <span>↗</span></a>
+  </div>
+</header>
+
+  <main class="auth-shell">
+    <a class="auth-brand" href="index.html" aria-label="PUNIX home"><img src="assets/images/punix-logo-original.png" alt="PUNIX" onerror="this.style.display='none'"><span class="brand-wordmark">PUNIX</span></a>
+    <section class="auth-card">
+      <p class="eyebrow">PUNIX NETWORK / MEMBER PORTAL</p>
+      <h1 id="auth-title">JOIN THE<br><span>NETWORK.</span></h1>
+      <p class="auth-intro">Create your member account, connect with the community, and apply for creator partnership.</p>
+      <div class="auth-switch" role="tablist" aria-label="Account access">
+        <button class="auth-switch-btn active" type="button" data-mode="signup">CREATE ACCOUNT</button>
+        <button class="auth-switch-btn" type="button" data-mode="signin">SIGN IN</button>
+      </div>
+      <form id="auth-form">
+        <label id="name-label">DISPLAY NAME<input id="display-name" name="display-name" type="text" maxlength="60" autocomplete="nickname" placeholder="Your creator name" required></label>
+        <label>EMAIL ADDRESS<input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+        <label>PASSWORD<input id="password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required></label>
+        <div class="auth-human"><span class="auth-human-label">HUMAN VERIFICATION</span><div id="turnstile-container"></div><p class="auth-human-help">Complete the security check to continue.</p></div>
+        <button class="button auth-submit" id="auth-submit" type="submit" disabled>CREATE ACCOUNT <span>↗</span></button>
+        <a href="#forgot-password" id="forgot-password-link" hidden>FORGOT PASSWORD?</a>
+        <p id="auth-message" class="auth-message" role="status" aria-live="polite"></p>
+      </form>
+      <p class="auth-legal">By continuing, you agree to follow the PUNIX community rules. Partnership applications are reviewed manually.</p>
+    </section>
+    <a class="auth-back" href="index.html">← BACK TO PUNIX</a>
+  </main>
+<script src="js/punix-nav.js" defer></script>
+</body></html>

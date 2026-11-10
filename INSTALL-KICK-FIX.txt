@@ -1,0 +1,21 @@
+PUNIX KICK LIVE DETECTION FIX
+
+WHY THIS FIX IS NEEDED
+The previous Edge Function queried Kick /public/v2/livestreams with broadcaster_user_id. Kick's current API documentation/issues state that this filter is not supported on V2; the V1 livestream endpoint still supports it. The old code also swallowed errors from the V2 lookup, which could make a live channel appear offline without showing the actual error.
+
+INSTALL
+1. Back up your existing website folder and the current Supabase Edge Function source.
+2. Copy the included supabase/functions/punix-media-sync/index.ts over the same file in your project.
+3. Copy the included js/admin-media.js over your website's js/admin-media.js.
+4. In Supabase Dashboard > Edge Functions > punix-media-sync, deploy the updated function source (or deploy with Supabase CLI: supabase functions deploy punix-media-sync).
+5. Confirm KICK_CLIENT_ID and KICK_CLIENT_SECRET are set as Edge Function secrets. Do not put them in browser JS.
+6. In admin-media.html, edit GooBa_Off and set the channel username/slug to: gooba_off (without @). Save.
+7. Wait at least 90 seconds after the last sync, then click SYNC PLATFORMS. The admin page will now display the Kick-specific result.
+8. Refresh the homepage with Ctrl+F5.
+
+EXPECTED RESULT
+The sync result should show KICK / GooBa_Off: live when Kick's API returns the channel's live session. If credentials, API access, or database writes fail, the admin result should expose the error instead of silently marking the channel offline.
+
+NOTES
+- This patch does not include or change Supabase credentials, database migrations, homepage layout, or other platform integrations.
+- A global 90-second sync cooldown remains in place. If the admin page says skipped, wait 90 seconds and retry.

@@ -1,0 +1,47 @@
+PUNIX MEDIA CENTER — V2 (TIKTOK + INSTAGRAM)
+
+This is an upgrade to PUNIX MEDIA CENTER STEP 1. It preserves the existing Twitch/Kick/YouTube functionality and adds TikTok + Instagram channel listings and social video/Reel embeds.
+
+IMPORTANT
+- Back up your website folder and your existing STEP 1 ZIP before installing.
+- Keep js/supabase-config.js unchanged. It is not included.
+- Never put platform API secrets in browser JavaScript or send them in chat.
+- This V2 package is an incremental patch. Extract it into the same website root and allow the included files to replace their STEP 1 versions.
+
+INSTALL
+1. Back up your current website folder.
+2. Extract this ZIP into the same website root used for STEP 1 (the folder containing index.html, admin.html, css/, js/, assets/ and supabase/). Allow included files to replace their STEP 1 copies.
+3. In Supabase Dashboard > SQL Editor, run the NEW migration:
+   supabase/migrations/202611100002_punix_social_media.sql
+   Run it AFTER the original 202611100001_punix_media_center.sql migration.
+4. No change is needed to js/supabase-config.js, Supabase Auth, your existing admin dashboard, or your existing user/profile tables.
+5. Open admin-media.html while signed in as a PUNIX administrator.
+6. Add TikTok and Instagram creator channels using the username without @. Add social videos using their public HTTPS post/Reel/video URLs.
+7. For a TikTok post, choose TikTok and content type Video (or Short). For an Instagram post, choose Instagram and Reel or Post.
+8. Refresh the homepage with Ctrl+F5.
+
+WHAT V2 ADDS
+- TikTok and Instagram as channel and video platform choices.
+- Content type field: Video, Clip, Short, Reel, Post.
+- Embedded previews for supported public TikTok video URLs and Instagram post/Reel URLs.
+- Fallback links to open the original post when an embed is unavailable or the post owner/platform blocks embedding.
+- Social profile entries in the homepage creator lineup.
+- Existing Twitch, Kick and YouTube live embeds and current supported imports remain in place.
+
+IMPORTANT API LIMITATIONS
+- Automatic live-state checks remain supported by the current Edge Function for Twitch, Kick and YouTube only.
+- TikTok and Instagram creator entries are shown as SOCIAL profiles. The sync function deliberately marks their live-check state as unsupported rather than incorrectly reporting them offline.
+- Automatic TikTok/Instagram creator-library imports are NOT enabled in this patch. Those require creator authorization, the appropriate TikTok/Meta developer app, permissions, review/approval where applicable, and a separate OAuth integration. Public embed URLs work without that import integration.
+- Kick video library imports remain manual in this package.
+- TikTok and Instagram embeds depend on public content, platform availability, browser privacy settings, and the platform's embed service.
+
+SECURITY
+- Do not paste API secrets, Supabase service-role keys, or passwords into the website files.
+- Existing Edge Function secrets stay in Supabase.
+- The new SQL migration only expands supported platform/content types and adds a live-check status field; it does not replace or reset existing media rows.
+
+TROUBLESHOOTING
+- If you see a constraint error, confirm the original STEP 1 migration ran, then run migration 202611100002.
+- If a TikTok/Instagram preview does not render, confirm the post is public and the URL is a standard post/Reel/video URL. The OPEN ON PLATFORM link remains available.
+- If the homepage reports missing tables, run both migrations in order.
+- If the admin page denies access, sign in with an account that has the admin role in your existing user_roles table.

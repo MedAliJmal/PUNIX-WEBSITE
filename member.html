@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090b0e"><title>PUNIX Member</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/members.css">
+<link rel="stylesheet" href="css/punix-nav.css">
+</head>
+<body class="profile-page">
+ 
+<header class="pnx-site-header">
+  <a class="pnx-brand" href="index.html#top" aria-label="PUNIX home">
+    <img src="assets/images/punix-logo-original.png" alt="PUNIX">
+  </a>
+
+  <button class="pnx-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav class="pnx-main-nav" aria-label="Main navigation">
+    <a href="index.html#top" data-nav="home">Home</a>
+    <a href="index.html#creators" data-nav="creators">Creators</a>
+    <a href="index.html#watch" data-nav="watch">Watch</a>
+    <a href="index.html#community" data-nav="community">Community</a>
+    <a href="index.html#news" data-nav="news">News</a>
+    <a href="members.html" data-nav="members" aria-current="page">Members</a>
+    <a href="teams.html" data-nav="teams">Teams</a>
+    <a href="admin.html" data-nav="admin">Admin Dashboard</a>
+  </nav>
+
+  <div class="pnx-nav-actions">
+    <a class="pnx-nav-cta" href="auth.html">MEMBER ACCESS <span>↗</span></a>
+  </div>
+</header>
+
+  <main class="public-member-shell">
+    <a class="public-back" href="members.html">← BACK TO DIRECTORY</a>
+    <p class="eyebrow">PUNIX NETWORK / PUBLIC MEMBER PROFILE</p>
+    <div id="public-member-status" class="directory-note"><span></span> LOADING MEMBER PROFILE</div>
+    <section id="public-member-card" class="public-member-card" hidden>
+      <div class="public-member-emblem"><img src="assets/images/punix-logo-original.png" alt="PUNIX"></div>
+      <div class="public-member-main">
+        <div id="public-member-division" class="public-member-division"></div>
+        <h1 id="public-member-name"></h1>
+        <p id="public-member-bio"></p>
+        <div id="public-member-socials" class="public-member-socials"></div>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/member.js"></script>
+<script src="js/punix-nav.js" defer></script>
+</body>
+</html>
