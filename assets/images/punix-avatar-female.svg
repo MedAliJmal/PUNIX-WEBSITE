@@ -1,1 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><radialGradient id="bg"><stop stop-color="#242018"/><stop offset="1" stop-color="#08090b"/></radialGradient><linearGradient id="gold" x2="1" y2="1"><stop stop-color="#fff0ae"/><stop offset=".45" stop-color="#e8b94f"/><stop offset="1" stop-color="#8e5a13"/></linearGradient></defs><circle cx="256" cy="256" r="250" fill="url(#bg)" stroke="url(#gold)" stroke-width="12"/><circle cx="256" cy="256" r="226" fill="none" stroke="#b9852e" stroke-opacity=".55" stroke-width="2"/><path d="M330 140q108-24 91 102 54 99-10 175l-80-40 18-180z" fill="#171719" stroke="url(#gold)" stroke-width="8"/><path d="M95 480q8-110 92-136l69-22 69 22q84 26 92 136" fill="#101114" stroke="url(#gold)" stroke-width="8"/><path d="M185 345l71 68 71-68-22-29h-98z" fill="#e6b84e"/><path d="M151 208q-12-117 99-131 111 12 111 131v69q-4 92-105 108-102-16-105-108z" fill="#d99d62" stroke="#e7b84e" stroke-width="5"/><path d="M145 231q-25-111 51-157l31 26 27-43 35 39 43-19q57 48 37 155l-25-53-30-29q-76 31-152 2z" fill="#171719" stroke="url(#gold)" stroke-width="8" stroke-linejoin="round"/><path d="M181 250q24-20 48 0m54 0q24-20 48 0" fill="none" stroke="#21150d" stroke-width="9" stroke-linecap="round"/><ellipse cx="205" cy="267" rx="8" ry="12" fill="#17120d"/><ellipse cx="307" cy="267" rx="8" ry="12" fill="#17120d"/><path d="M246 278l-8 31 18 3m-39 25q39 24 78 0" fill="none" stroke="#7d482d" stroke-width="7" stroke-linecap="round"/><path d="M116 480q8-81 72-116l68 63 68-63q64 35 72 116" fill="#090b0e" stroke="#dcae48" stroke-width="7"/><path d="M206 382l50 46 50-46-20-22h-60z" fill="#dcae48"/><path d="M238 434h36l-18 24z" fill="#111"/><path d="M221 449h70" stroke="#dcae48" stroke-width="5"/><path d="M238 456l18-13 18 13" fill="none" stroke="#dcae48" stroke-width="4"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="PUNIX female member avatar">
+  <defs>
+    <radialGradient id="bg"><stop stop-color="#292116"/><stop offset="1" stop-color="#08090b"/></radialGradient>
+    <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#fff0ae"/><stop offset=".45" stop-color="#e8b94f"/><stop offset="1" stop-color="#8e5a13"/></linearGradient>
+    <linearGradient id="hair" x2="1" y2="1"><stop stop-color="#4b3024"/><stop offset=".55" stop-color="#211719"/><stop offset="1" stop-color="#090b0e"/></linearGradient>
+    <linearGradient id="skin" x2="0" y2="1"><stop stop-color="#f1c49a"/><stop offset="1" stop-color="#c98259"/></linearGradient>
+  </defs>
+  <circle cx="256" cy="256" r="250" fill="url(#bg)" stroke="url(#gold)" stroke-width="12"/>
+  <circle cx="256" cy="256" r="226" fill="none" stroke="#b9852e" stroke-opacity=".55" stroke-width="2"/>
+  <!-- long hair silhouette -->
+  <path d="M143 229q-29-126 63-164 88-38 157 28 42 41 15 150l18 105q-7 67-75 104l-65-28-65 28q-68-37-75-104z" fill="url(#hair)" stroke="url(#gold)" stroke-width="7" stroke-linejoin="round"/>
+  <!-- shoulders and uniform -->
+  <path d="M83 480q13-103 103-132l70-22 70 22q90 29 103 132" fill="#101114" stroke="url(#gold)" stroke-width="8"/>
+  <path d="M185 345l71 68 71-68-22-29h-98z" fill="#e6b84e"/>
+  <path d="M116 480q10-76 72-112l68 63 68-63q62 36 72 112" fill="#090b0e" stroke="#dcae48" stroke-width="7"/>
+  <path d="M206 382l50 46 50-46-20-22h-60z" fill="#dcae48"/>
+  <path d="M238 434h36l-18 24z" fill="#111"/>
+  <path d="M221 449h70" stroke="#dcae48" stroke-width="5"/>
+  <!-- neck and face -->
+  <path d="M218 326h76v57q-38 34-76 0z" fill="url(#skin)"/>
+  <path d="M164 191q0-94 92-105 92 11 92 105v83q-5 91-92 111-87-20-92-111z" fill="url(#skin)" stroke="#e7b84e" stroke-width="4"/>
+  <!-- hairline and side fringe -->
+  <path d="M151 225q-16-111 55-151 79-44 144 22 35 36 25 119-23-34-39-66-52 35-130 18-19 31-55 58z" fill="url(#hair)" stroke="url(#gold)" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M165 226q-20 83-7 163-39-30-39-91 0-69 24-105m214 7q28 76 12 189 49-42 44-111-3-58-31-91" fill="url(#hair)" stroke="url(#gold)" stroke-width="6" stroke-linejoin="round"/>
+  <!-- brows, eyes and lashes -->
+  <path d="M184 246q25-17 48 0m48 0q25-17 48 0" fill="none" stroke="#392018" stroke-width="8" stroke-linecap="round"/>
+  <path d="M185 267q23 17 46 0m50 0q23 17 46 0" fill="none" stroke="#281710" stroke-width="7" stroke-linecap="round"/>
+  <path d="M187 264l-7-8m12 6-3-10m133 12 7-8m-12 6 3-10" fill="none" stroke="#281710" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="208" cy="267" rx="7" ry="9" fill="#17120d"/><ellipse cx="304" cy="267" rx="7" ry="9" fill="#17120d"/>
+  <path d="M256 276l-8 30 17 3" fill="none" stroke="#a96545" stroke-width="6" stroke-linecap="round"/>
+  <path d="M222 337q34 22 68 0" fill="none" stroke="#8d3f43" stroke-width="7" stroke-linecap="round"/>
+  <path d="M214 331q42 12 84 0" fill="none" stroke="#f0b18c" stroke-width="3" stroke-linecap="round"/>
+  <!-- subtle earrings -->
+  <circle cx="158" cy="302" r="7" fill="url(#gold)"/><circle cx="354" cy="302" r="7" fill="url(#gold)"/>
+</svg>
