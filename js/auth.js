@@ -25,6 +25,24 @@
   const intro = document.querySelector('.auth-intro');
   const tabs = document.querySelector('.auth-switch');
   const forgotLink = document.querySelector('#forgot-password-link');
+  const avatarChoice = document.querySelector('#auth-avatar-choice');
+  const avatarPreview = document.querySelector('#auth-avatar-preview');
+  const avatarTitle = document.querySelector('#auth-avatar-title');
+  const avatarDescription = document.querySelector('#auth-avatar-description');
+
+  function updateGenderAvatar() {
+    const gender = genderInput.value;
+    if (!gender || !['male', 'female'].includes(gender)) {
+      avatarChoice.hidden = true;
+      return;
+    }
+    avatarPreview.src = `assets/images/punix-avatar-${gender}.svg`;
+    avatarPreview.alt = `PUNIX ${gender} default avatar`;
+    avatarTitle.textContent = gender === 'male' ? 'PUNIX MALE AVATAR' : 'PUNIX FEMALE AVATAR';
+    avatarDescription.textContent = 'This avatar will be used on your member profile. You can upload a different image later.';
+    avatarChoice.hidden = false;
+  }
+  genderInput.addEventListener('change', updateGenderAvatar);
 
   function setMessage(text, isError = false) { message.textContent = text; message.classList.toggle('error', isError); }
   function updateSubmit() { submit.disabled = !captchaToken; }
@@ -38,7 +56,7 @@
     nameLabel.hidden = !signingUp;
     nameInput.required = signingUp;
     genderLabel.hidden = !signingUp;
-    genderInput.required = signingUp;
+    genderInput.required = signingUp;\n    avatarChoice.hidden = !signingUp;\n    updateGenderAvatar();
     password.closest('label').hidden = mode === 'forgot';
     password.required = mode !== 'forgot';
     emailInput.required = true;
