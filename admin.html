@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/punix-nav.css">
   <link rel="stylesheet" href="css/admin-dashboard.css">
   <link rel="stylesheet" href="css/admin-teams.css">
+  <link rel="stylesheet" href="css/admin-tournaments.css">
   <link rel="icon" type="image/png" href="/assets/images/punix-logo-original.png">
   <link rel="apple-touch-icon" href="/assets/images/punix-logo-original.png">
 
@@ -74,7 +75,8 @@
         <button class="pnx-admin-nav-item is-active" type="button" data-section="overview"><span>01</span> Overview</button>
         <button class="pnx-admin-nav-item" type="button" data-section="members"><span>02</span> Member Approval</button>
         <button class="pnx-admin-nav-item" type="button" data-section="teams"><span>03</span> Team Management</button>
-        <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>04</span> Latest Updates</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="tournaments"><span>04</span> Tournament Hub</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>05</span> Latest Updates</button>
         <div class="pnx-sidebar-foot"><span class="pnx-sidebar-mark">P</span><small>CREATE. BUILD.<br>COMPETE. CONQUER.</small></div>
       </aside>
 
@@ -158,7 +160,46 @@
           </div>
         </section>
 
-        <section id="updates-section" class="pnx-admin-section" hidden aria-labelledby="updates-title">
+<section id="tournaments-section" class="pnx-admin-section" hidden aria-labelledby="tournaments-title">
+          <div class="pnx-section-heading pnx-team-section-heading"><div><p class="pnx-admin-kicker">04 / COMPETITIVE EVENTS</p><h2 id="tournaments-title">TOURNAMENT HUB</h2><p>Create multi-game events, review registrations, publish brackets and record match results.</p></div><button class="pnx-refresh-btn" id="tournament-admin-refresh" type="button">↻ REFRESH EVENTS</button></div>
+          <p id="tournament-admin-message" class="pnx-member-review-message" role="status">Loading tournament tools…</p>
+          <div class="pnx-tournament-admin-layout">
+            <section class="pnx-overview-panel"><div class="pnx-panel-top"><div><p class="pnx-admin-kicker">EVENT CONTROL</p><h3 id="tournament-admin-form-title">CREATE TOURNAMENT</h3></div></div>
+              <form id="tournament-admin-form"><input type="hidden" id="tournament-id">
+                <div class="pnx-tournament-form-grid">
+                  <label>TOURNAMENT TITLE<input id="tournament-title" maxlength="120" required placeholder="PUNIX OPEN #01"></label>
+                  <label>GAME<input id="tournament-game" maxlength="60" required placeholder="VALORANT, CS2, MLBB…"></label>
+                  <label>FORMAT<select id="tournament-format"><option value="single_elimination">Single Elimination</option><option value="double_elimination">Double Elimination</option><option value="round_robin">Round Robin</option><option value="swiss">Swiss</option><option value="custom">Custom</option></select></label>
+                  <label>ENTRY TYPE<select id="tournament-entry-type"><option value="team">Team Tournament</option><option value="solo">Solo Tournament</option></select></label>
+                  <label>STATUS<select id="tournament-status-select"><option value="draft">Draft / Hidden</option><option value="upcoming">Upcoming / Published</option><option value="live">Live</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label>
+                  <label>MAX ENTRIES<input id="tournament-max" type="number" min="2" max="512" placeholder="Unlimited"></label>
+                  <label>START DATE & TIME<input id="tournament-start" type="datetime-local"></label>
+                  <label>END DATE & TIME<input id="tournament-end" type="datetime-local"></label>
+                  <label>REGISTRATION DEADLINE<input id="tournament-deadline" type="datetime-local"></label>
+                  <label>PRIZE POOL<input id="tournament-prize" maxlength="120" placeholder="e.g. 500 TND"></label>
+                  <label class="pnx-tournament-wide">DESCRIPTION<textarea id="tournament-description" rows="3" maxlength="1200" placeholder="Introduce the tournament…"></textarea></label>
+                  <label class="pnx-tournament-wide">RULES<textarea id="tournament-rules" rows="5" maxlength="6000" placeholder="Rules, eligibility, match settings…"></textarea></label>
+                  <label class="pnx-tournament-check"><input id="tournament-registration-open" type="checkbox"> OPEN REGISTRATION</label>
+                </div>
+                <div class="form-actions"><button class="button" id="tournament-save" type="submit">SAVE TOURNAMENT ↗</button><button class="button button-outline" id="tournament-clear" type="button">CLEAR FORM</button></div>
+              </form>
+            </section>
+            <section class="pnx-overview-panel"><div class="pnx-panel-top"><div><p class="pnx-admin-kicker">ALL EVENTS</p><h3>TOURNAMENTS</h3></div><span id="tournament-admin-count" class="panel-count">0 EVENTS</span></div><div id="tournament-admin-list" class="pnx-admin-tournament-list"></div></section>
+          </div>
+          <section id="tournament-entry-panel" class="pnx-overview-panel pnx-tournament-secondary" hidden><div class="pnx-panel-top"><div><p class="pnx-admin-kicker">REGISTRATION REVIEW</p><h3 id="tournament-entry-title">TOURNAMENT ENTRIES</h3></div></div><div id="tournament-entry-list" class="pnx-admin-tournament-list"></div></section>
+          <section id="tournament-match-panel" class="pnx-overview-panel pnx-tournament-secondary" hidden><div class="pnx-panel-top"><div><p class="pnx-admin-kicker">BRACKET & RESULTS</p><h3 id="tournament-match-title">TOURNAMENT MATCHES</h3></div></div>
+            <div id="tournament-match-list" class="pnx-admin-tournament-list"></div>
+            <form id="tournament-match-form" class="pnx-tournament-form-grid"><input type="hidden" id="match-id"><input type="hidden" id="match-tournament-id">
+              <label>ROUND<input id="match-round" type="number" min="1" max="16" value="1" required></label><label>MATCH NUMBER<input id="match-number" type="number" min="1" max="512" value="1" required></label>
+              <label>PARTICIPANT A<select id="match-a"><option value="">TBD</option></select></label><label>PARTICIPANT B<select id="match-b"><option value="">TBD</option></select></label>
+              <label>SCORE A<input id="match-score-a" type="number" min="0" max="999"></label><label>SCORE B<input id="match-score-b" type="number" min="0" max="999"></label>
+              <label>WINNER<select id="match-winner"><option value="">No winner yet</option></select></label><label>MATCH STATUS<select id="match-status"><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="completed">Completed</option></select></label>
+              <div class="pnx-tournament-wide form-actions"><button class="button" type="submit">SAVE MATCH / RESULT ↗</button><button class="button button-outline" id="match-clear" type="button">CLEAR MATCH</button></div>
+            </form>
+          </section>
+        </section>
+
+                <section id="updates-section" class="pnx-admin-section" hidden aria-labelledby="updates-title">
           <div class="pnx-section-heading pnx-team-section-heading">
             <div><p class="pnx-admin-kicker">03 / HOMEPAGE CONTENT</p><h2 id="updates-title">LATEST UPDATES</h2><p>Create, edit, publish and remove the news cards displayed in the homepage's LATEST UPDATES section.</p></div>
           </div>
@@ -199,5 +240,6 @@
 <script src="js/admin-dashboard.js" defer></script>
 <script src="js/admin-teams.js" defer></script>
 <script src="js/admin-media-link.js" defer></script>
+<script src="js/admin-tournaments.js" defer></script>
 </body>
 </html>
