@@ -36,8 +36,8 @@
       avatarChoice.hidden = true;
       return;
     }
-    avatarPreview.onerror = () => { avatarPreview.onerror = null; avatarPreview.src = `/assets/images/punix-avatar-${gender}.svg`; };
-    avatarPreview.src = `/assets/images/punix-avatar-${gender}.svg`;
+    avatarPreview.onerror = () => { avatarPreview.onerror = null; avatarPreview.src = '/assets/images/punix-logo-original.png'; };
+    avatarPreview.src = `/assets/images/punix-avatar-${gender}.png`;
     avatarPreview.alt = `PUNIX ${gender} default avatar`;
     avatarTitle.textContent = gender === 'male' ? 'PUNIX MALE AVATAR' : 'PUNIX FEMALE AVATAR';
     avatarDescription.textContent = 'This avatar will be used on your member profile. You can upload a different image later.';
@@ -110,7 +110,7 @@
         const displayName = nameInput.value.trim();
         const gender = genderInput.value;
         if (!['male', 'female'].includes(gender)) throw new Error('Please select your gender.');
-        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.svg' : '/assets/images/punix-avatar-male.svg', window.location.origin).href }, emailRedirectTo: `${window.location.origin}${window.location.pathname.replace(/auth\.html$/, 'auth.html')}` } });
+        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: `${window.location.origin}${window.location.pathname.replace(/auth\.html$/, 'auth.html')}` } });
         if (error) throw error;
         setMessage(data.session ? 'Account created. You are signed in.' : 'Account created. Check your email to confirm your address, then sign in.');
       } else {
