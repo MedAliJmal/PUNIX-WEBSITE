@@ -21,8 +21,9 @@
   }
 
   function openSection(name) {
-    currentSection = ['teams', 'updates'].includes(name) ? name : 'overview';
+    currentSection = ['members', 'teams', 'updates'].includes(name) ? name : 'overview';
     $('overview-section').hidden = currentSection !== 'overview';
+    $('members-section').hidden = currentSection !== 'members';
     $('teams-section').hidden = currentSection !== 'teams';
     $('updates-section').hidden = currentSection !== 'updates';
     document.querySelectorAll('.pnx-admin-nav-item').forEach((button) => {
@@ -30,9 +31,11 @@
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-current', active ? 'page' : 'false');
     });
-    if (currentSection === 'teams') history.replaceState(null, '', '#teams');
+    if (currentSection === 'members') history.replaceState(null, '', '#members');
+    else if (currentSection === 'teams') history.replaceState(null, '', '#teams');
     else if (currentSection === 'updates') history.replaceState(null, '', '#updates');
     else history.replaceState(null, '', '#overview');
+    if (currentSection === 'members') loadMembers();
     if (currentSection === 'updates') loadUpdates();
   }
 
@@ -72,6 +75,96 @@
       return;
     }
     target.innerHTML = data.map((team) => `<article class="pnx-recent-row"><div><strong>${escapeHtml(team.team_name)}</strong><small>${escapeHtml(team.game_name)} · ${escapeHtml(String(team.division || '').toUpperCase())}</small></div><span class="pnx-recent-status">${escapeHtml(String(team.status || '').toUpperCase())}</span></article>`).join('');
+  }
+
+  let cachedAccounts = [];
+
+  function renderMemberAccounts() {
+    const target = $('admin-member-list');
+    const search = ($('member-account-search')?.value || '').trim().toLowerCase();
+    const members = cachedAccounts.filter(member => [
+      member.display_name, member.email, member.user_id, member.bio,
+      member.membership_status, member.directory_division
+    ].some(value => String(value || '').toLowerCase().includes(search)));
+    $('member-search-count').textContent = `SHOWING ${members.length} OF ${cachedAccounts.length} ACCOUNTS`;
+    if (!members.length) {
+      target.innerHTML = '<p class="pnx-recent-empty">No accounts match your search.</p>';
+      return;
+    }
+    target.innerHTML = members.map(member => {
+      const status = member.membership_status || 'pending';
+      const division = member.directory_division === 'competitive' ? 'competitive' : 'creators';
+      const date = member.account_created_at ? new Date(member.account_created_at).toLocaleDateString() : '—';
+      const lastSeen = member.last_sign_in_at ? new Date(member.last_sign_in_at).toLocaleString() : 'Never signed in';
+      const actions = member.has_profile ? `
+        <label>ASSIGN DIVISION
+          <select data-member-division>
+            <option value="creators" ${division === 'creators' ? 'selected' : ''}>Creators / Streamers</option>
+            <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Players</option>
+          </select>
+        </label>
+        <div class="pnx-update-actions">
+          <button type="button" data-member-action="approved">${status === 'approved' ? 'SAVE DIVISION' : 'APPROVE'}</button>
+          <button type="button" data-member-action="rejected" class="delete">REJECT</button>
+          ${status !== 'pending' ? '<button type="button" data-member-action="pending">RETURN TO PENDING</button>' : ''}
+        </div>` : '<p class="pnx-account-no-profile">No PUNIX profile is linked to this auth account.</p>';
+      return `<article class="pnx-admin-member-card" data-member-id="${escapeHtml(member.user_id)}">
+        <div class="pnx-admin-member-info">
+          <span class="pnx-admin-member-status status-${escapeHtml(status)}">${escapeHtml(status.replace('_',' ').toUpperCase())}</span>
+          <h3>${escapeHtml(member.display_name || 'PUNIX Member')}</h3>
+          <p class="pnx-account-email">${escapeHtml(member.email || 'No email address')}</p>
+          <p>${escapeHtml(member.bio || 'No bio provided.')}</p>
+          <small>ACCOUNT CREATED ${escapeHtml(date)} · LAST SIGN-IN ${escapeHtml(lastSeen)}</small>
+          <small class="pnx-account-id">ID: ${escapeHtml(member.user_id)}</small>
+        </div>
+        <div class="pnx-admin-member-actions">${actions}</div>
+      </article>`;
+    }).join('');
+
+    target.querySelectorAll('[data-member-action]').forEach(button => button.addEventListener('click', async () => {
+      const card = button.closest('[data-member-id]');
+      const userId = card?.dataset.memberId;
+      const status = button.dataset.memberAction;
+      const division = card?.querySelector('[data-member-division]')?.value || 'creators';
+      if (!userId) return;
+      if (status === 'rejected' && !confirm('Reject this PUNIX membership request?')) return;
+      button.disabled = true;
+      $('member-review-message').textContent = 'Saving membership decision…';
+      const { error: reviewError } = await db.rpc('admin_review_member', {
+        p_user_id: userId,
+        p_status: status,
+        p_division: status === 'approved' ? division : null
+      });
+      if (reviewError) {
+        $('member-review-message').textContent = 'Could not update membership: ' + reviewError.message;
+        button.disabled = false;
+        return;
+      }
+      $('member-review-message').textContent = 'Membership updated successfully.';
+      await loadMembers();
+    }));
+  }
+
+  async function loadMembers() {
+    const target = $('admin-member-list');
+    const message = $('member-review-message');
+    target.innerHTML = '<p class="pnx-recent-empty">Loading all registered accounts…</p>';
+    message.textContent = 'Retrieving account directory…';
+    const { data, error } = await db.rpc('admin_list_accounts');
+    if (error) {
+      target.innerHTML = '<p class="pnx-recent-empty">Could not load accounts. Apply the latest member-approval SQL migration, including the admin account-list function.</p>';
+      message.textContent = 'Account directory unavailable: ' + error.message;
+      $('member-search-count').textContent = '—';
+      return;
+    }
+    cachedAccounts = data || [];
+    const counts = {
+      pending: cachedAccounts.filter(m => m.membership_status === 'pending').length,
+      approved: cachedAccounts.filter(m => m.membership_status === 'approved').length,
+      rejected: cachedAccounts.filter(m => m.membership_status === 'rejected').length
+    };
+    message.textContent = `${cachedAccounts.length} accounts · ${counts.pending} pending · ${counts.approved} approved · ${counts.rejected} rejected`;
+    renderMemberAccounts();
   }
 
   const updateFields = ['update-id','update-title','update-category','update-summary','update-date','update-order','update-image','update-link','update-link-label','update-published'];
@@ -149,7 +242,9 @@
       $('refresh-updates').addEventListener('click', loadUpdates);
       clearUpdateForm();
       $('refresh-stats').addEventListener('click', loadStats);
-      const initial = location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
+      $('refresh-members').addEventListener('click', loadMembers);
+      $('member-account-search').addEventListener('input', renderMemberAccounts);
+      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
       openSection(initial);
       await loadStats();
     } catch (error) {

@@ -101,3 +101,7 @@
 .directory-opt-in small { max-width:600px; color:#899496; font-size:10px; line-height:1.7; }
 .division-select-label { display:grid; gap:8px; max-width:330px; color:#9ca7a8; font-size:9px; font-weight:800; letter-spacing:1px; }
 .division-select-label select { width:100%; padding:12px 13px; color:#e9e9e5; background:#11171b; border:1px solid rgba(255,255,255,.13); font:500 12px Inter,sans-serif; }
+
+
+/* Admin-controlled membership information */
+.membership-help{margin:14px 0 2px;color:#929fa1;font-size:11px;line-height:1.7}

@@ -58,8 +58,9 @@
       <aside class="pnx-admin-sidebar" aria-label="Admin sections">
         <p class="pnx-sidebar-label">CONTROL PANEL</p>
         <button class="pnx-admin-nav-item is-active" type="button" data-section="overview"><span>01</span> Overview</button>
-        <button class="pnx-admin-nav-item" type="button" data-section="teams"><span>02</span> Team Management</button>
-        <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>03</span> Latest Updates</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="members"><span>02</span> Member Approval</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="teams"><span>03</span> Team Management</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>04</span> Latest Updates</button>
         <div class="pnx-sidebar-foot"><span class="pnx-sidebar-mark">P</span><small>CREATE. BUILD.<br>COMPETE. CONQUER.</small></div>
       </aside>
 
@@ -88,6 +89,20 @@
             </section>
           </div>
           <p class="pnx-admin-footnote">Administrative data is visible only to verified PUNIX administrators. Public pages continue to use the existing published views.</p>
+        </section>
+
+        <section id="members-section" class="pnx-admin-section" hidden aria-labelledby="members-title">
+          <div class="pnx-section-heading pnx-team-section-heading">
+            <div><p class="pnx-admin-kicker">02 / COMMUNITY & MEMBERSHIP</p><h2 id="members-title">MEMBER APPROVAL</h2><p>Review new PUNIX accounts, approve official members and assign their division. Only approved members can appear in the public directory.</p></div>
+            <button class="pnx-refresh-btn" id="refresh-members" type="button">↻ REFRESH MEMBERS</button>
+          </div>
+          <div class="pnx-account-search">
+            <label for="member-account-search">SEARCH ALL REGISTERED ACCOUNTS</label>
+            <input id="member-account-search" type="search" placeholder="Search username, email or account ID…" autocomplete="off">
+            <span id="member-search-count">—</span>
+          </div>
+          <p id="member-review-message" class="pnx-member-review-message" role="status">Loading member accounts…</p>
+          <div id="admin-member-list" class="pnx-admin-member-list"></div>
         </section>
 
         <section id="teams-section" class="pnx-admin-section" hidden aria-labelledby="teams-title">

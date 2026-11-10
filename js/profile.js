@@ -16,13 +16,7 @@
   }
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
-  const fields = ['display_name','avatar_url','bio','twitch_url','kick_url','youtube_url','tiktok_url','is_public','directory_division'];
-  const ids = {
-    display_name: 'display-name', avatar_url: 'avatar-url', bio: 'bio',
-    twitch_url: 'twitch-url', kick_url: 'kick-url',
-    youtube_url: 'youtube-url', tiktok_url: 'tiktok-url',
-    is_public: 'is-public', directory_division: 'directory-division'
-  };
+  const fields = ['display_name','avatar_url','bio','twitch_url','kick_url','youtube_url','tiktok_url'];
   let currentUser = null;
   let savedProfile = {};
 
@@ -41,19 +35,17 @@
     return parsed.href;
   }
 
+  const fieldIds = {
+    display_name: 'display-name', avatar_url: 'avatar-url', bio: 'bio',
+    twitch_url: 'twitch-url', kick_url: 'kick-url',
+    youtube_url: 'youtube-url', tiktok_url: 'tiktok-url'
+  };
   function readForm() {
-    return Object.fromEntries(fields.map(field => [
-      field,
-      field === 'is_public' ? byId(ids[field]).checked :
-      byId(ids[field]).value.trim()
-    ]));
+    return Object.fromEntries(fields.map(field => [field, byId(fieldIds[field]).value.trim()]));
   }
 
   function fillForm(profile) {
-    fields.forEach(field => {
-      if (field === 'is_public') byId(ids[field]).checked = Boolean(profile[field]);
-      else byId(ids[field]).value = profile[field] || (field === 'directory_division' ? 'creators' : '');
-    });
+    fields.forEach(field => { byId(fieldIds[field]).value = profile[field] || ''; });
   }
 
   function setLink(platform, value) {
@@ -77,8 +69,14 @@
     byId('view-display-name').textContent = name;
     byId('preview-bio').textContent = profile.bio || 'No bio added yet.';
     byId('view-bio').textContent = profile.bio || 'No bio added yet.';
-    byId('view-directory-visibility').textContent = profile.is_public ? 'Listed publicly' : 'Not listed';
-    byId('view-directory-division').textContent = profile.directory_division === 'competitive' ? 'Competitive Players' : 'Creators / Streamers';
+    const status = profile.membership_status || 'pending';
+    byId('view-membership-status').textContent = status === 'approved' ? 'Approved' : status === 'rejected' ? 'Not approved' : 'Pending review';
+    byId('view-directory-visibility').textContent = status === 'approved' && profile.is_public ? 'Listed publicly' : 'Not listed';
+    byId('view-directory-division').textContent = status === 'approved'
+      ? (profile.directory_division === 'competitive' ? 'Competitive Players' : 'Creators / Streamers')
+      : 'Assigned after approval';
+    const statusBadge = document.querySelector('.profile-heading .member-status');
+    if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
     byId('avatar-fallback').textContent = name.charAt(0).toUpperCase();
 
     const avatar = profile.avatar_url || '';
@@ -140,12 +138,12 @@
     currentUser = session.user;
 
     const { data, error } = await client.from('profiles')
-      .select(fields.join(',') + ',created_at')
+      .select(fields.join(',') + ',created_at,is_public,directory_division,membership_status')
       .eq('id', currentUser.id)
       .single();
     if (error) throw error;
 
-    savedProfile = Object.fromEntries(fields.map(field => [field, data[field] || '']));
+    savedProfile = { ...data };
     fillForm(savedProfile);
     renderProfile(savedProfile);
     byId('member-since').textContent = data.created_at
@@ -177,8 +175,6 @@
         kick_url: validOptionalUrl(values.kick_url, 'Kick URL'),
         youtube_url: validOptionalUrl(values.youtube_url, 'YouTube URL'),
         tiktok_url: validOptionalUrl(values.tiktok_url, 'TikTok URL'),
-        is_public: values.is_public,
-        directory_division: values.directory_division === 'competitive' ? 'competitive' : 'creators',
         updated_at: new Date().toISOString()
       };
       if (!payload.display_name) throw new Error('Please enter a display name.');
@@ -186,7 +182,7 @@
       const { error } = await client.from('profiles').update(payload).eq('id', currentUser.id);
       if (error) throw error;
 
-      savedProfile = Object.fromEntries(fields.map(field => [field, payload[field]]));
+      savedProfile = { ...savedProfile, ...payload };
       renderProfile(savedProfile);
       leaveEditMode();
       setMessage('Profile saved successfully.');

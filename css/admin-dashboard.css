@@ -71,3 +71,33 @@
 .pnx-update-form-grid textarea{resize:vertical}.pnx-update-wide{grid-column:1/-1}.pnx-update-publish{display:flex!important;align-items:center;gap:9px!important;letter-spacing:.5px!important}.pnx-update-publish input{accent-color:#35c4bd}.pnx-update-message{min-height:18px;margin:12px 0 0;color:#79d0c8;font:500 10px/1.5 Inter,Arial,sans-serif}.pnx-admin-updates-list{display:grid;gap:9px}.pnx-admin-update-row{padding:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);display:grid;gap:9px}.pnx-admin-update-top{display:flex;justify-content:space-between;gap:10px}.pnx-admin-update-row strong{color:#e9e9e2;font:800 18px/1.05 var(--font-display,Impact,sans-serif)}.pnx-admin-update-row small{color:#899799;font:700 8px/1.5 Inter,Arial,sans-serif;letter-spacing:.7px}.pnx-admin-update-row p{margin:0;color:#9aa5a6;font:400 10px/1.6 Inter,Arial,sans-serif}.pnx-update-status{color:#75d0c6;font:800 8px/1 Inter,Arial,sans-serif;white-space:nowrap}.pnx-update-status.is-draft{color:#d8b66e}.pnx-update-actions{display:flex;gap:8px;flex-wrap:wrap}.pnx-update-actions button{padding:7px 10px;border:1px solid rgba(255,255,255,.13);background:transparent;color:#d7c18e;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:.7px;cursor:pointer}.pnx-update-actions button.delete{color:#e38b83}.pnx-update-actions button:hover{background:rgba(255,255,255,.06)}
 @media(max-width:1120px){.pnx-updates-layout{grid-template-columns:1fr}}
 @media(max-width:560px){.pnx-update-form-grid{grid-template-columns:1fr}.pnx-update-wide{grid-column:auto}}
+
+
+/* Member approval queue */
+.pnx-member-review-message{min-height:18px;margin:0 0 14px;color:#8fcfc9;font:600 10px/1.6 Inter,Arial,sans-serif}
+.pnx-admin-member-list{display:grid;gap:11px}
+.pnx-admin-member-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,.55fr);gap:20px;padding:19px;background:linear-gradient(145deg,#12191c,#0c1013);border:1px solid rgba(255,255,255,.09)}
+.pnx-admin-member-info{min-width:0}
+.pnx-admin-member-info h3{margin:9px 0 6px;color:#f0efe8;font:800 25px/1 var(--font-display,Impact,sans-serif);overflow-wrap:anywhere}
+.pnx-admin-member-info p{margin:0 0 10px;color:#9da7a8;font:400 11px/1.6 Inter,Arial,sans-serif;overflow-wrap:anywhere}
+.pnx-admin-member-info small{color:#657477;font:800 8px/1.5 Inter,Arial,sans-serif;letter-spacing:1px}
+.pnx-admin-member-status{display:inline-block;padding:6px 8px;border:1px solid rgba(216,182,110,.3);color:#d8b66e;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:1px}
+.pnx-admin-member-status.status-approved{border-color:rgba(53,196,189,.3);color:#79d4ca}
+.pnx-admin-member-status.status-rejected{border-color:rgba(227,139,131,.3);color:#e38b83}
+.pnx-admin-member-actions{display:grid;align-content:center;gap:12px}
+.pnx-admin-member-actions label{display:grid;gap:7px;color:#9ca9aa;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:1px}
+.pnx-admin-member-actions select{width:100%;padding:11px;background:#090e11;border:1px solid rgba(255,255,255,.13);color:#edf0eb;font:500 11px Inter,Arial,sans-serif}
+.pnx-admin-member-actions button:disabled{opacity:.5;cursor:wait}
+@media(max-width:720px){.pnx-admin-member-card{grid-template-columns:1fr}.pnx-admin-member-actions{border-top:1px solid rgba(255,255,255,.08);padding-top:14px}}
+
+
+/* Searchable all-account directory */
+.pnx-account-search{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 14px;align-items:center;margin:4px 0 15px;padding:15px;background:#101619;border:1px solid rgba(255,255,255,.09)}
+.pnx-account-search label{grid-column:1/-1;color:#8c999b;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:1.1px}
+.pnx-account-search input{width:100%;min-width:0;padding:13px 14px;background:#080d10;border:1px solid rgba(255,255,255,.14);color:#f0efe8;font:500 11px Inter,Arial,sans-serif;outline:none}
+.pnx-account-search input:focus{border-color:rgba(53,196,189,.7)}
+.pnx-account-search>span{color:#7bd4ce;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:.7px;white-space:nowrap}
+.pnx-account-email{color:#d8b66e!important;overflow-wrap:anywhere}
+.pnx-account-id{display:block;margin-top:5px;color:#667477!important;font:500 8px/1.5 monospace!important;letter-spacing:0!important;overflow-wrap:anywhere}
+.pnx-account-no-profile{margin:0;color:#d8b66e;font:500 10px/1.6 Inter,Arial,sans-serif}
+@media(max-width:560px){.pnx-account-search{grid-template-columns:1fr}.pnx-account-search label{grid-column:auto}.pnx-account-search>span{white-space:normal}}
