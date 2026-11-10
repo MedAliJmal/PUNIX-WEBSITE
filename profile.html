@@ -76,6 +76,7 @@
           <div class="detail-group">
             <p class="detail-heading">PERSONAL INFORMATION</p>
             <div class="detail-row"><span>DISPLAY NAME</span><strong id="view-display-name">—</strong></div>
+            <div class="detail-row"><span>GENDER</span><strong id="view-gender">Not set</strong></div>
             <div class="detail-row detail-bio"><span>ABOUT ME</span><p id="view-bio">No bio added yet.</p></div>
           </div>
           <div class="detail-group">
@@ -100,8 +101,9 @@
         <form id="profile-form" hidden>
           <div class="edit-mode-heading"><span class="edit-mode-indicator"></span> EDITING YOUR PROFILE</div>
           <div class="form-row">
-            <label>DISPLAY NAME<input id="display-name" name="display_name" type="text" maxlength="60" required placeholder="Your creator name"></label>
-            <label>AVATAR IMAGE URL<input id="avatar-url" name="avatar_url" type="url" maxlength="500" placeholder="https://…"></label>
+            <div class="form-row"><label>DISPLAY NAME<input id="display-name" name="display_name" type="text" maxlength="60" required placeholder="Your creator name"></label>
+            <label>GENDER<select id="gender" name="gender" required><option value="" disabled>Select your gender</option><option value="male">Male</option><option value="female">Female</option></select></label></div>
+          <div class="form-row"><label>AVATAR IMAGE URL<input id="avatar-url" name="avatar_url" type="url" maxlength="500" placeholder="https://…"></label>
           </div>
           <label>YOUR BIO <span class="field-note">MAX 300 CHARACTERS</span><textarea id="bio" name="bio" maxlength="300" rows="4" placeholder="Tell the PUNIX community who you are and what you create…"></textarea></label>
           <div class="directory-preferences">
