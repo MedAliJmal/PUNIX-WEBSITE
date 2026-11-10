@@ -65,6 +65,7 @@
       <form id="auth-form">
         <label id="name-label">DISPLAY NAME<input id="display-name" name="display-name" type="text" maxlength="60" autocomplete="nickname" placeholder="Your creator name" required></label>
         <label id="gender-label">GENDER<select id="gender" name="gender" required><option value="" selected disabled>Select your gender</option><option value="male">Male</option><option value="female">Female</option></select></label>
+        <div class="auth-avatar-choice" id="auth-avatar-choice" hidden><img id="auth-avatar-preview" src="assets/images/punix-avatar-male.svg" alt="Your default PUNIX avatar"><div><strong id="auth-avatar-title">YOUR PUNIX AVATAR</strong><span id="auth-avatar-description">A gold-and-black member avatar selected for your gender. You can change your profile image later.</span></div></div>
         <label>EMAIL ADDRESS<input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
         <label>PASSWORD<input id="password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required></label>
         <div class="auth-human"><span class="auth-human-label">HUMAN VERIFICATION</span><div id="turnstile-container"></div><p class="auth-human-help">Complete the security check to continue.</p></div>
