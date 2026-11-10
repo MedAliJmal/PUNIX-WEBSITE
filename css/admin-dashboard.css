@@ -111,3 +111,15 @@
 .pnx-membership-filters button[aria-pressed="true"]{border-color:rgba(53,196,189,.55);background:rgba(53,196,189,.09);color:#8ce0d8}
 .pnx-membership-filters button[aria-pressed="true"] span{background:rgba(53,196,189,.16);color:#8ce0d8}
 @media(max-width:560px){.pnx-membership-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.pnx-membership-filters button{justify-content:space-between;min-width:0;padding:10px 8px;font-size:7px}}
+
+
+/* Applicant avatar review — visible to administrators in the approval queue */
+.pnx-admin-member-card{grid-template-columns:minmax(105px,.28fr) minmax(0,1fr) minmax(220px,.55fr);align-items:start}
+.pnx-admin-avatar-review{display:grid;align-content:start;gap:8px;min-width:0}
+.pnx-admin-avatar-review img{display:block;width:100%;aspect-ratio:1/1;max-height:150px;object-fit:cover;background:#080d10;border:1px solid rgba(255,255,255,.13)}
+.pnx-admin-avatar-review a{color:#7bd4ce;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:.7px;text-decoration:none}
+.pnx-admin-avatar-review a:hover{text-decoration:underline}
+.pnx-admin-avatar-review.is-empty,.pnx-admin-avatar-review.is-broken{min-height:105px;display:grid;place-items:center;padding:12px;border:1px dashed rgba(255,255,255,.15);color:#748083;text-align:center;font:800 8px/1.5 Inter,Arial,sans-serif;letter-spacing:.8px}
+.pnx-admin-avatar-review.is-broken img{display:none}
+@media(max-width:900px){.pnx-admin-member-card{grid-template-columns:100px minmax(0,1fr)}.pnx-admin-member-actions{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.08);padding-top:14px}}
+@media(max-width:720px){.pnx-admin-member-card{grid-template-columns:1fr}.pnx-admin-avatar-review{max-width:145px}.pnx-admin-member-actions{grid-column:auto}}
