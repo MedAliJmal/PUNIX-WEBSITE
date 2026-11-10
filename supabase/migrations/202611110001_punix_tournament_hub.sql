@@ -68,9 +68,9 @@ grant execute on function private.is_team_captain(uuid,uuid,text) to authenticat
 -- Backward-compatible two-argument helper for policies created by earlier SQL copies.
 create or replace function private.is_team_captain(p_team_id uuid,p_game_name text)
 returns boolean language sql stable security definer set search_path=''
-as $
+as $$
  select private.is_team_captain(p_team_id,(select auth.uid()),p_game_name);
-$;
+$$;
 revoke all on function private.is_team_captain(uuid,text) from public,anon;
 grant execute on function private.is_team_captain(uuid,text) to authenticated;
 
