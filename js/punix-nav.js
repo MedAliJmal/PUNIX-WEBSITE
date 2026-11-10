@@ -30,7 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
   showAdminLinks(false);
 
   const config = window.PUNIX_SUPABASE_CONFIG;
-  if (!window.supabase || !config?.url || !config?.publishableKey) return;
+  if (!window.supabase || !config?.url || !config?.publishableKey) {
+    if (guestRegisterLink) guestRegisterLink.hidden = false;
+    return;
+  }
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
   const renderMemberLink = (signedIn) => {
