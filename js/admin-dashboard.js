@@ -21,8 +21,9 @@
   }
 
   function openSection(name) {
-    currentSection = ['teams', 'updates'].includes(name) ? name : 'overview';
+    currentSection = ['members', 'teams', 'updates'].includes(name) ? name : 'overview';
     $('overview-section').hidden = currentSection !== 'overview';
+    $('members-section').hidden = currentSection !== 'members';
     $('teams-section').hidden = currentSection !== 'teams';
     $('updates-section').hidden = currentSection !== 'updates';
     document.querySelectorAll('.pnx-admin-nav-item').forEach((button) => {
@@ -30,9 +31,11 @@
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-current', active ? 'page' : 'false');
     });
-    if (currentSection === 'teams') history.replaceState(null, '', '#teams');
+    if (currentSection === 'members') history.replaceState(null, '', '#members');
+    else if (currentSection === 'teams') history.replaceState(null, '', '#teams');
     else if (currentSection === 'updates') history.replaceState(null, '', '#updates');
     else history.replaceState(null, '', '#overview');
+    if (currentSection === 'members') loadMembers();
     if (currentSection === 'updates') loadUpdates();
   }
 
@@ -72,6 +75,81 @@
       return;
     }
     target.innerHTML = data.map((team) => `<article class="pnx-recent-row"><div><strong>${escapeHtml(team.team_name)}</strong><small>${escapeHtml(team.game_name)} · ${escapeHtml(String(team.division || '').toUpperCase())}</small></div><span class="pnx-recent-status">${escapeHtml(String(team.status || '').toUpperCase())}</span></article>`).join('');
+  }
+
+  async function loadMembers() {
+    const target = $('admin-member-list');
+    const message = $('member-review-message');
+    target.innerHTML = '<p class="pnx-recent-empty">Loading member accounts…</p>';
+    message.textContent = 'Review membership requests and assign divisions.';
+    const { data, error } = await db.from('profiles')
+      .select('id,display_name,bio,avatar_url,membership_status,directory_division,created_at')
+      .order('created_at', { ascending: false });
+    if (error) {
+      target.innerHTML = '<p class="pnx-recent-empty">Could not load member accounts. Confirm that the member-approval SQL migration has been applied.</p>';
+      message.textContent = 'Member list unavailable: ' + error.message;
+      return;
+    }
+    const members = [...(data || [])].sort((a,b) => {
+      const order = { pending: 0, rejected: 1, approved: 2 };
+      return (order[a.membership_status] ?? 3) - (order[b.membership_status] ?? 3);
+    });
+    if (!members.length) {
+      target.innerHTML = '<p class="pnx-recent-empty">No member accounts have registered yet.</p>';
+      message.textContent = 'No accounts to review.';
+      return;
+    }
+    message.textContent = members.filter(m => m.membership_status === 'pending').length + ' pending · ' +
+      members.filter(m => m.membership_status === 'approved').length + ' approved · ' +
+      members.filter(m => m.membership_status === 'rejected').length + ' rejected';
+    target.innerHTML = members.map(member => {
+      const status = member.membership_status || 'pending';
+      const division = member.directory_division === 'competitive' ? 'competitive' : 'creators';
+      const date = member.created_at ? new Date(member.created_at).toLocaleDateString() : '—';
+      return `<article class="pnx-admin-member-card" data-member-id="${escapeHtml(member.id)}">
+        <div class="pnx-admin-member-info">
+          <span class="pnx-admin-member-status status-${escapeHtml(status)}">${escapeHtml(status.toUpperCase())}</span>
+          <h3>${escapeHtml(member.display_name || 'PUNIX Member')}</h3>
+          <p>${escapeHtml(member.bio || 'No bio provided.')}</p>
+          <small>REGISTERED ${escapeHtml(date)}</small>
+        </div>
+        <div class="pnx-admin-member-actions">
+          <label>ASSIGN DIVISION
+            <select data-member-division>
+              <option value="creators" ${division === 'creators' ? 'selected' : ''}>Creators / Streamers</option>
+              <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Players</option>
+            </select>
+          </label>
+          <div class="pnx-update-actions">
+            <button type="button" data-member-action="approved">${status === 'approved' ? 'SAVE DIVISION' : 'APPROVE'}</button>
+            <button type="button" data-member-action="rejected" class="delete">REJECT</button>
+            ${status !== 'pending' ? '<button type="button" data-member-action="pending">RETURN TO PENDING</button>' : ''}
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+    target.querySelectorAll('[data-member-action]').forEach(button => button.addEventListener('click', async () => {
+      const card = button.closest('[data-member-id]');
+      const userId = card?.dataset.memberId;
+      const status = button.dataset.memberAction;
+      const division = card?.querySelector('[data-member-division]')?.value || 'creators';
+      if (!userId) return;
+      if (status === 'rejected' && !confirm('Reject this PUNIX membership request?')) return;
+      button.disabled = true;
+      message.textContent = 'Saving membership decision…';
+      const { error: reviewError } = await db.rpc('admin_review_member', {
+        p_user_id: userId,
+        p_status: status,
+        p_division: status === 'approved' ? division : null
+      });
+      if (reviewError) {
+        message.textContent = 'Could not update membership: ' + reviewError.message;
+        button.disabled = false;
+        return;
+      }
+      message.textContent = 'Membership updated successfully.';
+      await loadMembers();
+    }));
   }
 
   const updateFields = ['update-id','update-title','update-category','update-summary','update-date','update-order','update-image','update-link','update-link-label','update-published'];
@@ -149,7 +227,8 @@
       $('refresh-updates').addEventListener('click', loadUpdates);
       clearUpdateForm();
       $('refresh-stats').addEventListener('click', loadStats);
-      const initial = location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
+      $('refresh-members').addEventListener('click', loadMembers);
+      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
       openSection(initial);
       await loadStats();
     } catch (error) {
