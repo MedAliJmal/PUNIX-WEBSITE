@@ -21,11 +21,12 @@
   }
 
   function openSection(name) {
-    currentSection = ['members', 'teams', 'updates'].includes(name) ? name : 'overview';
+    currentSection = ['members', 'teams', 'updates', 'tournaments'].includes(name) ? name : 'overview';
     $('overview-section').hidden = currentSection !== 'overview';
     $('members-section').hidden = currentSection !== 'members';
     $('teams-section').hidden = currentSection !== 'teams';
     $('updates-section').hidden = currentSection !== 'updates';
+    $('tournaments-section').hidden = currentSection !== 'tournaments';
     document.querySelectorAll('.pnx-admin-nav-item').forEach((button) => {
       const active = button.dataset.section === currentSection;
       button.classList.toggle('is-active', active);
@@ -34,9 +35,11 @@
     if (currentSection === 'members') history.replaceState(null, '', '#members');
     else if (currentSection === 'teams') history.replaceState(null, '', '#teams');
     else if (currentSection === 'updates') history.replaceState(null, '', '#updates');
+    else if (currentSection === 'tournaments') history.replaceState(null, '', '#tournaments');
     else history.replaceState(null, '', '#overview');
     if (currentSection === 'members') loadMembers();
     if (currentSection === 'updates') loadUpdates();
+    if (currentSection === 'tournaments') window.loadPunixTournamentsAdmin?.();
   }
 
   async function countRows(table, filters = []) {
@@ -289,7 +292,7 @@
           renderMemberAccounts();
         });
       });
-      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
+      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : 'overview';
       openSection(initial);
       await loadStats();
     } catch (error) {
