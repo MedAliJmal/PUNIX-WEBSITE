@@ -17,6 +17,8 @@
   let mode = 'signup'; let captchaToken = ''; let widgetId = null;
   const nameInput = document.querySelector('#display-name');
   const nameLabel = document.querySelector('#name-label');
+  const genderInput = document.querySelector('#gender');
+  const genderLabel = document.querySelector('#gender-label');
   const emailInput = document.querySelector('#email');
   const password = document.querySelector('#password');
   const title = document.querySelector('#auth-title');
@@ -35,6 +37,8 @@
     document.querySelectorAll('[data-mode]').forEach(button => button.classList.toggle('active', button.dataset.mode === mode));
     nameLabel.hidden = !signingUp;
     nameInput.required = signingUp;
+    genderLabel.hidden = !signingUp;
+    genderInput.required = signingUp;
     password.closest('label').hidden = mode === 'forgot';
     password.required = mode !== 'forgot';
     emailInput.required = true;
@@ -83,7 +87,9 @@
       } else if (mode === 'signup') {
         setMessage('Creating your account…');
         const displayName = nameInput.value.trim();
-        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName }, emailRedirectTo: `${window.location.origin}${window.location.pathname.replace(/auth\.html$/, 'auth.html')}` } });
+        const gender = genderInput.value;
+        if (!['male', 'female'].includes(gender)) throw new Error('Please select your gender.');
+        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender }, emailRedirectTo: `${window.location.origin}${window.location.pathname.replace(/auth\.html$/, 'auth.html')}` } });
         if (error) throw error;
         setMessage(data.session ? 'Account created. You are signed in.' : 'Account created. Check your email to confirm your address, then sign in.');
       } else {
