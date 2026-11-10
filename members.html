@@ -74,8 +74,9 @@
 
         <div class="directory-toolbar">
           <div class="directory-tabs" role="group" aria-label="Filter members by division">
-            <button class="directory-tab active" type="button" data-filter="all" aria-pressed="true">ALL DIVISIONS <span>03</span></button>
-            <button class="directory-tab" type="button" data-filter="creators" aria-pressed="false">CREATORS</button>
+            <button class="directory-tab active" type="button" data-filter="all" aria-pressed="true">ALL DIVISIONS <span>04</span></button>
+            <button class="directory-tab" type="button" data-filter="community" aria-pressed="false">COMMUNITY</button>
+            <button class="directory-tab" type="button" data-filter="creators" aria-pressed="false">STREAMERS</button>
             <button class="directory-tab" type="button" data-filter="competitive" aria-pressed="false">COMPETITIVE</button>
             <button class="directory-tab" type="button" data-filter="management" aria-pressed="false">MANAGEMENT</button>
           </div>
@@ -88,9 +89,22 @@
         <p id="directory-status" class="directory-note"><span></span> LOADING PUBLIC PUNIX ROSTER</p>
 
         <div class="division-list">
-          <section class="division-block" data-division="creators">
+          <section class="division-block" data-division="community">
             <div class="division-heading">
               <div class="division-number">01</div>
+              <div><span>THE PUNIX COMMUNITY</span><h3>COMMUNITY <em> / MEMBERS</em></h3></div>
+              <p>Supporters, contributors and members who are part of the PUNIX network.</p>
+              <b class="division-count">ROSTER OPENING SOON</b>
+            </div>
+            <div class="member-empty-card">
+              <div class="empty-emblem">✳</div>
+              <div><span>COMMUNITY MEMBERS</span><strong>EVERY JOURNEY STARTS SOMEWHERE.</strong><p>Approved public community member profiles will appear here.</p></div>
+              <a href="auth.html">JOIN THE COMMUNITY <span>↗</span></a>
+            </div>
+          </section>
+          <section class="division-block" data-division="creators">
+            <div class="division-heading">
+              <div class="division-number">02</div>
               <div><span>THE CREATOR NETWORK</span><h3>CREATORS <em> / STREAMERS</em></h3></div>
               <p>Voices, personalities and storytellers shaping the culture.</p>
               <b class="division-count">ROSTER OPENING SOON</b>
@@ -104,7 +118,7 @@
 
           <section class="division-block" data-division="competitive">
             <div class="division-heading">
-              <div class="division-number">02</div>
+              <div class="division-number">03</div>
               <div><span>THE COMPETITIVE SIDE</span><h3>COMPETITIVE <em> / PLAYERS</em></h3></div>
               <p>Players representing PUNIX with discipline and ambition.</p>
               <b class="division-count">ROSTER OPENING SOON</b>
@@ -118,7 +132,7 @@
 
           <section class="division-block" data-division="management">
             <div class="division-heading">
-              <div class="division-number">03</div>
+              <div class="division-number">04</div>
               <div><span>THE PEOPLE BEHIND PUNIX</span><h3>MANAGEMENT <em> / OPERATIONS</em></h3></div>
               <p>The people coordinating, supporting and moving the organization forward.</p>
               <b class="division-count">ROSTER OPENING SOON</b>
