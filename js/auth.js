@@ -56,7 +56,9 @@
     nameLabel.hidden = !signingUp;
     nameInput.required = signingUp;
     genderLabel.hidden = !signingUp;
-    genderInput.required = signingUp;\n    avatarChoice.hidden = !signingUp;\n    updateGenderAvatar();
+    genderInput.required = signingUp;
+    avatarChoice.hidden = !signingUp;
+    updateGenderAvatar();
     password.closest('label').hidden = mode === 'forgot';
     password.required = mode !== 'forgot';
     emailInput.required = true;
