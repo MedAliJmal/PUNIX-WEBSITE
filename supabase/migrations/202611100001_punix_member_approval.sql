@@ -58,12 +58,12 @@ begin
       using errcode = '42501';
   end if;
 
-  if p_status not in ('approved', 'rejected', 'pending') then
+  if p_status is null or p_status not in ('approved', 'rejected', 'pending') then
     raise exception 'Invalid membership status'
       using errcode = '22023';
   end if;
 
-  if p_status = 'approved' and p_division not in ('creators', 'competitive') then
+  if p_status = 'approved' and (p_division is null or p_division not in ('creators', 'competitive')) then
     raise exception 'Choose a valid division when approving a member'
       using errcode = '22023';
   end if;
