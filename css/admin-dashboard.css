@@ -101,3 +101,25 @@
 .pnx-account-id{display:block;margin-top:5px;color:#667477!important;font:500 8px/1.5 monospace!important;letter-spacing:0!important;overflow-wrap:anywhere}
 .pnx-account-no-profile{margin:0;color:#d8b66e;font:500 10px/1.6 Inter,Arial,sans-serif}
 @media(max-width:560px){.pnx-account-search{grid-template-columns:1fr}.pnx-account-search label{grid-column:auto}.pnx-account-search>span{white-space:normal}}
+
+
+/* Membership status filters */
+.pnx-membership-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 15px}
+.pnx-membership-filters button{display:inline-flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);background:#101619;color:#9da7a8;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:.8px;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.pnx-membership-filters button span{display:grid;place-items:center;min-width:19px;height:19px;padding:0 5px;background:rgba(255,255,255,.07);color:#d8b66e;font:800 9px/1 Inter,Arial,sans-serif}
+.pnx-membership-filters button:hover{border-color:rgba(53,196,189,.4);color:#dce5e2}
+.pnx-membership-filters button[aria-pressed="true"]{border-color:rgba(53,196,189,.55);background:rgba(53,196,189,.09);color:#8ce0d8}
+.pnx-membership-filters button[aria-pressed="true"] span{background:rgba(53,196,189,.16);color:#8ce0d8}
+@media(max-width:560px){.pnx-membership-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.pnx-membership-filters button{justify-content:space-between;min-width:0;padding:10px 8px;font-size:7px}}
+
+
+/* Applicant avatar review — visible to administrators in the approval queue */
+.pnx-admin-member-card{grid-template-columns:minmax(105px,.28fr) minmax(0,1fr) minmax(220px,.55fr);align-items:start}
+.pnx-admin-avatar-review{display:grid;align-content:start;gap:8px;min-width:0}
+.pnx-admin-avatar-review img{display:block;width:100%;aspect-ratio:1/1;max-height:150px;object-fit:cover;background:#080d10;border:1px solid rgba(255,255,255,.13)}
+.pnx-admin-avatar-review a{color:#7bd4ce;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:.7px;text-decoration:none}
+.pnx-admin-avatar-review a:hover{text-decoration:underline}
+.pnx-admin-avatar-review.is-empty,.pnx-admin-avatar-review.is-broken{min-height:105px;display:grid;place-items:center;padding:12px;border:1px dashed rgba(255,255,255,.15);color:#748083;text-align:center;font:800 8px/1.5 Inter,Arial,sans-serif;letter-spacing:.8px}
+.pnx-admin-avatar-review.is-broken img{display:none}
+@media(max-width:900px){.pnx-admin-member-card{grid-template-columns:100px minmax(0,1fr)}.pnx-admin-member-actions{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.08);padding-top:14px}}
+@media(max-width:720px){.pnx-admin-member-card{grid-template-columns:1fr}.pnx-admin-avatar-review{max-width:145px}.pnx-admin-member-actions{grid-column:auto}}

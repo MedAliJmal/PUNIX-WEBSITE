@@ -78,29 +78,62 @@
   }
 
   let cachedAccounts = [];
+  let activeMembershipFilter = 'all';
 
   function renderMemberAccounts() {
     const target = $('admin-member-list');
     const search = ($('member-account-search')?.value || '').trim().toLowerCase();
-    const members = cachedAccounts.filter(member => [
-      member.display_name, member.email, member.user_id, member.bio,
-      member.membership_status, member.directory_division
-    ].some(value => String(value || '').toLowerCase().includes(search)));
+    const profileAccounts = cachedAccounts.filter(member => member.has_profile);
+    const counts = {
+      all: cachedAccounts.length,
+      pending: profileAccounts.filter(member => (member.membership_status || 'pending') === 'pending').length,
+      approved: profileAccounts.filter(member => member.membership_status === 'approved').length,
+      rejected: profileAccounts.filter(member => member.membership_status === 'rejected').length
+    };
+    document.querySelectorAll('[data-membership-filter]').forEach(button => {
+      const filter = button.dataset.membershipFilter;
+      button.setAttribute('aria-pressed', String(filter === activeMembershipFilter));
+      const count = button.querySelector('[data-filter-count]');
+      if (count) count.textContent = counts[filter] ?? 0;
+    });
+    const members = cachedAccounts.filter(member => {
+      const status = member.has_profile ? (member.membership_status || 'pending') : 'no_profile';
+      const matchesStatus = activeMembershipFilter === 'all' || status === activeMembershipFilter;
+      const matchesSearch = [
+        member.display_name, member.email, member.user_id, member.bio,
+        member.membership_status, member.directory_division
+      ].some(value => String(value || '').toLowerCase().includes(search));
+      return matchesStatus && matchesSearch;
+    });
     $('member-search-count').textContent = `SHOWING ${members.length} OF ${cachedAccounts.length} ACCOUNTS`;
     if (!members.length) {
-      target.innerHTML = '<p class="pnx-recent-empty">No accounts match your search.</p>';
+      const emptyMessage = activeMembershipFilter === 'pending'
+        ? 'No pending applications right now.'
+        : activeMembershipFilter === 'all'
+          ? 'No accounts match your search.'
+          : `No ${activeMembershipFilter} accounts match your search.`;
+      target.innerHTML = `<p class="pnx-recent-empty">${emptyMessage}</p>`;
       return;
     }
     target.innerHTML = members.map(member => {
       const status = member.membership_status || 'pending';
-      const division = member.directory_division === 'competitive' ? 'competitive' : 'creators';
+      const division = ['community', 'creators', 'competitive'].includes(member.directory_division) ? member.directory_division : 'community';
       const date = member.account_created_at ? new Date(member.account_created_at).toLocaleDateString() : '—';
       const lastSeen = member.last_sign_in_at ? new Date(member.last_sign_in_at).toLocaleString() : 'Never signed in';
+      let avatarUrl = '';
+      try {
+        const parsedAvatar = new URL(member.avatar_url || '');
+        if (parsedAvatar.protocol === 'https:') avatarUrl = parsedAvatar.href;
+      } catch { /* Invalid or missing avatar URL: show placeholder. */ }
+      const avatarPreview = member.has_profile ? (avatarUrl
+        ? `<div class="pnx-admin-avatar-review"><img data-avatar-preview src="${escapeHtml(avatarUrl)}" alt="Applicant profile image" loading="lazy" referrerpolicy="no-referrer"><a href="${escapeHtml(avatarUrl)}" target="_blank" rel="noopener noreferrer">OPEN FULL IMAGE ↗</a></div>`
+        : '<div class="pnx-admin-avatar-review is-empty"><span>NO PROFILE IMAGE</span></div>') : '';
       const actions = member.has_profile ? `
         <label>ASSIGN DIVISION
           <select data-member-division>
-            <option value="creators" ${division === 'creators' ? 'selected' : ''}>Creators / Streamers</option>
-            <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Players</option>
+            <option value="community" ${division === 'community' ? 'selected' : ''}>Community Member</option>
+            <option value="creators" ${division === 'creators' ? 'selected' : ''}>Streamer</option>
+            <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Player</option>
           </select>
         </label>
         <div class="pnx-update-actions">
@@ -109,6 +142,7 @@
           ${status !== 'pending' ? '<button type="button" data-member-action="pending">RETURN TO PENDING</button>' : ''}
         </div>` : '<p class="pnx-account-no-profile">No PUNIX profile is linked to this auth account.</p>';
       return `<article class="pnx-admin-member-card" data-member-id="${escapeHtml(member.user_id)}">
+        ${avatarPreview}
         <div class="pnx-admin-member-info">
           <span class="pnx-admin-member-status status-${escapeHtml(status)}">${escapeHtml(status.replace('_',' ').toUpperCase())}</span>
           <h3>${escapeHtml(member.display_name || 'PUNIX Member')}</h3>
@@ -121,11 +155,16 @@
       </article>`;
     }).join('');
 
+    target.querySelectorAll('[data-avatar-preview]').forEach(image => image.addEventListener('error', () => {
+      image.closest('.pnx-admin-avatar-review')?.classList.add('is-broken');
+      image.remove();
+    }, { once: true }));
+
     target.querySelectorAll('[data-member-action]').forEach(button => button.addEventListener('click', async () => {
       const card = button.closest('[data-member-id]');
       const userId = card?.dataset.memberId;
       const status = button.dataset.memberAction;
-      const division = card?.querySelector('[data-member-division]')?.value || 'creators';
+      const division = card?.querySelector('[data-member-division]')?.value || 'community';
       if (!userId) return;
       if (status === 'rejected' && !confirm('Reject this PUNIX membership request?')) return;
       button.disabled = true;
@@ -244,6 +283,12 @@
       $('refresh-stats').addEventListener('click', loadStats);
       $('refresh-members').addEventListener('click', loadMembers);
       $('member-account-search').addEventListener('input', renderMemberAccounts);
+      document.querySelectorAll('[data-membership-filter]').forEach(button => {
+        button.addEventListener('click', () => {
+          activeMembershipFilter = button.dataset.membershipFilter || 'all';
+          renderMemberAccounts();
+        });
+      });
       const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : 'overview';
       openSection(initial);
       await loadStats();

@@ -15,7 +15,7 @@
   let members = [];
   let activeFilter = "all";
 
-  const divisionName = value => value === "competitive" ? "Competitive Players" : "Creators / Streamers";
+  const divisionName = value => value === "competitive" ? "Competitive Player" : value === "creators" ? "Streamer" : "Community Member";
   const setStatus = (text, error = false) => {
     status.textContent = text;
     status.classList.toggle("directory-error", error);
