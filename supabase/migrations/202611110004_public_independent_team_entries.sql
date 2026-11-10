@@ -41,8 +41,12 @@ with check (
   )
 );
 
-create or replace view public.public_tournament_registrations
-with (security_barrier=true) as
+-- Rebuild these two dependent public views so the new column can be
+-- added without PostgreSQL treating it as a rename of an existing column.
+drop view if exists public.public_tournament_matches;
+drop view if exists public.public_tournament_registrations;
+
+create view public.public_tournament_registrations with (security_barrier=true) as
 select r.id, r.tournament_id, r.team_id, r.in_game_name,
        r.status, r.created_at,
        case
@@ -54,5 +58,20 @@ select r.id, r.tournament_id, r.team_id, r.in_game_name,
 from public.tournament_registrations r
 left join public.teams tm on tm.id = r.team_id
 where r.status = 'confirmed';
+
+create view public.public_tournament_matches with (security_barrier=true) as
+select m.id,m.tournament_id,m.round_number,m.match_number,
+       m.participant_a_id,m.participant_b_id,m.score_a,m.score_b,
+       m.winner_registration_id,m.scheduled_at,m.status,
+       a.display_name as participant_a_name,
+       b.display_name as participant_b_name
+from public.tournament_matches m
+left join public.public_tournament_registrations a on a.id=m.participant_a_id
+left join public.public_tournament_registrations b on b.id=m.participant_b_id;
+
+revoke all on public.public_tournament_registrations, public.public_tournament_matches
+  from public, anon, authenticated;
+grant select on public.public_tournament_registrations, public.public_tournament_matches
+  to anon, authenticated;
 
 notify pgrst, 'reload schema';
