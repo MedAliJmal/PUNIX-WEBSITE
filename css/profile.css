@@ -115,3 +115,27 @@
 .reapply-wrap p{margin:0 0 12px;color:#b7c0bd;font:400 11px/1.6 Inter,Arial,sans-serif}
 .reapply-wrap button{cursor:pointer}
 .reapply-wrap button:disabled{opacity:.55;cursor:wait}
+
+
+/* Consistent dark-and-gold gender selector in profile edit mode */
+#profile-form #gender {
+  color-scheme: dark;
+  color:#f0eee7;
+  background-color:#090c10;
+  border:1px solid rgba(201,164,91,.48);
+  cursor:pointer;
+}
+#profile-form #gender:hover { border-color:#c9a45b; }
+#profile-form #gender:focus-visible {
+  border-color:#e0bd72;
+  box-shadow:0 0 0 3px rgba(201,164,91,.16);
+}
+#profile-form #gender option {
+  color:#f0eee7;
+  background-color:#11171b;
+  padding:12px;
+}
+#profile-form #gender option:checked {
+  color:#090c10;
+  background-color:#c9a45b;
+}
