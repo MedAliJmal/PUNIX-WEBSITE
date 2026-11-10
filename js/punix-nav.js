@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const memberLink = header.querySelector('.pnx-nav-cta');
+  const guestRegisterLink = document.querySelector('.pnx-register-guest');
   const adminLinks = header.querySelectorAll('[data-nav="admin"]');
   const showAdminLinks = (show) => adminLinks.forEach(link => {
     link.classList.toggle('pnx-admin-visible', Boolean(show));
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentCheck = ++roleCheckId;
     const signedIn = Boolean(session?.user?.id);
     renderMemberLink(signedIn);
+    if (guestRegisterLink) guestRegisterLink.hidden = signedIn;
     showAdminLinks(false);
     if (!signedIn) return;
 
