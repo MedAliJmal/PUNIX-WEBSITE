@@ -75,6 +75,7 @@
     byId('view-directory-division').textContent = status === 'approved'
       ? (profile.directory_division === 'competitive' ? 'Competitive Player' : profile.directory_division === 'creators' ? 'Streamer' : 'Community Member')
       : 'Assigned after approval';
+    byId('reapply-wrap').hidden = status !== 'rejected';
     const statusBadge = document.querySelector('.profile-heading .member-status');
     if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
     byId('avatar-fallback').textContent = name.charAt(0).toUpperCase();
@@ -192,6 +193,21 @@
       saveButton.disabled = false;
       cancelButton.disabled = false;
     }
+  });
+
+  byId('reapply-application').addEventListener('click', async () => {
+    const button = byId('reapply-application');
+    button.disabled = true;
+    setMessage('Submitting your application for another review…');
+    const { error } = await client.rpc('reapply_membership');
+    button.disabled = false;
+    if (error) {
+      setMessage(error.message || 'Could not submit your application again.', true);
+      return;
+    }
+    savedProfile = { ...savedProfile, membership_status: 'pending', is_public: false };
+    renderProfile(savedProfile);
+    setMessage('Application resubmitted. Your membership is pending review.');
   });
 
   signOutButton.addEventListener('click', async () => {
