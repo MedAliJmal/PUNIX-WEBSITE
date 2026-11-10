@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  const client = window.supabase.createClient(config.url, config.publishableKey);
+  const client = window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.publishableKey));
   const renderMemberLink = signedIn => {
     if (!memberLink) return;
     memberLink.href = signedIn ? 'profile.html' : 'auth.html';
