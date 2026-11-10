@@ -5,3 +5,17 @@
 
 /* Respect HTML hidden state even when form/label display is set to grid. */
 .registration-panel [hidden]{display:none!important}
+
+/* Team roster registration */
+.registration-panel .registration-roster-field{margin:4px 0 2px;padding:15px;border:1px solid rgba(53,196,189,.22);background:rgba(53,196,189,.035)}
+.registration-roster-heading{display:flex;justify-content:space-between;gap:10px;align-items:center;color:#e7c77e;font:800 10px Inter,Arial,sans-serif;letter-spacing:1px}
+.registration-roster-heading span{color:#35c4bd;font-size:8px;text-align:right}
+.registration-panel #registration-roster-help{margin:8px 0 12px;color:#91a0a1;font:500 9px/1.6 Inter,Arial,sans-serif}
+.registration-roster-player{padding:12px 0;border-top:1px solid rgba(255,255,255,.08)}
+.registration-roster-player>strong{display:block;margin-bottom:9px;color:#d8bd82;font:800 8px Inter,Arial,sans-serif;letter-spacing:1px}
+.registration-roster-inputs{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.registration-roster-inputs label{min-width:0}
+.registration-roster-inputs input{box-sizing:border-box}
+.registration-roster-sub>strong{color:#35c4bd}
+@media(max-width:620px){.registration-roster-inputs{grid-template-columns:1fr}}
+.registration-panel [hidden]{display:none!important}
