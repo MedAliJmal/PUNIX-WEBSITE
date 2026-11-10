@@ -57,11 +57,11 @@ drop policy if exists "PUNIX admins manage tournaments" on public.tournaments;
 create policy "PUNIX admins manage tournaments" on public.tournaments for all to authenticated using((select private.has_role('admin'))) with check((select private.has_role('admin')));
 create or replace function private.is_team_captain(p_team_id uuid,p_user_id uuid,p_game_name text)
 returns boolean language sql stable security definer set search_path=''
-as $
+as $$
  select exists(select 1 from public.teams tm join public.team_members m on m.team_id=tm.id
   where tm.id=p_team_id and lower(tm.game_name)=lower(p_game_name) and tm.status in('active','recruiting')
   and m.user_id=p_user_id and m.member_role='captain');
-$;
+$$;
 revoke all on function private.is_team_captain(uuid,uuid,text) from public,anon;
 grant execute on function private.is_team_captain(uuid,uuid,text) to authenticated;
 
@@ -75,7 +75,7 @@ create policy "PUNIX users register themselves" on public.tournament_registratio
 );
 create or replace function private.enforce_tournament_capacity()
 returns trigger language plpgsql security definer set search_path=''
-as $
+as $$
 declare v_limit integer; v_count integer;
 begin
  select max_participants into v_limit from public.tournaments where id=new.tournament_id for update;
@@ -86,7 +86,7 @@ begin
  end if;
  return new;
 end;
-$;
+$$;
 revoke all on function private.enforce_tournament_capacity() from public,anon,authenticated;
 drop trigger if exists enforce_punix_tournament_capacity on public.tournament_registrations;
 create trigger enforce_punix_tournament_capacity before insert on public.tournament_registrations
