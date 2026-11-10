@@ -81,13 +81,13 @@
     if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
     byId('avatar-fallback').textContent = name.charAt(0).toUpperCase();
 
-    const avatar = profile.avatar_url || '';
+    const avatar = profile.avatar_url || (['male','female'].includes(profile.gender) ? `assets/images/punix-avatar-${profile.gender}.svg` : '');
     const img = byId('avatar-preview');
     if (avatar) {
       img.src = avatar;
       img.style.display = 'block';
       byId('avatar-fallback').style.display = 'none';
-      byId('view-avatar').textContent = 'Avatar image connected';
+      byId('view-avatar').textContent = profile.avatar_url ? 'Custom avatar connected' : 'Default PUNIX avatar';
     } else {
       img.removeAttribute('src');
       img.style.display = 'none';
