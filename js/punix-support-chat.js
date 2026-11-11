@@ -28,7 +28,7 @@
     root = document.createElement('div');
     root.id = 'pnx-support-root';
     root.innerHTML = `
-      <style>.pnx-support-launcher{position:relative}.pnx-support-unread{display:none;position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#e34b4b;color:#fff;border:2px solid #080d10;font:800 10px/15px Inter,Arial,sans-serif;text-align:center;box-sizing:border-box;box-shadow:0 0 0 3px rgba(227,75,75,.15)}.pnx-support-unread.is-visible{display:block}.pnx-support-unread.is-dot{min-width:11px;width:11px;height:11px;padding:0;line-height:7px}</style>
+      <style>.pnx-support-unread{display:none;position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#e34b4b;color:#fff;border:2px solid #080d10;font:800 10px/15px Inter,Arial,sans-serif;text-align:center;box-sizing:border-box;box-shadow:0 0 0 3px rgba(227,75,75,.15)}.pnx-support-unread.is-visible{display:block}.pnx-support-unread.is-dot{min-width:11px;width:11px;height:11px;padding:0;line-height:7px}</style>
       <button class="pnx-support-launcher" id="pnx-support-launcher" type="button" aria-expanded="false"><span class="pnx-support-icon">✉</span> LIVE SUPPORT <span class="pnx-support-unread" id="pnx-support-unread" aria-label="Unread support reply"></span></button>
       <section class="pnx-support-panel" id="pnx-support-panel" aria-label="PUNIX live support" hidden>
         <header class="pnx-support-head"><div><strong>PUNIX SUPPORT</strong><small>Account support · Replies appear here.</small></div><button class="pnx-support-close" id="pnx-support-close" type="button" aria-label="Close chat">×</button></header>
