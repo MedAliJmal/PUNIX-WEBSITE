@@ -124,17 +124,17 @@ grant execute on function public.punix_support_start(text,text,text,text) to ano
 grant execute on function public.punix_support_send(uuid,text,text) to anon, authenticated;
 grant execute on function public.punix_support_history(uuid,text) to anon, authenticated;
 
-do $
+do $support$
 begin
   alter publication supabase_realtime add table public.support_conversations;
 exception when duplicate_object then null;
 when undefined_object then null;
-end $;
-do $
+end $support$;
+do $support$
 begin
   alter publication supabase_realtime add table public.support_messages;
 exception when duplicate_object then null;
 when undefined_object then null;
-end $;
+end $support$;
 
 notify pgrst, 'reload schema';
