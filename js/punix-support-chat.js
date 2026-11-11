@@ -51,7 +51,7 @@
     const errorBox = root.querySelector('#pnx-support-error');
     const unreadBadge = root.querySelector('#pnx-support-unread');
     const seenKey = 'punix-support-last-admin-read-v1:' + user.id;
-    function setUnread(count) { unreadBadge.textContent = count > 9 ? '9+' : String(count); unreadBadge.classList.toggle('is-visible', count > 0); launcher.setAttribute('aria-label', count ? `Live support, ${count} unread reply${count===1?'':'ies'}` : 'Live support'); }
+    function setUnread(count) { unreadBadge.textContent = count > 9 ? '9+' : String(count); unreadBadge.classList.toggle('is-visible', count > 0); launcher.setAttribute('aria-label', count ? `Live support, ${count} unread reply${count===1?'':'s'}` : 'Live support'); }
     function markAdminRead(messageId) { if (!messageId) return; try { localStorage.setItem(seenKey, messageId); } catch {} setUnread(0); }
     async function refreshUserNotification() {
       if (!supportSession?.id) {
