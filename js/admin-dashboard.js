@@ -471,11 +471,16 @@
       target.innerHTML = '<p class="pnx-recent-empty">No visitor conversations yet. New chats will appear here.</p>';
       return;
     }
-    target.innerHTML = rows.map(row => `
-      <button class="pnx-support-admin-row ${selectedSupportConversation === row.id ? 'is-selected' : ''}" type="button" data-support-open="${escapeHtml(row.id)}">
-        <span class="pnx-support-admin-row-top"><strong>${escapeHtml(row.visitor_name)}</strong><span class="pnx-support-admin-badge ${row.status === 'closed' ? 'is-closed' : ''}">${escapeHtml(row.status.toUpperCase())}</span></span>
+    target.innerHTML = rows.map(row => {
+      const latest = latestByConversation.get(row.id);
+      let seen = ''; try { seen = localStorage.getItem(supportAdminSeenKey + row.id) || ''; } catch {}
+      const unread = latest?.sender_type === 'visitor' && latest.id !== seen;
+      return `
+      <button class="pnx-support-admin-row ${selectedSupportConversation === row.id ? 'is-selected' : ''} ${unread ? 'has-unread' : ''}" type="button" data-support-open="${escapeHtml(row.id)}">
+        <span class="pnx-support-admin-row-top"><strong>${escapeHtml(row.visitor_name)}</strong><span class="pnx-support-admin-row-tags">${unread ? '<b class="pnx-support-new">NEW</b>' : ''}<span class="pnx-support-admin-badge ${row.status === 'closed' ? 'is-closed' : ''}">${escapeHtml(row.status.toUpperCase())}</span></span></span>
         <small>${escapeHtml(row.visitor_email || 'NO EMAIL PROVIDED')} · ${escapeHtml(new Date(row.last_message_at).toLocaleString())}</small>
-      </button>`).join('');
+      </button>`;
+    }).join('');
     target.querySelectorAll('[data-support-open]').forEach(button => button.addEventListener('click', () => openSupportConversation(button.dataset.supportOpen)));
     if (selectedSupportConversation && rows.some(row => row.id === selectedSupportConversation)) {
       const selected = rows.find(row => row.id === selectedSupportConversation);
