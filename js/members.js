@@ -27,16 +27,16 @@
 
     const avatar = document.createElement("div");
     avatar.className = "roster-avatar";
-    if (member.avatar_url) {
-      const img = document.createElement("img");
-      img.src = member.avatar_url;
-      img.alt = `${member.display_name} avatar`;
-      img.loading = "lazy";
-      img.referrerPolicy = "no-referrer";
-      avatar.appendChild(img);
-    } else {
+    const img = document.createElement("img");
+    img.src = member.avatar_url || "/assets/images/punix-logo-original.png";
+    img.alt = `${member.display_name} avatar`;
+    img.loading = "lazy";
+    img.referrerPolicy = "no-referrer";
+    img.onerror = () => {
+      avatar.replaceChildren();
       avatar.textContent = (member.display_name || "P").trim().charAt(0).toUpperCase();
-    }
+    };
+    avatar.appendChild(img);
 
     const meta = document.createElement("div");
     meta.className = "roster-meta";
