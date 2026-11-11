@@ -153,3 +153,10 @@ Before using Google sign-in, configure the provider once:
 4. To make a Google account an admin, add its exact Google email to `private.admin_whitelist` before its first sign-in. For an account that already exists, synchronize its role using the controlled SQL example in the auth section above.
 
 Google's own account authentication and Supabase OAuth protections apply to this provider flow. Email/password registration and login continue to use Cloudflare Turnstile.
+
+
+## PUNIX Live Support Chat
+
+Apply `supabase/migrations/202611110019_punix_live_support.sql` in the Supabase SQL Editor before using the visitor chat. It creates the private support inbox tables, token-protected anonymous visitor RPCs, admin-only inbox policies, and Realtime publication entries.
+
+The floating visitor chat is loaded on the public pages from `js/punix-support-chat.js`. Visitors can return to their conversation from the same browser using its saved random access token. Admins can manage conversations in **Admin Dashboard → Support Inbox**. Visitor replies are polled every five seconds while the chat is open; admin inbox changes use Supabase Realtime.
