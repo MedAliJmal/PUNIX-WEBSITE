@@ -215,9 +215,11 @@
   const updateImagePreviewImg = $('update-image-preview-img');
   let updateImageObjectUrl = '';
   function showUpdateImagePreview(url, fileName = '') {
-    if (updateImageObjectUrl) { URL.revokeObjectURL(updateImageObjectUrl); updateImageObjectUrl = ''; }
+    if (updateImageObjectUrl && updateImageObjectUrl !== url) URL.revokeObjectURL(updateImageObjectUrl);
+    updateImageObjectUrl = String(url || '').startsWith('blob:') ? url : '';
     updateImagePreview.hidden = !url;
     if (url) updateImagePreviewImg.src = url;
+    else updateImagePreviewImg.removeAttribute('src');
     $('update-image-file-name').textContent = fileName || (url ? 'Current image preview.' : 'No local image selected.');
   }
   updateImageFile.addEventListener('change', () => {
