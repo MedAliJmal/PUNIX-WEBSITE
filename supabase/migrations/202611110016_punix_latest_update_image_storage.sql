@@ -10,7 +10,7 @@ on conflict (id) do update set
 drop policy if exists "PUNIX latest update images are publicly readable" on storage.objects;
 create policy "PUNIX latest update images are publicly readable"
 on storage.objects for select to anon, authenticated
-using (bucket_id = 'latest-update-images');
+using (bucket_id = 'latest-update-images' and (select private.has_role('admin')));
 
 drop policy if exists "PUNIX admins upload latest update images" on storage.objects;
 create policy "PUNIX admins upload latest update images"
