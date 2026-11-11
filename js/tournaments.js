@@ -40,7 +40,7 @@
   if(authState.error&&!session){note.textContent='Could not verify your PUNIX session. Please reload the page and try again.';return;}
   if(t.status!=='upcoming'||!t.registration_open||(t.registration_deadline&&new Date(t.registration_deadline)<=new Date())){note.textContent='Registration is currently closed.';return;}
   if(!session?.user?.id){note.innerHTML='Sign in with your PUNIX account to enter. <a href="auth.html">MEMBER ACCESS ↗</a>';return;}
-  const existing=await db.from('tournament_registrations').select('status').eq('tournament_id',t.id).eq('user_id',session.user.id).maybeSingle();
+  const existing=await db.from('tournament_registrations').select('status').eq('tournament_id',t.id).eq('user_id',session.user.id).in('status',['pending','confirmed']).maybeSingle();
   if(existing.data){note.textContent='Your entry status: '+existing.data.status.toUpperCase()+'. Contact PUNIX admins if you need help.';return;}
   if(t.entry_type==='team'){
    teamField.hidden=false;teamNameInput.required=true;rosterField.hidden=false;logoField.hidden=false;buildRosterFields(t);
