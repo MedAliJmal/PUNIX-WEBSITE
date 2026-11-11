@@ -139,3 +139,17 @@ This is the secure database foundation plus working signup/sign-in UI. The membe
 - Keep the `private` schema out of the Supabase Data API's exposed schemas.
 - Do not add client-side insert/update/delete grants on `user_roles` or `private.admin_whitelist`.
 - Run and verify RLS tests before production launch.
+
+
+## Google sign-in
+
+The member access page includes **Continue with Google** using Supabase Auth. Google OAuth uses the same server-side signup trigger as email registration: new users receive the `member` role by default, while only emails already present in `private.admin_whitelist` receive an administrator role. The browser never assigns roles.
+
+Before using Google sign-in, configure the provider once:
+
+1. In Google Cloud Console, create an OAuth 2.0 **Web application** client. Add the Supabase Auth callback URL shown in **Supabase → Authentication → Providers → Google** as an authorized redirect URI. Copy the Google client ID and client secret into the Supabase Google provider settings (never into this repository).
+2. In **Supabase → Authentication → URL Configuration**, add `https://punix.pages.dev/**` to the allowed redirect URLs and set `https://punix.pages.dev` as the Site URL. Keep your local development URL too if needed.
+3. Enable the Google provider in Supabase. Google sign-in is then available from `https://punix.pages.dev/auth.html`.
+4. To make a Google account an admin, add its exact Google email to `private.admin_whitelist` before its first sign-in. For an account that already exists, synchronize its role using the controlled SQL example in the auth section above.
+
+Google's own account authentication and Supabase OAuth protections apply to this provider flow. Email/password registration and login continue to use Cloudflare Turnstile.
