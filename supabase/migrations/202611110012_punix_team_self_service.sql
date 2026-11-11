@@ -204,9 +204,7 @@ begin
   values(v_inv.team_id,v_user,'player',coalesce((select max(display_order)+1 from public.team_members where team_id=v_inv.team_id),1));
   update public.team_invitations set status='accepted',accepted_by=v_user,accepted_at=now() where id=v_inv.id;
 
-  insert into public.notifications(user_id,notification_type,title,body,link,metadata)
-  select tm.user_id,'team_invitation','NEW TEAM MEMBER',coalesce((select display_name from public.profiles where id=v_user),'A player')||' joined '||v_team_name||'.','/teams.html',jsonb_build_object('team_id',v_inv.team_id)
-  from public.team_members tm where tm.team_id=v_inv.team_id and tm.member_role='captain' and tm.user_id<>v_user;
+  -- The existing roster-change trigger notifies the captain about the new member.
 
   insert into public.notifications(user_id,notification_type,title,body,link,metadata)
   values(v_user,'team_invitation','WELCOME TO '||upper(v_team_name),'You have joined the team successfully.','/my-team.html',jsonb_build_object('team_id',v_inv.team_id));
