@@ -6,10 +6,11 @@
   let activeUser = null;
   let supportSession = null;
   let poller = null;
+  let notificationPoller = null;
   let busy = false;
   let root = null;
 
-  function stopPolling() { if (poller) clearInterval(poller); poller = null; }
+  function stopPolling() { if (poller) clearInterval(poller); poller = null; if (notificationPoller) clearInterval(notificationPoller); notificationPoller = null; }
   function removeWidget() {
     stopPolling();
     root?.remove();
@@ -27,7 +28,8 @@
     root = document.createElement('div');
     root.id = 'pnx-support-root';
     root.innerHTML = `
-      <button class="pnx-support-launcher" id="pnx-support-launcher" type="button" aria-expanded="false"><span class="pnx-support-icon">✉</span> LIVE SUPPORT</button>
+      <style>.pnx-support-launcher{position:relative}.pnx-support-unread{display:none;position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:#e34b4b;color:#fff;border:2px solid #080d10;font:800 10px/15px Inter,Arial,sans-serif;text-align:center;box-sizing:border-box;box-shadow:0 0 0 3px rgba(227,75,75,.15)}.pnx-support-unread.is-visible{display:block}.pnx-support-unread.is-dot{min-width:11px;width:11px;height:11px;padding:0;line-height:7px}</style>
+      <button class="pnx-support-launcher" id="pnx-support-launcher" type="button" aria-expanded="false"><span class="pnx-support-icon">✉</span> LIVE SUPPORT <span class="pnx-support-unread" id="pnx-support-unread" aria-label="Unread support reply"></span></button>
       <section class="pnx-support-panel" id="pnx-support-panel" aria-label="PUNIX live support" hidden>
         <header class="pnx-support-head"><div><strong>PUNIX SUPPORT</strong><small>Account support · Replies appear here.</small></div><button class="pnx-support-close" id="pnx-support-close" type="button" aria-label="Close chat">×</button></header>
         <div class="pnx-support-body" id="pnx-support-body">
@@ -47,6 +49,25 @@
     const panel = root.querySelector('#pnx-support-panel');
     const body = root.querySelector('#pnx-support-body');
     const errorBox = root.querySelector('#pnx-support-error');
+    const unreadBadge = root.querySelector('#pnx-support-unread');
+    const seenKey = 'punix-support-last-admin-read-v1:' + user.id;
+    function setUnread(count) { unreadBadge.textContent = count > 9 ? '9+' : String(count); unreadBadge.classList.toggle('is-visible', count > 0); launcher.setAttribute('aria-label', count ? `Live support, ${count} unread reply${count===1?'':'ies'}` : 'Live support'); }
+    function markAdminRead(messageId) { if (!messageId) return; try { localStorage.setItem(seenKey, messageId); } catch {} setUnread(0); }
+    async function refreshUserNotification() {
+      if (!supportSession?.id) {
+        const { data, error } = await db.from('support_conversations').select('id').eq('user_id', user.id).eq('status', 'open').order('last_message_at', {ascending:false}).limit(1);
+        if (error || !data?.length) { setUnread(0); return; }
+        supportSession = {id:data[0].id,userId:user.id};
+        try { localStorage.setItem(storageKey,JSON.stringify(supportSession)); } catch {}
+      }
+      const { data, error } = await db.rpc('punix_support_history',{p_conversation_id:supportSession.id});
+      if (error || !Array.isArray(data)) return;
+      const latestAdmin = [...data].reverse().find(message => message.sender_type === 'admin');
+      let lastSeen = ''; try { lastSeen = localStorage.getItem(seenKey) || ''; } catch {}
+      if (panel.hidden && latestAdmin?.id && latestAdmin.id !== lastSeen) setUnread(1);
+      else if (!panel.hidden && latestAdmin?.id) markAdminRead(latestAdmin.id);
+      else if (!latestAdmin) setUnread(0);
+    }
     const form = root.querySelector('#pnx-support-start');
     form.elements.email.value = user.email || '';
     form.elements.name.value = String(user.user_metadata?.display_name || user.user_metadata?.full_name || user.user_metadata?.name || '').slice(0,80);
@@ -57,6 +78,7 @@
       launcher.setAttribute('aria-expanded','true');
       if (supportSession?.id) renderThread();
       else loadExistingOrStart();
+      refreshUserNotification();
     }
     function closeChat() { panel.hidden = true; launcher.setAttribute('aria-expanded','false'); }
     launcher.addEventListener('click', () => panel.hidden ? openChat() : closeChat());
@@ -105,6 +127,8 @@
           return;
         }
         renderMessages(data || []);
+        const latestAdmin = [...(data || [])].reverse().find(message => message.sender_type === 'admin');
+        if (latestAdmin?.id) markAdminRead(latestAdmin.id);
         // Keep exactly one composer even if polling and user actions overlap.
         let composers = Array.from(panel.querySelectorAll('.pnx-support-compose'));
         let composer = composers.shift() || null;
@@ -133,6 +157,8 @@
       if(error){showError(error.message||'Message could not be sent.');return;}
       input.value=''; await renderThread();
     }
+    notificationPoller = setInterval(refreshUserNotification, 5000);
+    refreshUserNotification();
     form.addEventListener('submit',async event=>{
       event.preventDefault(); if(busy)return;
       const data=new FormData(form);
