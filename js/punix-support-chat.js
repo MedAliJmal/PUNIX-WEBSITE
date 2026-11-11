@@ -89,30 +89,39 @@
         if (startForm) startForm.hidden = false;
       }
     }
+    let renderThreadPromise = null;
     async function renderThread() {
-      if (!supportSession?.id || supportSession.userId !== user.id) return;
-      const {data,error} = await db.rpc('punix_support_history',{p_conversation_id:supportSession.id});
-      if (error) {
-        supportSession = null;
-        try { localStorage.removeItem(storageKey); } catch {}
-        showError('Your previous chat could not be loaded. Start a new conversation below.');
-        const startForm = body.querySelector('#pnx-support-start');
-        if (startForm) startForm.hidden = false;
-        return;
-      }
-      renderMessages(data || []);
-      let composer = body.querySelector('.pnx-support-compose');
-      if (!composer) {
-        composer = document.createElement('form');
-        composer.className='pnx-support-compose';
-        composer.innerHTML='<textarea name="message" maxlength="2000" required aria-label="Your message" placeholder="Type a message…"></textarea><button type="submit" aria-label="Send message">➤</button>';
-        panel.appendChild(composer);
-        composer.addEventListener('submit',sendMessage);
-      }
-      const {data:conv} = await db.from('support_conversations').select('status').eq('id',supportSession.id).maybeSingle();
-      composer.hidden = conv?.status === 'closed';
-      showError('');
-      if (!poller) poller=setInterval(()=>{if(!panel.hidden) renderThread();},5000);
+      if (renderThreadPromise) return renderThreadPromise;
+      renderThreadPromise = (async () => {
+        if (!supportSession?.id || supportSession.userId !== user.id) return;
+        const {data,error} = await db.rpc('punix_support_history',{p_conversation_id:supportSession.id});
+        if (error) {
+          supportSession = null;
+          try { localStorage.removeItem(storageKey); } catch {}
+          showError('Your previous chat could not be loaded. Start a new conversation below.');
+          const startForm = body.querySelector('#pnx-support-start');
+          if (startForm) startForm.hidden = false;
+          body.querySelectorAll('.pnx-support-compose').forEach(node => node.remove());
+          return;
+        }
+        renderMessages(data || []);
+        // Keep exactly one composer even if polling and user actions overlap.
+        let composers = Array.from(panel.querySelectorAll('.pnx-support-compose'));
+        let composer = composers.shift() || null;
+        composers.forEach(node => node.remove());
+        if (!composer) {
+          composer = document.createElement('form');
+          composer.className='pnx-support-compose';
+          composer.innerHTML='<textarea name="message" maxlength="2000" required aria-label="Your message" placeholder="Type a message…"></textarea><button type="submit" aria-label="Send message">➤</button>';
+          panel.appendChild(composer);
+          composer.addEventListener('submit',sendMessage);
+        }
+        const {data:conv} = await db.from('support_conversations').select('status').eq('id',supportSession.id).maybeSingle();
+        composer.hidden = conv?.status === 'closed';
+        showError('');
+        if (!poller) poller=setInterval(()=>{if(!panel.hidden) renderThread();},5000);
+      })().finally(() => { renderThreadPromise = null; });
+      return renderThreadPromise;
     }
     async function sendMessage(event) {
       event.preventDefault();
