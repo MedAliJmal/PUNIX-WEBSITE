@@ -24,3 +24,24 @@
 
 /* Ensure a hidden guest-only CTA cannot be made visible by button display rules. */
 .pnx-register-guest[hidden] { display: none !important; }
+
+
+/* Member notification center */
+.pnx-notification-center{position:relative;display:flex;align-items:center}
+.pnx-notification-toggle{position:relative;display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(201,164,91,.38);background:#11151a;color:#e4c77f;font-size:22px;cursor:pointer}
+.pnx-notification-toggle:hover{border-color:#e4c77f;background:#1a2025}
+.pnx-notification-count{position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;padding:0 4px;border-radius:20px;background:#25b9b0;color:#081012;font:800 9px/17px Arial,sans-serif;text-align:center}
+.pnx-notification-panel{position:absolute;z-index:1200;top:calc(100% + 12px);right:0;width:min(370px,calc(100vw - 28px));max-height: min(520px,75vh);overflow:auto;background:#10151a;border:1px solid rgba(201,164,91,.38);box-shadow:0 18px 55px rgba(0,0,0,.5)}
+.pnx-notification-panel[hidden]{display:none}
+.pnx-notification-heading{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;background:#151c21;border-bottom:1px solid rgba(255,255,255,.1)}
+.pnx-notification-heading strong{font:800 10px Arial,sans-serif;letter-spacing:1.5px;color:#e4c77f}
+.pnx-notification-readall{border:0;background:none;color:#25b9b0;font:700 9px Arial,sans-serif;letter-spacing:.7px;cursor:pointer}
+.pnx-notification-list{padding:6px}
+.pnx-notification-item{display:flex;width:100%;flex-direction:column;gap:6px;padding:13px 12px;text-align:left;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#f4f3ef;cursor:pointer}
+.pnx-notification-item:hover{background:rgba(255,255,255,.045)}
+.pnx-notification-item.is-unread{border-left:2px solid #25b9b0;background:rgba(37,185,176,.055)}
+.pnx-notification-item strong{font:800 11px Arial,sans-serif;letter-spacing:.3px}
+.pnx-notification-item span{color:#b5bdc0;font:400 11px/1.6 Arial,sans-serif}
+.pnx-notification-item small{color:#788388;font:400 9px Arial,sans-serif}
+.pnx-notification-empty{padding:18px 12px;color:#9ca3a7;font:400 11px/1.7 Arial,sans-serif}
+@media(max-width:820px){.pnx-notification-toggle{width:36px;height:36px}.pnx-notification-panel{right:-100px;top:calc(100% + 10px)}}
