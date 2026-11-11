@@ -29,3 +29,36 @@
 .pnx-support-note{margin:12px 0 0;color:#748184;font-size:8px;line-height:1.6}
 .pnx-support-error{margin:9px 0 0;color:#e38b83;font-size:9px;line-height:1.5}
 @media(max-width:480px){.pnx-support-launcher{right:14px;bottom:14px;padding:12px 14px}.pnx-support-panel{right:14px;bottom:70px;width:calc(100vw - 28px);height:min(560px,calc(100dvh - 90px))}}
+
+
+/* Anchor the entire support widget to the viewport, independent of page layout. */
+#pnx-support-root{
+  position:fixed!important;
+  right:24px!important;
+  bottom:24px!important;
+  z-index:2147483000!important;
+  width:auto!important;
+  height:auto!important;
+  overflow:visible!important;
+  pointer-events:none!important;
+  transform:none!important;
+}
+#pnx-support-root .pnx-support-launcher{
+  position:relative!important;
+  inset:auto!important;
+  display:flex!important;
+  margin:0!important;
+  pointer-events:auto!important;
+}
+#pnx-support-root .pnx-support-panel{
+  position:absolute!important;
+  right:0!important;
+  bottom:58px!important;
+  left:auto!important;
+  top:auto!important;
+  pointer-events:auto!important;
+}
+@media(max-width:480px){
+  #pnx-support-root{right:14px!important;bottom:14px!important}
+  #pnx-support-root .pnx-support-panel{right:0!important;bottom:58px!important;width:calc(100vw - 28px)!important}
+}
