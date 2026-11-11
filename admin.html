@@ -78,6 +78,7 @@
         <button class="pnx-admin-nav-item" type="button" data-section="teams"><span>03</span> Team Management</button>
         <button class="pnx-admin-nav-item" type="button" data-section="tournaments"><span>04</span> Tournament Hub</button>
         <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>05</span> Latest Updates</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="sponsors"><span>06</span> Sponsors</button>
         <div class="pnx-sidebar-foot"><span class="pnx-sidebar-mark">P</span><small>CREATE. BUILD.<br>COMPETE. CONQUER.</small></div>
       </aside>
 
@@ -233,6 +234,40 @@
             <section class="pnx-overview-panel pnx-update-list-panel">
               <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">HOMEPAGE NEWS FEED</p><h3>EXISTING UPDATES</h3></div><button class="pnx-text-action" id="refresh-updates" type="button">↻ REFRESH</button></div>
               <div id="admin-updates-list" class="pnx-admin-updates-list"><p class="pnx-recent-empty">Loading updates…</p></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="sponsors-section" class="pnx-admin-section" hidden aria-labelledby="sponsors-admin-title">
+          <div class="pnx-section-heading pnx-team-section-heading">
+            <div><p class="pnx-admin-kicker">06 / HOMEPAGE PARTNERSHIPS</p><h2 id="sponsors-admin-title">SPONSOR MANAGEMENT</h2><p>Add partner logos, link to their websites, feature key sponsors and control the order shown on the homepage.</p></div>
+          </div>
+          <div class="pnx-updates-layout">
+            <section class="pnx-overview-panel pnx-update-editor">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">PARTNER EDITOR</p><h3 id="sponsor-editor-title">ADD A SPONSOR</h3></div></div>
+              <form id="sponsor-form">
+                <input type="hidden" id="sponsor-id">
+                <div class="pnx-update-form-grid">
+                  <label>SPONSOR / PARTNER NAME<input id="sponsor-name" maxlength="90" required placeholder="Partner name"></label>
+                  <label>WEBSITE URL<input id="sponsor-website" type="url" maxlength="500" placeholder="https://example.com"></label>
+                  <div class="pnx-update-wide pnx-update-image-field">
+                    <label for="sponsor-logo-file">LOGO FILE <span class="optional">(PNG, JPG, WEBP or SVG · max 5 MB)</span></label>
+                    <div class="pnx-update-image-controls"><label class="pnx-update-upload-button" for="sponsor-logo-file">＋ UPLOAD LOGO</label><input id="sponsor-logo-file" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><span id="sponsor-logo-file-name">No logo selected.</span></div>
+                    <div id="sponsor-logo-preview" class="pnx-update-image-preview" hidden><img id="sponsor-logo-preview-img" alt="Sponsor logo preview"><button id="remove-sponsor-logo" type="button" class="pnx-update-image-remove">REMOVE LOGO</button></div>
+                    <label class="pnx-update-image-url-label" for="sponsor-logo-url">OR LOGO URL <span class="optional">(HTTPS URL)</span></label>
+                    <input id="sponsor-logo-url" type="url" maxlength="500" placeholder="https://…">
+                  </div>
+                  <label>DISPLAY ORDER<input id="sponsor-order" type="number" min="0" max="999" value="0"></label>
+                  <label class="pnx-update-publish"><input id="sponsor-featured" type="checkbox"> FEATURED PARTNER</label>
+                  <label class="pnx-update-publish pnx-update-wide"><input id="sponsor-published" type="checkbox" checked> SHOW ON HOMEPAGE</label>
+                </div>
+                <div class="form-actions"><button class="button" id="save-sponsor-btn" type="submit">SAVE SPONSOR <span>↗</span></button><button class="button button-outline" id="cancel-sponsor-btn" type="button">CLEAR FORM</button></div>
+                <p id="sponsor-form-message" class="pnx-update-message" role="status"></p>
+              </form>
+            </section>
+            <section class="pnx-overview-panel pnx-update-list-panel">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">PARTNER WALL</p><h3>EXISTING SPONSORS</h3></div><button class="pnx-text-action" id="refresh-sponsors" type="button">↻ REFRESH</button></div>
+              <div id="admin-sponsors-list" class="pnx-admin-updates-list"><p class="pnx-recent-empty">Loading sponsors…</p></div>
             </section>
           </div>
         </section>
