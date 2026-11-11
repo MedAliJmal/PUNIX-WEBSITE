@@ -127,6 +127,7 @@ grant execute on function public.punix_support_history(uuid,text) to anon, authe
 do $$
 begin
   alter publication supabase_realtime add table public.support_conversations;
+  alter publication supabase_realtime add table public.support_messages;
 exception when duplicate_object then null;
 when undefined_object then null;
 end $$;
