@@ -53,7 +53,7 @@ begin
 
   perform pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(v_user::text,0));
   if exists(select 1 from public.team_members tm where tm.user_id=v_user) then
-    raise exception 'You are already part of a team. Leave or delete that team before creating another one.';
+    raise exception 'You are already part of a team. Your current team must be disbanded before you can create another one.';
   end if;
   if exists(select 1 from public.teams t where lower(t.game_name)=lower(v_game) and lower(t.team_name)=lower(v_name)) then
     raise exception 'A team with this name already exists for this game.';
@@ -197,7 +197,7 @@ begin
     raise exception 'This team is no longer active.';
   end if;
   if exists(select 1 from public.team_members tm where tm.user_id=v_user) then
-    raise exception 'You are already in a team. You must leave your current team before joining another.';
+    raise exception 'You are already in a team. Your current team must be disbanded before you can join another.';
   end if;
   if (select count(*) from public.team_members tm where tm.team_id=v_inv.team_id)>=20 then
     raise exception 'This team has reached its 20-member limit.';
