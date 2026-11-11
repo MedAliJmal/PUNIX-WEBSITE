@@ -3,3 +3,5 @@
 .pnx-tournament-form-grid label[hidden]{display:none!important}
 .pnx-admin-entry>div:first-child{display:grid;gap:5px;min-width:0}
 .pnx-admin-entry>div:first-child small+small{margin-top:1px;color:#9da9a9}
+
+.pnx-admin-entry-logo{flex:0 0 58px;width:58px;height:58px;display:grid;place-items:center;border:1px solid rgba(201,164,91,.3);background:#090e11;padding:4px}.pnx-admin-entry-logo img{display:block;width:100%;height:100%;object-fit:contain}.pnx-admin-entry-logo.is-empty{color:#748083;text-align:center;font:800 7px/1.4 Inter,Arial,sans-serif;letter-spacing:.5px}.pnx-admin-entry{align-items:flex-start}
