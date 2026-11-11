@@ -134,3 +134,28 @@
 .pnx-admin-avatar-review.is-broken img{display:none}
 @media(max-width:900px){.pnx-admin-member-card{grid-template-columns:100px minmax(0,1fr)}.pnx-admin-member-actions{grid-column:1/-1;border-top:1px solid rgba(255,255,255,.08);padding-top:14px}}
 @media(max-width:720px){.pnx-admin-member-card{grid-template-columns:1fr}.pnx-admin-avatar-review{max-width:145px}.pnx-admin-member-actions{grid-column:auto}}
+
+
+/* PUNIX Support Inbox */
+.pnx-support-admin-layout{display:grid;grid-template-columns:minmax(260px,.78fr) minmax(0,1.22fr);gap:14px;align-items:start}
+.pnx-support-admin-list-panel,.pnx-support-admin-thread-panel{min-width:0}
+.pnx-support-admin-row{display:grid;gap:8px;padding:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);text-align:left;color:inherit;cursor:pointer}
+.pnx-support-admin-row:hover,.pnx-support-admin-row.is-selected{border-color:rgba(201,164,91,.48);background:rgba(201,164,91,.055)}
+.pnx-support-admin-row strong{color:#e9e9e2;font:800 17px/1.1 var(--font-display,Impact,sans-serif);overflow-wrap:anywhere}
+.pnx-support-admin-row small{color:#899799;font:700 8px/1.5 Inter,Arial,sans-serif;letter-spacing:.6px}
+.pnx-support-admin-row p{margin:0;color:#a5b0b0;font:400 10px/1.5 Inter,Arial,sans-serif;overflow-wrap:anywhere}
+.pnx-support-admin-row-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.pnx-support-admin-badge{color:#79d4ca;font:800 8px/1 Inter,Arial,sans-serif;letter-spacing:.8px}
+.pnx-support-admin-badge.is-closed{color:#8a9495}
+.pnx-support-thread-meta{display:block;margin-top:7px;color:#8b999b;font:500 9px/1.5 Inter,Arial,sans-serif;overflow-wrap:anywhere}
+.pnx-support-admin-messages{display:flex;flex-direction:column;gap:10px;max-height:490px;min-height:180px;overflow:auto;padding:5px 2px 16px}
+.pnx-support-admin-message{max-width:88%;padding:11px 13px;background:#0a1013;border:1px solid rgba(255,255,255,.09);color:#dce3e1;font:400 10px/1.7 Inter,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.pnx-support-admin-message.is-visitor{align-self:flex-start}
+.pnx-support-admin-message.is-admin{align-self:flex-end;background:rgba(201,164,91,.1);border-color:rgba(201,164,91,.24)}
+.pnx-support-admin-message small{display:block;margin-top:7px;color:#839092;font:700 8px/1.4 Inter,Arial,sans-serif}
+.pnx-support-admin-reply{display:grid;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+.pnx-support-admin-reply textarea{width:100%;box-sizing:border-box;padding:12px;background:#080d10;border:1px solid rgba(255,255,255,.14);color:#f0efe8;font:500 11px/1.6 Inter,Arial,sans-serif;resize:vertical}
+.pnx-support-admin-reply textarea:focus{outline:none;border-color:rgba(53,196,189,.65)}
+.pnx-support-admin-reply .button{justify-self:start}
+.pnx-support-admin-reply[hidden]{display:none!important}
+@media(max-width:1050px){.pnx-support-admin-layout{grid-template-columns:1fr}}
