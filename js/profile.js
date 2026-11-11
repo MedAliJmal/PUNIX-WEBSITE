@@ -159,10 +159,23 @@
     // Restore signup metadata into the profile row when older account-creation triggers omitted it.
     const signupGender = currentUser.user_metadata?.gender;
     const signupAvatar = currentUser.user_metadata?.avatar_url;
+    const googleAvatar = currentUser.user_metadata?.picture || currentUser.user_metadata?.avatar_url;
     const defaultAvatar = ['male','female'].includes(signupGender)
       ? new URL(`/assets/images/punix-avatar-${signupGender}.png`, window.location.origin).href
       : '';
-    const avatarToSave = savedProfile.avatar_url || (typeof signupAvatar === 'string' && signupAvatar.startsWith(window.location.origin + '/assets/images/punix-avatar-') && signupAvatar.endsWith('.png') ? signupAvatar : defaultAvatar);
+    const isPunixDefaultAvatar = typeof signupAvatar === 'string'
+      && signupAvatar.startsWith(window.location.origin + '/assets/images/punix-avatar-')
+      && signupAvatar.endsWith('.png');
+    let providerAvatar = '';
+    if (typeof googleAvatar === 'string') {
+      try {
+        const parsedAvatar = new URL(googleAvatar);
+        if (parsedAvatar.protocol === 'https:' && !parsedAvatar.hostname.endsWith(window.location.hostname)) {
+          providerAvatar = parsedAvatar.href;
+        }
+      } catch { /* Ignore invalid provider image URLs. */ }
+    }
+    const avatarToSave = savedProfile.avatar_url || (isPunixDefaultAvatar ? signupAvatar : providerAvatar || defaultAvatar);
     const profilePatch = {};
     if (!savedProfile.gender && ['male', 'female'].includes(signupGender)) profilePatch.gender = signupGender;
     if (!savedProfile.avatar_url && avatarToSave) profilePatch.avatar_url = avatarToSave;
