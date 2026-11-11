@@ -128,7 +128,7 @@
         const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: emailCallback.href } });
         if (error) throw error;
         if (data.session) { setMessage('Account created. Redirecting…'); window.location.assign(postAuthUrl); return; }
-        setMessage('Account created. Check your email to confirm your address. You will return to your invitation after confirming.');
+        setMessage('Account created. Check your email to confirm your address. You will be redirected to the requested PUNIX page after confirming.');
       } else {
         setMessage('Signing you in…');
         const { data, error } = await client.auth.signInWithPassword({ email, password: password.value, options: { captchaToken: token } });
