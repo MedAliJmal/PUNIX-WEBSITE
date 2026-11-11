@@ -549,7 +549,10 @@
       $('refresh-support').addEventListener('click', loadSupportConversations);
       $('support-admin-reply').addEventListener('submit', sendSupportReply);
       $('support-toggle-status').addEventListener('click', toggleSupportStatus);
-      supportRealtimeChannel = db.channel('punix-support-admin-inbox').on('postgres_changes', { event: '*', schema: 'public', table: 'support_conversations' }, () => { if (currentSection === 'support') loadSupportConversations(); }).subscribe();
+      supportRealtimeChannel = db.channel('punix-support-admin-inbox')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'support_conversations' }, () => { if (currentSection === 'support') loadSupportConversations(); })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages' }, payload => { if (currentSection === 'support' && selectedSupportConversation === payload.new.conversation_id) openSupportConversation(selectedSupportConversation); })
+        .subscribe();
       clearUpdateForm();
       $('refresh-stats').addEventListener('click', loadStats);
       $('refresh-members').addEventListener('click', loadMembers);
