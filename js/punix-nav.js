@@ -18,11 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const memberLink = header.querySelector('.pnx-nav-cta');
-  const guestRegisterLink = document.querySelector('.pnx-register-guest');
-  const setGuestRegisterVisibility = visible => {
-    if (!guestRegisterLink) return;
-    guestRegisterLink.hidden = !visible;
-    guestRegisterLink.setAttribute('aria-hidden', String(!visible));
+  const communityCta = document.querySelector('.pnx-community-cta');
+  const communityCtaNote = document.querySelector('.pnx-community-cta-note');
+  const discordInvite = 'https://discord.gg/P94NF5truS';
+  const updateCommunityCta = signedIn => {
+    if (!communityCta) return;
+    communityCta.href = signedIn ? discordInvite : 'auth.html';
+    communityCta.innerHTML = signedIn
+      ? 'JOIN OUR DISCORD <span aria-hidden="true">↗</span>'
+      : 'REGISTER <span aria-hidden="true">↗</span>';
+    communityCta.setAttribute('aria-label', signedIn ? 'Join the PUNIX Discord community' : 'Register for a PUNIX member account');
+    communityCta.target = signedIn ? '_blank' : '_self';
+    communityCta.rel = signedIn ? 'noopener noreferrer' : '';
+    if (communityCtaNote) communityCtaNote.textContent = signedIn
+      ? 'You already have a PUNIX account. Continue the conversation on our Discord server.'
+      : 'Create your PUNIX member account to get started.';
   };
   const adminLinks = header.querySelectorAll('[data-nav="admin"]');
   const showAdminLinks = show => adminLinks.forEach(link => {
@@ -32,12 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Keep registration hidden until Supabase confirms the visitor is signed out.
-  setGuestRegisterVisibility(false);
+  updateCommunityCta(false);
   showAdminLinks(false);
 
   const config = window.PUNIX_SUPABASE_CONFIG;
   if (!window.supabase || !config?.url || !config?.publishableKey) {
-    setGuestRegisterVisibility(true);
+    updateCommunityCta(false);
     return;
   }
 
@@ -57,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentCheck = ++roleCheckId;
     const signedIn = Boolean(session?.user?.id);
     renderMemberLink(signedIn);
-    setGuestRegisterVisibility(!signedIn);
+    updateCommunityCta(signedIn);
     showAdminLinks(false);
     if (!signedIn) return;
 
