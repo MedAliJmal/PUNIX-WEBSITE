@@ -114,7 +114,8 @@
         if (!['male', 'female'].includes(gender)) throw new Error('Please select your gender.');
         const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: window.location.href } });
         if (error) throw error;
-        setMessage(data.session ? 'Account created. You are signed in.' : 'Account created. Check your email to confirm your address, then sign in.');
+        if (data.session) { setMessage('Account created. Redirecting…'); window.location.assign(postAuthUrl); return; }
+        setMessage('Account created. Check your email to confirm your address. You will return to the requested PUNIX page after confirmation.');
       } else {
         setMessage('Signing you in…');
         const { data, error } = await client.auth.signInWithPassword({ email, password: password.value, options: { captchaToken: token } });
