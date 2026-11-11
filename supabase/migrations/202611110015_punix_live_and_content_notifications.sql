@@ -2,6 +2,30 @@
 -- Recipients are existing PUNIX profiles. Notifications link back to the relevant
 -- homepage section so the current notification center can open them safely.
 
+-- Support installations where notification_type is an enum rather than text.
+do $
+declare
+  v_type record;
+begin
+  select n.nspname as schema_name, t.typname as type_name, t.typtype
+    into v_type
+  from pg_attribute a
+  join pg_class c on c.oid = a.attrelid
+  join pg_namespace cn on cn.oid = c.relnamespace
+  join pg_type t on t.oid = a.atttypid
+  join pg_namespace n on n.oid = t.typnamespace
+  where cn.nspname = 'public'
+    and c.relname = 'notifications'
+    and a.attname = 'notification_type'
+    and not a.attisdropped;
+
+  if found and v_type.typtype = 'e' then
+    execute format('alter type %I.%I add value if not exists %L', v_type.schema_name, v_type.type_name, 'creator_live');
+    execute format('alter type %I.%I add value if not exists %L', v_type.schema_name, v_type.type_name, 'content_published');
+  end if;
+end;
+$;
+
 create or replace function private.notify_punix_creator_live()
 returns trigger
 language plpgsql
