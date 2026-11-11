@@ -21,13 +21,14 @@
   }
 
   function openSection(name) {
-    currentSection = ['members', 'teams', 'updates', 'tournaments', 'sponsors'].includes(name) ? name : 'overview';
+    currentSection = ['members', 'teams', 'updates', 'tournaments', 'sponsors', 'support'].includes(name) ? name : 'overview';
     $('overview-section').hidden = currentSection !== 'overview';
     $('members-section').hidden = currentSection !== 'members';
     $('teams-section').hidden = currentSection !== 'teams';
     $('updates-section').hidden = currentSection !== 'updates';
     $('tournaments-section').hidden = currentSection !== 'tournaments';
     $('sponsors-section').hidden = currentSection !== 'sponsors';
+    $('support-section').hidden = currentSection !== 'support';
     document.querySelectorAll('.pnx-admin-nav-item').forEach((button) => {
       const active = button.dataset.section === currentSection;
       button.classList.toggle('is-active', active);
@@ -38,11 +39,13 @@
     else if (currentSection === 'updates') history.replaceState(null, '', '#updates');
     else if (currentSection === 'tournaments') history.replaceState(null, '', '#tournaments');
     else if (currentSection === 'sponsors') history.replaceState(null, '', '#sponsors');
+    else if (currentSection === 'support') history.replaceState(null, '', '#support');
     else history.replaceState(null, '', '#overview');
     if (currentSection === 'members') loadMembers();
     if (currentSection === 'updates') loadUpdates();
     if (currentSection === 'tournaments') window.loadPunixTournamentsAdmin?.();
     if (currentSection === 'sponsors') loadSponsors();
+    if (currentSection === 'support') loadSupportConversations();
   }
 
   async function countRows(table, filters = []) {
@@ -424,6 +427,102 @@
     finally { $('save-sponsor-btn').disabled=false; }
   }
 
+  let supportAdminUserId = null;
+  let selectedSupportConversation = null;
+  let supportRealtimeChannel = null;
+
+  async function loadSupportConversations() {
+    const target = $('support-admin-list');
+    if (!target) return;
+    $('support-admin-message').textContent = 'Refreshing support inbox…';
+    const { data, error } = await db.from('support_conversations')
+      .select('id,visitor_name,visitor_email,status,last_message_at,created_at')
+      .order('last_message_at', { ascending: false }).limit(100);
+    if (error) {
+      $('support-admin-message').textContent = 'Could not load support inbox. Run the PUNIX live support SQL migration first.';
+      target.innerHTML = '<p class="pnx-recent-empty">Support database is not ready or access was denied.</p>';
+      return;
+    }
+    const rows = data || [];
+    const openCount = rows.filter(row => row.status === 'open').length;
+    $('support-admin-count').textContent = `${openCount} OPEN · ${rows.length} TOTAL`;
+    $('support-admin-message').textContent = rows.length ? 'Select a conversation to read and reply.' : 'Your support inbox is clear.';
+    if (!rows.length) {
+      target.innerHTML = '<p class="pnx-recent-empty">No visitor conversations yet. New chats will appear here.</p>';
+      return;
+    }
+    target.innerHTML = rows.map(row => `
+      <button class="pnx-support-admin-row ${selectedSupportConversation === row.id ? 'is-selected' : ''}" type="button" data-support-open="${escapeHtml(row.id)}">
+        <span class="pnx-support-admin-row-top"><strong>${escapeHtml(row.visitor_name)}</strong><span class="pnx-support-admin-badge ${row.status === 'closed' ? 'is-closed' : ''}">${escapeHtml(row.status.toUpperCase())}</span></span>
+        <small>${escapeHtml(row.visitor_email || 'NO EMAIL PROVIDED')} · ${escapeHtml(new Date(row.last_message_at).toLocaleString())}</small>
+      </button>`).join('');
+    target.querySelectorAll('[data-support-open]').forEach(button => button.addEventListener('click', () => openSupportConversation(button.dataset.supportOpen)));
+    if (selectedSupportConversation && rows.some(row => row.id === selectedSupportConversation)) {
+      const selected = rows.find(row => row.id === selectedSupportConversation);
+      $('support-toggle-status').textContent = selected.status === 'open' ? 'CLOSE CONVERSATION' : 'REOPEN CONVERSATION';
+      $('support-toggle-status').dataset.status = selected.status;
+    }
+  }
+
+  async function openSupportConversation(id) {
+    selectedSupportConversation = id;
+    const { data: conversation, error: conversationError } = await db.from('support_conversations')
+      .select('id,visitor_name,visitor_email,status,created_at').eq('id', id).maybeSingle();
+    if (conversationError || !conversation) {
+      $('support-admin-message').textContent = 'Could not open this conversation.';
+      return;
+    }
+    const { data: messages, error } = await db.from('support_messages')
+      .select('id,sender_type,body,created_at').eq('conversation_id', id).order('created_at', { ascending: true }).limit(300);
+    if (error) {
+      $('support-admin-message').textContent = 'Could not load messages: ' + error.message;
+      return;
+    }
+    $('support-thread-title').textContent = conversation.visitor_name || 'VISITOR';
+    $('support-thread-meta').textContent = [conversation.visitor_email || 'No email provided', 'Started ' + new Date(conversation.created_at).toLocaleString()].join(' · ');
+    $('support-admin-messages').innerHTML = (messages || []).map(message => `
+      <article class="pnx-support-admin-message ${message.sender_type === 'admin' ? 'is-admin' : 'is-visitor'}">${escapeHtml(message.body)}<small>${message.sender_type === 'admin' ? 'PUNIX SUPPORT' : escapeHtml(conversation.visitor_name)} · ${escapeHtml(new Date(message.created_at).toLocaleString())}</small></article>`).join('') || '<p class="pnx-recent-empty">No messages in this conversation.</p>';
+    $('support-admin-messages').scrollTop = $('support-admin-messages').scrollHeight;
+    $('support-admin-reply').hidden = conversation.status !== 'open';
+    $('support-admin-reply-text').value = '';
+    $('support-toggle-status').hidden = false;
+    $('support-toggle-status').textContent = conversation.status === 'open' ? 'CLOSE CONVERSATION' : 'REOPEN CONVERSATION';
+    $('support-toggle-status').dataset.status = conversation.status;
+    await loadSupportConversations();
+  }
+
+  async function sendSupportReply(event) {
+    event.preventDefault();
+    if (!selectedSupportConversation) return;
+    const input = $('support-admin-reply-text');
+    const body = input.value.trim();
+    if (!body) return;
+    const button = $('support-admin-reply').querySelector('button[type="submit"]');
+    button.disabled = true;
+    const { error } = await db.from('support_messages').insert({
+      conversation_id: selectedSupportConversation, sender_type: 'admin',
+      sender_id: supportAdminUserId, body
+    });
+    if (!error) {
+      await db.from('support_conversations').update({ last_message_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', selectedSupportConversation);
+      input.value = '';
+      await openSupportConversation(selectedSupportConversation);
+      $('support-admin-message').textContent = 'Reply sent.';
+    } else {
+      $('support-admin-message').textContent = 'Reply failed: ' + error.message;
+    }
+    button.disabled = false;
+  }
+
+  async function toggleSupportStatus() {
+    if (!selectedSupportConversation) return;
+    const nextStatus = $('support-toggle-status').dataset.status === 'open' ? 'closed' : 'open';
+    const { error } = await db.from('support_conversations').update({ status: nextStatus, updated_at: new Date().toISOString() }).eq('id', selectedSupportConversation);
+    if (error) { $('support-admin-message').textContent = 'Could not update conversation: ' + error.message; return; }
+    await openSupportConversation(selectedSupportConversation);
+    $('support-admin-message').textContent = nextStatus === 'closed' ? 'Conversation closed.' : 'Conversation reopened.';
+  }
+
   async function boot() {
     try {
       const { data: { session }, error: sessionError } = await db.auth.getSession();
@@ -438,6 +537,7 @@
       }
       gate.hidden = true;
       app.hidden = false;
+      supportAdminUserId = session.user.id;
       document.querySelectorAll('[data-section]').forEach((button) => button.addEventListener('click', () => openSection(button.dataset.section)));
       document.querySelectorAll('[data-open-section="teams"]').forEach((button) => button.addEventListener('click', () => openSection('teams')));
       $('update-form').addEventListener('submit', saveUpdate);
@@ -446,6 +546,10 @@
       $('sponsor-form').addEventListener('submit', saveSponsor);
       $('cancel-sponsor-btn').addEventListener('click', clearSponsorForm);
       $('refresh-sponsors').addEventListener('click', loadSponsors);
+      $('refresh-support').addEventListener('click', loadSupportConversations);
+      $('support-admin-reply').addEventListener('submit', sendSupportReply);
+      $('support-toggle-status').addEventListener('click', toggleSupportStatus);
+      supportRealtimeChannel = db.channel('punix-support-admin-inbox').on('postgres_changes', { event: '*', schema: 'public', table: 'support_conversations' }, () => { if (currentSection === 'support') loadSupportConversations(); }).subscribe();
       clearUpdateForm();
       $('refresh-stats').addEventListener('click', loadStats);
       $('refresh-members').addEventListener('click', loadMembers);
@@ -456,7 +560,7 @@
           renderMemberAccounts();
         });
       });
-      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : location.hash === '#sponsors' ? 'sponsors' : 'overview';
+      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : location.hash === '#sponsors' ? 'sponsors' : location.hash === '#support' ? 'support' : 'overview';
       openSection(initial);
       await loadStats();
     } catch (error) {
