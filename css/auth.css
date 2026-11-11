@@ -29,3 +29,12 @@
 .auth-avatar-choice div { display:grid;gap:6px; }
 .auth-avatar-choice strong { color:#e0c17c;font-size:10px;letter-spacing:1.1px; }
 .auth-avatar-choice span { color:#9da8ac;font-size:11px;line-height:1.6;letter-spacing:0;font-weight:500; }
+
+
+/* Google OAuth entry point */
+.auth-google-button{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;background:#f7f7f7;color:#202124;border:1px solid #dadce0;border-radius:3px;font:800 10px var(--font-body);letter-spacing:1px;cursor:pointer;transition:background .2s,transform .2s}
+.auth-google-button:hover{background:#fff;transform:translateY(-1px)}
+.auth-google-button:disabled{opacity:.55;cursor:wait;transform:none}
+.auth-google-button svg{width:19px;height:19px;flex:0 0 19px}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:#78848a;font-size:9px;font-weight:800;letter-spacing:1.2px}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:rgba(255,255,255,.12)}
