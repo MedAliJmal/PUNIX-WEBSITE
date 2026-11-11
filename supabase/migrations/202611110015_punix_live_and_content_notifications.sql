@@ -3,7 +3,7 @@
 -- homepage section so the current notification center can open them safely.
 
 -- Support installations where notification_type is an enum rather than text.
-do $
+do $enum$
 declare
   v_type record;
 begin
@@ -24,7 +24,7 @@ begin
     execute format('alter type %I.%I add value if not exists %L', v_type.schema_name, v_type.type_name, 'content_published');
   end if;
 end;
-$;
+$enum$;
 
 create or replace function private.notify_punix_creator_live()
 returns trigger
