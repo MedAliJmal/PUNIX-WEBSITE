@@ -64,7 +64,7 @@
       composer.addEventListener('submit',sendMessage);
     }
     showError('');
-    if(!poller) poller=setInterval(renderThread,5000);
+    if(!poller) poller=setInterval(()=>{if(!panel.hidden) renderThread();},5000);
   }
   async function sendMessage(event) {
     event.preventDefault();
