@@ -294,3 +294,37 @@ h2 { font:800 clamp(48px,6.4vw,78px)/.88 var(--font-display); letter-spacing:-.5
 body :is(h1, h2, h3) {
   font-family: var(--font-display) !important;
 }
+
+
+/* PUNIX hero refresh — official competitive artwork, not stock photography */
+.hero-visual{isolation:isolate;border:1px solid rgba(201,164,91,.18);box-shadow:0 28px 80px rgba(0,0,0,.38)}
+.hero-image{background-image:url("../assets/images/punix-esports-team.png");background-position:center 38%;filter:saturate(.72) contrast(1.08)}
+.hero-image-overlay{background:linear-gradient(90deg,rgba(9,11,14,.08),rgba(9,11,14,.12) 38%,rgba(9,11,14,.68)),linear-gradient(0deg,rgba(9,11,14,.94),rgba(9,11,14,.02) 70%),linear-gradient(135deg,rgba(37,185,176,.16),transparent 55%)}
+.hero h1{max-width:650px;text-wrap:balance}
+.hero-proof{border-top:1px solid rgba(255,255,255,.1);padding-top:17px;max-width:330px}
+.hero-caption strong{letter-spacing:.5px}
+
+/* Homepage sponsors / partners */
+.pnx-sponsors-section{position:relative;padding:82px 0 72px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pnx-sponsors-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:45px;margin-bottom:34px}
+.pnx-sponsors-heading h2{margin-top:17px}
+.pnx-sponsors-heading>p{max-width:360px;margin:0 0 5px;color:var(--muted);font-size:12px;line-height:1.9}
+.pnx-sponsors-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pnx-sponsor-card{position:relative;min-height:150px;display:flex;align-items:center;justify-content:center;padding:25px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.09);transition:border-color .25s,transform .25s,background .25s;overflow:hidden}
+.pnx-sponsor-card:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,164,91,.08),transparent 55%);opacity:0;transition:opacity .25s}
+.pnx-sponsor-card:hover{transform:translateY(-4px);border-color:rgba(201,164,91,.4);background:#11171a}
+.pnx-sponsor-card:hover:before{opacity:1}
+.pnx-sponsor-card img{position:relative;z-index:1;display:block;max-width:100%;width:100%;height:76px;object-fit:contain;filter:grayscale(1);opacity:.76;transition:filter .25s,opacity .25s}
+.pnx-sponsor-card:hover img{filter:grayscale(0);opacity:1}
+.pnx-sponsor-card.is-featured{border-color:rgba(201,164,91,.28);background:linear-gradient(145deg,rgba(201,164,91,.09),rgba(255,255,255,.015))}
+.pnx-sponsor-card.is-featured:after{content:"FEATURED PARTNER";position:absolute;left:12px;top:11px;color:var(--gold);font-size:7px;font-weight:800;letter-spacing:1.2px}
+.pnx-sponsor-card span{position:absolute;bottom:10px;left:12px;right:12px;color:#879092;text-align:center;font-size:8px;font-weight:800;letter-spacing:1.4px}
+.pnx-sponsors-empty{grid-column:1/-1;min-height:175px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;border:1px dashed rgba(201,164,91,.24);background:linear-gradient(110deg,rgba(201,164,91,.035),rgba(37,185,176,.025));text-align:center}
+.pnx-sponsors-mark{color:var(--teal);font-size:24px;margin-bottom:12px}
+.pnx-sponsors-empty strong{font:800 20px/1.2 var(--font-display);letter-spacing:1px}
+.pnx-sponsors-empty p{max-width:420px;margin:9px 0 15px;color:var(--muted);font-size:11px;line-height:1.7}
+.pnx-sponsors-foot{display:flex;justify-content:space-between;gap:15px;margin-top:22px;color:#687477;font-size:8px;font-weight:800;letter-spacing:1.3px}
+.pnx-sponsors-foot i{color:var(--teal);font-style:normal;padding:0 6px}
+.pnx-admin-sponsor-thumb{display:block;width:100%;max-width:190px;height:65px;object-fit:contain;padding:8px;background:#090e11;border:1px solid rgba(255,255,255,.08)}
+@media(max-width:900px){.pnx-sponsors-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:680px){.pnx-sponsors-section{padding:60px 0}.pnx-sponsors-heading{display:block}.pnx-sponsors-heading>p{margin-top:20px}.pnx-sponsors-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.pnx-sponsor-card{min-height:125px;padding:19px}.pnx-sponsor-card img{height:60px}.pnx-sponsors-foot{flex-direction:column;line-height:1.6}}
