@@ -9,10 +9,12 @@ create policy "PUNIX tournament team logos are publicly readable" on storage.obj
 drop policy if exists "Applicants upload their own tournament team logo" on storage.objects;
 create policy "Applicants upload their own tournament team logo" on storage.objects for insert to authenticated with check (
  bucket_id='tournament-team-logos' and (storage.foldername(name))[2]=(select auth.uid())::text
- and exists (select 1 from public.tournaments t where t.id=((storage.foldername(name))[1])::uuid and t.entry_type='team' and t.status='upcoming' and t.registration_open and (t.registration_deadline is null or t.registration_deadline>now()))
+ and exists (select 1 from public.public_tournaments t where t.id=((storage.foldername(name))[1])::uuid and t.entry_type='team' and t.status='upcoming' and t.registration_open and (t.registration_deadline is null or t.registration_deadline>now()))
 );
 drop policy if exists "PUNIX admins delete tournament team logos" on storage.objects;
 create policy "PUNIX admins delete tournament team logos" on storage.objects for delete to authenticated using (bucket_id='tournament-team-logos' and (select private.has_role('admin')));
+drop policy if exists "Applicants delete their own tournament team logo" on storage.objects;
+create policy "Applicants delete their own tournament team logo" on storage.objects for delete to authenticated using (bucket_id='tournament-team-logos' and (storage.foldername(name))[2]=(select auth.uid())::text);
 alter table public.tournament_registrations add column if not exists team_logo_url text not null default '';
 alter table public.tournament_registrations drop constraint if exists tournament_registrations_team_logo_url_https;
 alter table public.tournament_registrations add constraint tournament_registrations_team_logo_url_https check (team_logo_url='' or team_logo_url ~* '^https://');
