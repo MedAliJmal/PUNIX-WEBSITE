@@ -36,15 +36,16 @@ returns trigger language plpgsql security definer set search_path=''
 as $$
 declare v_title text; v_body text;
 begin
-  if new.status = 'upcoming'
-     and (tg_op = 'INSERT' or old.status is distinct from new.status) then
-    v_title := 'NEW PUNIX EVENT: ' || new.title;
-    v_body := new.game_name || ' tournament is now announced. Open the event page for details and registration.';
-    insert into public.notifications(user_id, notification_type, title, body, link, metadata)
-    select p.id, 'event_launch', v_title, v_body,
-           '/tournaments.html?id=' || new.id::text,
-           jsonb_build_object('tournament_id', new.id, 'game_name', new.game_name)
-    from public.profiles p;
+  if new.status = 'upcoming' then
+    if tg_op = 'INSERT' or old.status is distinct from new.status then
+      v_title := 'NEW PUNIX EVENT: ' || new.title;
+      v_body := new.game_name || ' tournament is now announced. Open the event page for details and registration.';
+      insert into public.notifications(user_id, notification_type, title, body, link, metadata)
+      select p.id, 'event_launch', v_title, v_body,
+             '/tournaments.html?id=' || new.id::text,
+             jsonb_build_object('tournament_id', new.id, 'game_name', new.game_name)
+      from public.profiles p;
+    end if;
   end if;
   return new;
 end;
@@ -83,11 +84,16 @@ begin
                  else 'A team member role or roster order changed for ' || coalesce(v_name,'your team') || '.' end;
   perform private.notify_team_captains(v_team_id, 'TEAM ROSTER UPDATED', v_body, 'team_roster', '/teams.html', v_actor);
   -- If the previous captain was removed or demoted, notify that captain too.
-  if tg_op in ('DELETE','UPDATE') and old.member_role = 'captain'
-     and (tg_op = 'DELETE' or new.member_role <> 'captain' or new.user_id <> old.user_id) then
-    insert into public.notifications(user_id,notification_type,title,body,link,metadata)
-    values(old.user_id,'team_roster','TEAM ROLE UPDATED','Your captain role or team membership changed for '||coalesce(v_name,'your team')||'.','/teams.html',jsonb_build_object('team_id',v_team_id))
-    on conflict do nothing;
+  if tg_op = 'DELETE' then
+    if old.member_role = 'captain' then
+      insert into public.notifications(user_id,notification_type,title,body,link,metadata)
+      values(old.user_id,'team_roster','TEAM ROLE UPDATED','Your captain role or team membership changed for '||coalesce(v_name,'your team')||'.','/teams.html',jsonb_build_object('team_id',v_team_id));
+    end if;
+  elsif tg_op = 'UPDATE' then
+    if old.member_role = 'captain' and (new.member_role <> 'captain' or new.user_id <> old.user_id) then
+      insert into public.notifications(user_id,notification_type,title,body,link,metadata)
+      values(old.user_id,'team_roster','TEAM ROLE UPDATED','Your captain role or team membership changed for '||coalesce(v_name,'your team')||'.','/teams.html',jsonb_build_object('team_id',v_team_id));
+    end if;
   end if;
   return case when tg_op = 'DELETE' then old else new end;
 end;
@@ -151,8 +157,17 @@ returns trigger language plpgsql security definer set search_path=''
 as $$
 declare v_tournament text; v_body text;
 begin
-  if tg_op = 'INSERT'
-     or (old.scheduled_at,old.status,old.score_a,old.score_b,old.winner_registration_id)
+  if tg_op = 'INSERT' then
+    select t.title into v_tournament from public.tournaments t where t.id=new.tournament_id;
+    v_body := 'A match update is available for ' || coalesce(v_tournament,'your tournament') || '. Check the schedule or results.';
+    insert into public.notifications(user_id,notification_type,title,body,link,metadata)
+    select distinct r.user_id, 'tournament_match', 'TOURNAMENT MATCH UPDATE', v_body,
+           '/tournaments.html?id=' || new.tournament_id::text,
+           jsonb_build_object('match_id',new.id,'tournament_id',new.tournament_id)
+    from public.tournament_registrations r
+    where r.id in (new.participant_a_id,new.participant_b_id)
+      and r.status = 'confirmed';
+  elsif (old.scheduled_at,old.status,old.score_a,old.score_b,old.winner_registration_id)
         is distinct from
         (new.scheduled_at,new.status,new.score_a,new.score_b,new.winner_registration_id) then
     select t.title into v_tournament from public.tournaments t where t.id=new.tournament_id;
