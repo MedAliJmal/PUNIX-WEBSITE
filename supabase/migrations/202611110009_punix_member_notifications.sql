@@ -37,7 +37,15 @@ as $$
 declare v_title text; v_body text;
 begin
   if new.status = 'upcoming' then
-    if tg_op = 'INSERT' or old.status is distinct from new.status then
+    if tg_op = 'INSERT' then
+      v_title := 'NEW PUNIX EVENT: ' || new.title;
+      v_body := new.game_name || ' tournament is now announced. Open the event page for details and registration.';
+      insert into public.notifications(user_id, notification_type, title, body, link, metadata)
+      select p.id, 'event_launch', v_title, v_body,
+             '/tournaments.html?id=' || new.id::text,
+             jsonb_build_object('tournament_id', new.id, 'game_name', new.game_name)
+      from public.profiles p;
+    elsif old.status is distinct from new.status then
       v_title := 'NEW PUNIX EVENT: ' || new.title;
       v_body := new.game_name || ' tournament is now announced. Open the event page for details and registration.';
       insert into public.notifications(user_id, notification_type, title, body, link, metadata)
