@@ -11,11 +11,6 @@
     message.textContent = 'Setup required: check your Supabase URL and publishable key in js/supabase-config.js.';
     message.classList.add('error'); form.querySelectorAll('input,button').forEach(el => el.disabled = true); return;
   }
-  if (!config.turnstileSiteKey || config.turnstileSiteKey.includes('YOUR_')) {
-    message.textContent = 'Setup required: add your Cloudflare Turnstile site key in js/supabase-config.js.';
-    message.classList.add('error'); form.querySelectorAll('input,button').forEach(el => el.disabled = true); return;
-  }
-
   const client = window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.publishableKey));
   googleButton.addEventListener('click', async () => {
     googleButton.disabled = true;
@@ -95,6 +90,10 @@
   forgotLink.addEventListener('click', event => { event.preventDefault(); setMode('forgot'); });
 
   function renderCaptcha() {
+    if (!config.turnstileSiteKey || config.turnstileSiteKey.includes('YOUR_')) {
+      captchaBox.innerHTML = '<p class="auth-human-help">Email/password access needs Turnstile configuration. You can still continue with Google.</p>';
+      return;
+    }
     if (!window.turnstile || widgetId !== null) return;
     widgetId = window.turnstile.render(captchaBox, {
       sitekey: config.turnstileSiteKey,
@@ -103,7 +102,12 @@
       'error-callback': () => { captchaToken = ''; updateSubmit(); setMessage('Security check unavailable. Refresh the page and try again.', true); }
     });
   }
-  const captchaWait = setInterval(() => { if (window.turnstile) { clearInterval(captchaWait); renderCaptcha(); } }, 150);
+  const captchaWait = setInterval(() => {
+    if (!config.turnstileSiteKey || config.turnstileSiteKey.includes('YOUR_') || window.turnstile) {
+      clearInterval(captchaWait);
+      renderCaptcha();
+    }
+  }, 150);
 
   client.auth.getSession().then(({ data }) => {
     if (data.session) {
