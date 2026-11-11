@@ -1,6 +1,6 @@
 (() => {
  const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const cfg=window.PUNIX_SUPABASE_CONFIG,db=window.supabase&&cfg?.url&&cfg?.publishableKey?window.supabase.createClient(cfg.url,cfg.publishableKey):null;if(!db)return;
+ const cfg=window.PUNIX_SUPABASE_CONFIG,db=window.PUNIX_SUPABASE_CLIENT||(window.PUNIX_SUPABASE_CLIENT=window.supabase&&cfg?.url&&cfg?.publishableKey?window.supabase.createClient(cfg.url,cfg.publishableKey):null);if(!db)return;
  let events=[],selectedId=null;const msg=t=>{$('tournament-admin-message').textContent=t;};const localIso=id=>{const v=$(id).value;return v?new Date(v).toISOString():null;};
  function syncTeamSettings(){const team=$('tournament-entry-type').value==='team';['tournament-min-team-wrap','tournament-max-team-wrap','tournament-max-subs-wrap'].forEach(id=>$(id).hidden=!team);}
  function clearForm(){$('tournament-admin-form').reset();$('tournament-id').value='';$('tournament-status-select').value='draft';$('tournament-entry-type').value='team';$('tournament-format').value='single_elimination';$('tournament-registration-open').checked=false;$('tournament-min-team').value=5;$('tournament-max-team').value=5;$('tournament-max-subs').value=1;syncTeamSettings();$('tournament-admin-form-title').textContent='CREATE TOURNAMENT';}
