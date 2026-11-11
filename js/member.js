@@ -57,12 +57,10 @@
     const avatar = document.getElementById("public-member-avatar");
     const initial = document.getElementById("public-member-initial");
     initial.textContent = name.charAt(0).toUpperCase();
-    if (avatarUrl) {
-      avatar.src = avatarUrl;
-      avatar.alt = `${name} profile avatar`;
-      avatar.addEventListener("load", () => { avatar.hidden = false; initial.hidden = true; }, { once:true });
-      avatar.addEventListener("error", () => { avatar.hidden = true; initial.hidden = false; }, { once:true });
-    }
+    avatar.src = avatarUrl || "/assets/images/punix-logo-original.png";
+    avatar.alt = `${name} profile avatar`;
+    avatar.addEventListener("load", () => { avatar.hidden = false; initial.hidden = true; }, { once:true });
+    avatar.addEventListener("error", () => { avatar.hidden = true; initial.hidden = false; }, { once:true });
 
     const socials = document.getElementById("public-member-socials");
     const platforms = [["Twitch",data.twitch_url],["Kick",data.kick_url],["YouTube",data.youtube_url],["TikTok",data.tiktok_url]];
