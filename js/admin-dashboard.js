@@ -210,12 +210,62 @@
     renderMemberAccounts();
   }
 
+  const updateImageFile = $('update-image-file');
+  const updateImagePreview = $('update-image-preview');
+  const updateImagePreviewImg = $('update-image-preview-img');
+  let updateImageObjectUrl = '';
+  function showUpdateImagePreview(url, fileName = '') {
+    if (updateImageObjectUrl) { URL.revokeObjectURL(updateImageObjectUrl); updateImageObjectUrl = ''; }
+    updateImagePreview.hidden = !url;
+    if (url) updateImagePreviewImg.src = url;
+    $('update-image-file-name').textContent = fileName || (url ? 'Current image preview.' : 'No local image selected.');
+  }
+  updateImageFile.addEventListener('change', () => {
+    const file = updateImageFile.files?.[0];
+    if (!file) { showUpdateImagePreview($('update-image').value.trim()); return; }
+    if (!['image/png','image/jpeg','image/webp','image/gif'].includes(file.type)) {
+      updateImageFile.value = '';
+      showUpdateImagePreview($('update-image').value.trim());
+      $('update-form-message').textContent = 'Choose a PNG, JPG, WEBP or GIF image.';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      updateImageFile.value = '';
+      showUpdateImagePreview($('update-image').value.trim());
+      $('update-form-message').textContent = 'Update image must be 5 MB or smaller.';
+      return;
+    }
+    updateImageObjectUrl = URL.createObjectURL(file);
+    showUpdateImagePreview(updateImageObjectUrl, file.name);
+  });
+  $('update-image').addEventListener('input', () => {
+    if (!updateImageFile.files?.length) showUpdateImagePreview($('update-image').value.trim());
+  });
+  $('remove-update-image').addEventListener('click', () => {
+    updateImageFile.value = '';
+    $('update-image').value = '';
+    showUpdateImagePreview('');
+    $('update-form-message').textContent = 'Image removed. Save the update to apply the change.';
+  });
+  async function uploadUpdateImage() {
+    const file = updateImageFile.files?.[0];
+    if (!file) return safeContentUrl($('update-image').value);
+    const ext = ({'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'})[file.type];
+    const path = `latest-updates/${Date.now()}-${Math.random().toString(36).slice(2,9)}.${ext}`;
+    const { error } = await db.storage.from('latest-update-images').upload(path, file, { contentType:file.type, cacheControl:'3600', upsert:false });
+    if (error) throw error;
+    const { data } = db.storage.from('latest-update-images').getPublicUrl(path);
+    return data.publicUrl;
+  }
   const updateFields = ['update-id','update-title','update-category','update-summary','update-date','update-order','update-image','update-link','update-link-label','update-published'];
   function clearUpdateForm() {
     $('update-form').reset();
     $('update-id').value = '';
     $('update-order').value = '0';
     $('update-published').checked = true;
+    updateImageFile.value = '';
+    $('update-image').value = '';
+    showUpdateImagePreview('');
     $('update-date').value = new Date().toISOString().slice(0,10);
     $('update-editor-title').textContent = 'ADD AN UPDATE';
     $('save-update-btn').innerHTML = 'PUBLISH UPDATE <span>↗</span>';
@@ -236,7 +286,7 @@
     target.innerHTML = data.map(item => `<article class="pnx-admin-update-row"><div class="pnx-admin-update-top"><div><strong>${escapeHtml(item.title)}</strong><br><small>${escapeHtml(String(item.category||'').toUpperCase())} · ${escapeHtml(item.published_at||'')}</small></div><span class="pnx-update-status ${item.is_published?'':'is-draft'}">${item.is_published?'PUBLISHED':'DRAFT'}</span></div><p>${escapeHtml(item.summary)}</p><div class="pnx-update-actions"><button type="button" data-edit-update="${escapeHtml(item.id)}">EDIT</button><button type="button" data-toggle-update="${escapeHtml(item.id)}">${item.is_published?'UNPUBLISH':'PUBLISH'}</button><button type="button" class="delete" data-delete-update="${escapeHtml(item.id)}">DELETE</button></div></article>`).join('');
     target.querySelectorAll('[data-edit-update]').forEach(btn => btn.addEventListener('click', () => {
       const item = data.find(x => x.id === btn.dataset.editUpdate); if (!item) return;
-      $('update-id').value=item.id; $('update-title').value=item.title||''; $('update-category').value=item.category||''; $('update-summary').value=item.summary||''; $('update-date').value=item.published_at||new Date().toISOString().slice(0,10); $('update-order').value=item.display_order??0; $('update-image').value=item.image_url||''; $('update-link').value=item.link_url||''; $('update-link-label').value=item.link_label||''; $('update-published').checked=Boolean(item.is_published); $('update-editor-title').textContent='EDIT UPDATE'; $('save-update-btn').innerHTML='SAVE CHANGES <span>↗</span>'; $('update-form-message').textContent='Editing selected update.'; $('update-form').scrollIntoView({behavior:'smooth',block:'start'});
+      $('update-id').value=item.id; $('update-title').value=item.title||''; $('update-category').value=item.category||''; $('update-summary').value=item.summary||''; $('update-date').value=item.published_at||new Date().toISOString().slice(0,10); $('update-order').value=item.display_order??0; $('update-image').value=item.image_url||''; updateImageFile.value=''; showUpdateImagePreview(item.image_url||''); $('update-link').value=item.link_url||''; $('update-link-label').value=item.link_label||''; $('update-published').checked=Boolean(item.is_published); $('update-editor-title').textContent='EDIT UPDATE'; $('save-update-btn').innerHTML='SAVE CHANGES <span>↗</span>'; $('update-form-message').textContent='Editing selected update.'; $('update-form').scrollIntoView({behavior:'smooth',block:'start'});
     }));
     target.querySelectorAll('[data-toggle-update]').forEach(btn => btn.addEventListener('click', async () => {
       const item=data.find(x=>x.id===btn.dataset.toggleUpdate); if(!item)return;
@@ -252,16 +302,19 @@
   async function saveUpdate(event) {
     event.preventDefault();
     const id=$('update-id').value;
-    const image=safeContentUrl($('update-image').value);
     const link=safeContentUrl($('update-link').value);
-    if ($('update-image').value.trim() && !image) { $('update-form-message').textContent='Image must be an HTTPS URL or a local assets path.'; return; }
     if ($('update-link').value.trim() && !link) { $('update-form-message').textContent='Button link must be HTTPS or a local page/anchor.'; return; }
-    const payload={title:$('update-title').value.trim(),category:$('update-category').value.trim(),summary:$('update-summary').value.trim(),published_at:$('update-date').value,display_order:Number($('update-order').value||0),image_url:image,link_url:link,link_label:$('update-link-label').value.trim(),is_published:$('update-published').checked};
-    $('save-update-btn').disabled=true; $('update-form-message').textContent='Saving…';
-    const result=id?await db.from('latest_updates').update(payload).eq('id',id):await db.from('latest_updates').insert(payload);
-    $('save-update-btn').disabled=false;
-    if(result.error){$('update-form-message').textContent='Save failed: '+result.error.message;return;}
-    clearUpdateForm(); $('update-form-message').textContent='Update saved successfully.'; loadUpdates();
+    $('save-update-btn').disabled=true; $('update-form-message').textContent='Uploading image and saving…';
+    try {
+      const image = await uploadUpdateImage();
+      if ($('update-image').value.trim() && !image) throw new Error('Image must be an HTTPS URL or a local assets path.');
+      const payload={title:$('update-title').value.trim(),category:$('update-category').value.trim(),summary:$('update-summary').value.trim(),published_at:$('update-date').value,display_order:Number($('update-order').value||0),image_url:image,link_url:link,link_label:$('update-link-label').value.trim(),is_published:$('update-published').checked};
+      const result=id?await db.from('latest_updates').update(payload).eq('id',id):await db.from('latest_updates').insert(payload);
+      if(result.error) throw result.error;
+      clearUpdateForm(); $('update-form-message').textContent='Update saved successfully.'; loadUpdates();
+    } catch(error) {
+      $('update-form-message').textContent='Save failed: '+(error.message||'Unknown error');
+    } finally { $('save-update-btn').disabled=false; }
   }
 
   async function boot() {
