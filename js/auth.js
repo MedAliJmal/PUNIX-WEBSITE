@@ -3,6 +3,7 @@
   const message = document.querySelector('#auth-message');
   const form = document.querySelector('#auth-form');
   const submit = document.querySelector('#auth-submit');
+  const googleButton = document.querySelector('#google-auth');
   const captchaBox = document.querySelector('#turnstile-container');
   const redirectParam = new URLSearchParams(window.location.search).get('redirect');
   const postAuthUrl = redirectParam && redirectParam.startsWith('tournaments.html') && !redirectParam.startsWith('//') ? new URL(redirectParam, window.location.origin + '/').href : new URL('profile.html', window.location.href).href;
@@ -15,7 +16,24 @@
     message.classList.add('error'); form.querySelectorAll('input,button').forEach(el => el.disabled = true); return;
   }
 
-  const client = window.supabase.createClient(config.url, config.publishableKey);
+  const client = window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.publishableKey));
+  googleButton.addEventListener('click', async () => {
+    googleButton.disabled = true;
+    setMessage('Connecting to Google…');
+    try {
+      const { error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: postAuthUrl,
+          queryParams: { prompt: 'select_account' }
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      setMessage(error.message || 'Google sign-in could not start. Please try again.', true);
+      googleButton.disabled = false;
+    }
+  });
   let mode = 'signup'; let captchaToken = ''; let widgetId = null;
   const nameInput = document.querySelector('#display-name');
   const nameLabel = document.querySelector('#name-label');
