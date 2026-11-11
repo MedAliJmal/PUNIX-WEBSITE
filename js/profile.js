@@ -81,10 +81,11 @@
     if (statusBadge) statusBadge.textContent = status === 'approved' ? 'APPROVED MEMBER' : status === 'rejected' ? 'MEMBERSHIP NOT APPROVED' : 'PENDING APPROVAL';
     byId('avatar-fallback').textContent = name.charAt(0).toUpperCase();
 
-    const defaultAvatar = ['male','female'].includes(profile.gender)
+    const genderAvatar = ['male','female'].includes(profile.gender)
       ? new URL(`/assets/images/punix-avatar-${profile.gender}.png`, window.location.origin).href
       : '';
-    const avatar = profile.avatar_url || defaultAvatar;
+    const neutralAvatar = new URL('/assets/images/punix-logo-original.png', window.location.origin).href;
+    const avatar = profile.avatar_url || genderAvatar || neutralAvatar;
     const img = byId('avatar-preview');
     if (avatar) {
       img.onerror = () => {
@@ -96,7 +97,7 @@
       img.src = avatar;
       img.style.display = 'block';
       byId('avatar-fallback').style.display = 'none';
-      byId('view-avatar').textContent = profile.avatar_url && profile.avatar_url !== defaultAvatar ? 'Custom avatar connected' : 'Default PUNIX avatar';
+      byId('view-avatar').textContent = profile.avatar_url && profile.avatar_url !== genderAvatar && profile.avatar_url !== neutralAvatar ? 'Custom avatar connected' : genderAvatar ? 'Default PUNIX avatar' : 'PUNIX placeholder avatar';
     } else {
       img.removeAttribute('src');
       img.style.display = 'none';
@@ -196,7 +197,7 @@
       const payload = {
         display_name: values.display_name,
         gender: values.gender,
-        avatar_url: validOptionalUrl(values.avatar_url, 'Avatar URL'),
+        avatar_url: validOptionalUrl(values.avatar_url, 'Avatar URL') || new URL(`/assets/images/punix-avatar-${values.gender}.png`, window.location.origin).href,
         bio: values.bio,
         twitch_url: validOptionalUrl(values.twitch_url, 'Twitch URL'),
         kick_url: validOptionalUrl(values.kick_url, 'Kick URL'),
