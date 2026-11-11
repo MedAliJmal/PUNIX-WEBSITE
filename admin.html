@@ -148,7 +148,7 @@
                   <label>GAME<input id="game-name" maxlength="60" placeholder="VALORANT" required></label>
                   <label>DIVISION<select id="team-division"><option value="men">Men's Team</option><option value="women">Women's Team</option><option value="mixed">Mixed Team</option><option value="open">Open Division</option></select></label>
                   <label>STATUS<select id="team-status"><option value="active">Active — public</option><option value="recruiting">Recruiting — public</option><option value="inactive">Inactive — hidden</option></select></label>
-                  <label class="full-field">TEAM LOGO URL <span class="optional">(optional, https://)</span><input id="team-logo" type="url" placeholder="https://…"></label>
+                  <div class="full-field team-logo-upload"><label for="team-logo-file">TEAM LOGO <span class="optional">(optional · PNG, JPG, WEBP or GIF · max 3 MB)</span></label><input id="team-logo-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><p id="team-logo-current" class="team-logo-current">No team logo selected.</p><div id="team-logo-preview" class="team-logo-preview" hidden><img id="team-logo-preview-img" alt="Team logo preview"></div></div>
                   <label class="full-field">DESCRIPTION <span class="optional">(optional)</span><textarea id="team-description" rows="3" maxlength="500" placeholder="A short introduction to this roster…"></textarea></label>
                   <label>DISPLAY ORDER<input id="team-order" type="number" min="0" max="999" value="0"></label>
                 </div>
