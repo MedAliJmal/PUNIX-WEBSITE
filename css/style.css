@@ -328,3 +328,27 @@ body :is(h1, h2, h3) {
 .pnx-admin-sponsor-thumb{display:block;width:100%;max-width:190px;height:65px;object-fit:contain;padding:8px;background:#090e11;border:1px solid rgba(255,255,255,.08)}
 @media(max-width:900px){.pnx-sponsors-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:680px){.pnx-sponsors-section{padding:60px 0}.pnx-sponsors-heading{display:block}.pnx-sponsors-heading>p{margin-top:20px}.pnx-sponsors-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.pnx-sponsor-card{min-height:125px;padding:19px}.pnx-sponsor-card img{height:60px}.pnx-sponsors-foot{flex-direction:column;line-height:1.6}}
+
+
+/* Hero headline sizing and column isolation — prevent overlap with team artwork */
+.hero{
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  column-gap:clamp(24px,3.4vw,52px);
+}
+.hero-copy{z-index:3;min-width:0;max-width:590px}
+.hero h1{
+  font-size:clamp(58px,6.4vw,88px);
+  line-height:.9;
+  letter-spacing:-1.5px;
+  max-width:100%;
+  overflow-wrap:normal;
+}
+.hero-visual{z-index:1;min-width:0;width:100%}
+@media(max-width:1100px) and (min-width:681px){
+  .hero{grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);column-gap:24px}
+  .hero h1{font-size:clamp(52px,6vw,72px);letter-spacing:-1px}
+  .eyebrow{font-size:8px;letter-spacing:1.4px}
+}
+@media(max-width:680px){
+  .hero h1{font-size:clamp(54px,13vw,78px);line-height:.92;letter-spacing:-1px}
+}
