@@ -120,7 +120,7 @@
     }
     target.innerHTML = members.map(member => {
       const status = member.membership_status || 'pending';
-      const division = ['community', 'creators', 'competitive'].includes(member.directory_division) ? member.directory_division : 'community';
+      const division = ['community', 'creators', 'competitive', 'management'].includes(member.directory_division) ? member.directory_division : 'community';
       const date = member.account_created_at ? new Date(member.account_created_at).toLocaleDateString() : '—';
       const lastSeen = member.last_sign_in_at ? new Date(member.last_sign_in_at).toLocaleString() : 'Never signed in';
       let avatarUrl = '';
@@ -137,6 +137,7 @@
             <option value="community" ${division === 'community' ? 'selected' : ''}>Community Member</option>
             <option value="creators" ${division === 'creators' ? 'selected' : ''}>Streamer</option>
             <option value="competitive" ${division === 'competitive' ? 'selected' : ''}>Competitive Player</option>
+            <option value="management" ${division === 'management' ? 'selected' : ''}>Management</option>
           </select>
         </label>
         <div class="pnx-update-actions">
