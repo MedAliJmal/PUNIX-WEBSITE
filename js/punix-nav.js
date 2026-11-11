@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const actions = header.querySelector('.pnx-nav-actions');
     notificationRoot = document.createElement('div');
     notificationRoot.className = 'pnx-notification-center';
-    notificationRoot.innerHTML = '<button class="pnx-notification-toggle" type="button" aria-label="Notifications" aria-expanded="false"><span aria-hidden="true">♧</span><b class="pnx-notification-count" hidden>0</b></button><section class="pnx-notification-panel" hidden aria-label="Notifications"><div class="pnx-notification-heading"><strong>NOTIFICATIONS</strong><button type="button" class="pnx-notification-readall">MARK ALL READ</button></div><div class="pnx-notification-list"><p class="pnx-notification-empty">Sign in to see your notifications.</p></div></section>';
+    notificationRoot.innerHTML = '<button class="pnx-notification-toggle" type="button" aria-label="Notifications" aria-expanded="false"><svg class="pnx-bell-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M10 21h4"></path></svg><b class="pnx-notification-count" hidden>0</b></button><section class="pnx-notification-panel" hidden aria-label="Notifications"><div class="pnx-notification-heading"><strong>NOTIFICATIONS</strong><button type="button" class="pnx-notification-readall">MARK ALL READ</button></div><div class="pnx-notification-list"><p class="pnx-notification-empty">Sign in to see your notifications.</p></div></section>';
     actions.insertBefore(notificationRoot, actions.firstChild);
     notificationList = notificationRoot.querySelector('.pnx-notification-list');
     notificationCount = notificationRoot.querySelector('.pnx-notification-count');
