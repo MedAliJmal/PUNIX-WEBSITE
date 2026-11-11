@@ -215,7 +215,13 @@
                   <label class="pnx-update-wide">SHORT DETAILS<textarea id="update-summary" rows="3" maxlength="300" required placeholder="Write a short update for the homepage…"></textarea></label>
                   <label>DATE<input id="update-date" type="date" required></label>
                   <label>DISPLAY ORDER<input id="update-order" type="number" min="0" max="999" value="0"></label>
-                  <label class="pnx-update-wide">IMAGE URL <span class="optional">(optional, https:// or local assets path)</span><input id="update-image" type="text" maxlength="500" placeholder="assets/images/update.jpg"></label>
+                  <div class="pnx-update-wide pnx-update-image-field">
+                    <label for="update-image-file">UPDATE IMAGE <span class="optional">(optional · PNG, JPG, WEBP or GIF · max 5 MB)</span></label>
+                    <div class="pnx-update-image-controls"><label class="pnx-update-upload-button" for="update-image-file">＋ UPLOAD IMAGE</label><input id="update-image-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><span id="update-image-file-name">No local image selected.</span></div>
+                    <div id="update-image-preview" class="pnx-update-image-preview" hidden><img id="update-image-preview-img" alt="Latest update image preview"><button id="remove-update-image" type="button" class="pnx-update-image-remove">REMOVE IMAGE</button></div>
+                    <label class="pnx-update-image-url-label" for="update-image">OR IMAGE URL <span class="optional">(HTTPS URL or local assets path)</span></label>
+                    <input id="update-image" type="text" maxlength="500" placeholder="assets/images/update.jpg">
+                  </div>
                   <label class="pnx-update-wide">BUTTON LINK <span class="optional">(optional, https:// or site page/anchor)</span><input id="update-link" type="text" maxlength="500" placeholder="https://… or #community"></label>
                   <label>BUTTON LABEL<input id="update-link-label" maxlength="35" placeholder="READ MORE"></label>
                   <label class="pnx-update-publish"><input id="update-published" type="checkbox" checked> PUBLISH ON HOMEPAGE</label>
