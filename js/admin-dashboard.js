@@ -21,12 +21,13 @@
   }
 
   function openSection(name) {
-    currentSection = ['members', 'teams', 'updates', 'tournaments'].includes(name) ? name : 'overview';
+    currentSection = ['members', 'teams', 'updates', 'tournaments', 'sponsors'].includes(name) ? name : 'overview';
     $('overview-section').hidden = currentSection !== 'overview';
     $('members-section').hidden = currentSection !== 'members';
     $('teams-section').hidden = currentSection !== 'teams';
     $('updates-section').hidden = currentSection !== 'updates';
     $('tournaments-section').hidden = currentSection !== 'tournaments';
+    $('sponsors-section').hidden = currentSection !== 'sponsors';
     document.querySelectorAll('.pnx-admin-nav-item').forEach((button) => {
       const active = button.dataset.section === currentSection;
       button.classList.toggle('is-active', active);
@@ -36,10 +37,12 @@
     else if (currentSection === 'teams') history.replaceState(null, '', '#teams');
     else if (currentSection === 'updates') history.replaceState(null, '', '#updates');
     else if (currentSection === 'tournaments') history.replaceState(null, '', '#tournaments');
+    else if (currentSection === 'sponsors') history.replaceState(null, '', '#sponsors');
     else history.replaceState(null, '', '#overview');
     if (currentSection === 'members') loadMembers();
     if (currentSection === 'updates') loadUpdates();
     if (currentSection === 'tournaments') window.loadPunixTournamentsAdmin?.();
+    if (currentSection === 'sponsors') loadSponsors();
   }
 
   async function countRows(table, filters = []) {
@@ -319,6 +322,108 @@
     } finally { $('save-update-btn').disabled=false; }
   }
 
+
+  // Sponsor management — logo uploads are stored in the public sponsor-logos bucket.
+  const sponsorLogoFile = $('sponsor-logo-file');
+  let sponsorLogoObjectUrl = '';
+  function showSponsorLogoPreview(url, fileName = '') {
+    if (sponsorLogoObjectUrl && sponsorLogoObjectUrl !== url) URL.revokeObjectURL(sponsorLogoObjectUrl);
+    sponsorLogoObjectUrl = String(url || '').startsWith('blob:') ? url : '';
+    $('sponsor-logo-preview').hidden = !url;
+    if (url) $('sponsor-logo-preview-img').src = url;
+    else $('sponsor-logo-preview-img').removeAttribute('src');
+    $('sponsor-logo-file-name').textContent = fileName || (url ? 'Current logo preview.' : 'No logo selected.');
+  }
+  sponsorLogoFile.addEventListener('change', () => {
+    const file = sponsorLogoFile.files?.[0];
+    if (!file) { showSponsorLogoPreview($('sponsor-logo-url').value.trim()); return; }
+    if (!['image/png','image/jpeg','image/webp','image/svg+xml'].includes(file.type)) {
+      sponsorLogoFile.value = ''; showSponsorLogoPreview($('sponsor-logo-url').value.trim());
+      $('sponsor-form-message').textContent = 'Choose a PNG, JPG, WEBP or SVG logo.'; return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      sponsorLogoFile.value = ''; showSponsorLogoPreview($('sponsor-logo-url').value.trim());
+      $('sponsor-form-message').textContent = 'Logo must be 5 MB or smaller.'; return;
+    }
+    showSponsorLogoPreview(URL.createObjectURL(file), file.name);
+    $('sponsor-logo-url').value = '';
+    $('sponsor-form-message').textContent = '';
+  });
+  $('sponsor-logo-url').addEventListener('input', () => {
+    if (!sponsorLogoFile.files?.length) showSponsorLogoPreview($('sponsor-logo-url').value.trim());
+  });
+  $('remove-sponsor-logo').addEventListener('click', () => {
+    sponsorLogoFile.value = ''; $('sponsor-logo-url').value = ''; showSponsorLogoPreview('');
+    $('sponsor-form-message').textContent = 'Logo removed. Save the sponsor to apply the change.';
+  });
+  async function uploadSponsorLogo() {
+    const file = sponsorLogoFile.files?.[0];
+    if (!file) {
+      const value = $('sponsor-logo-url').value.trim();
+      if (!value) return '';
+      try { return new URL(value).protocol === 'https:' ? value : ''; } catch { return ''; }
+    }
+    const ext = ({'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/svg+xml':'svg'})[file.type];
+    const path = `sponsors/${crypto.randomUUID()}.${ext}`;
+    const { error } = await db.storage.from('sponsor-logos').upload(path, file, {contentType:file.type,cacheControl:'3600',upsert:false});
+    if (error) throw error;
+    return db.storage.from('sponsor-logos').getPublicUrl(path).data.publicUrl;
+  }
+  function clearSponsorForm() {
+    $('sponsor-form').reset(); $('sponsor-id').value = ''; $('sponsor-order').value = '0';
+    $('sponsor-published').checked = true; sponsorLogoFile.value = ''; $('sponsor-logo-url').value = '';
+    showSponsorLogoPreview(''); $('sponsor-editor-title').textContent = 'ADD A SPONSOR';
+    $('save-sponsor-btn').innerHTML = 'SAVE SPONSOR <span>↗</span>';
+    $('sponsor-form-message').textContent = '';
+  }
+  async function loadSponsors() {
+    const target = $('admin-sponsors-list');
+    target.innerHTML = '<p class="pnx-recent-empty">Loading sponsors…</p>';
+    const {data,error} = await db.from('sponsors').select('*').order('display_order',{ascending:true}).order('created_at',{ascending:false});
+    if (error) { target.innerHTML = '<p class="pnx-recent-empty">Could not load sponsors. Run the PUNIX sponsors SQL migration first.</p>'; return; }
+    if (!data?.length) { target.innerHTML = '<p class="pnx-recent-empty">No sponsors added yet. Add your first partner using the editor.</p>'; return; }
+    target.innerHTML = data.map(item => `<article class="pnx-admin-update-row"><div class="pnx-admin-update-top"><div><strong>${escapeHtml(item.name)}</strong><br><small>ORDER ${Number(item.display_order)||0} · ${item.is_featured?'FEATURED · ':''}${item.is_published?'VISIBLE':'HIDDEN'}</small></div><span class="pnx-update-status ${item.is_published?'':'is-draft'}">${item.is_published?'PUBLISHED':'HIDDEN'}</span></div>${item.logo_url?'<img class="pnx-admin-sponsor-thumb" src="'+escapeHtml(item.logo_url)+'" alt="">':'<p>No logo added.</p>'}<div class="pnx-update-actions"><button type="button" data-edit-sponsor="${escapeHtml(item.id)}">EDIT</button><button type="button" data-toggle-sponsor="${escapeHtml(item.id)}">${item.is_published?'HIDE':'PUBLISH'}</button><button type="button" class="delete" data-delete-sponsor="${escapeHtml(item.id)}">DELETE</button></div></article>`).join('');
+    target.querySelectorAll('[data-edit-sponsor]').forEach(btn => btn.addEventListener('click', () => {
+      const item=data.find(x=>x.id===btn.dataset.editSponsor); if(!item)return;
+      $('sponsor-id').value=item.id; $('sponsor-name').value=item.name||''; $('sponsor-website').value=item.website_url||'';
+      $('sponsor-logo-url').value=item.logo_url||''; sponsorLogoFile.value=''; showSponsorLogoPreview(item.logo_url||'');
+      $('sponsor-order').value=item.display_order??0; $('sponsor-featured').checked=Boolean(item.is_featured);
+      $('sponsor-published').checked=Boolean(item.is_published); $('sponsor-editor-title').textContent='EDIT SPONSOR';
+      $('save-sponsor-btn').innerHTML='SAVE CHANGES <span>↗</span>'; $('sponsor-form-message').textContent='Editing selected sponsor.';
+      $('sponsor-form').scrollIntoView({behavior:'smooth',block:'start'});
+    }));
+    target.querySelectorAll('[data-toggle-sponsor]').forEach(btn => btn.addEventListener('click', async () => {
+      const item=data.find(x=>x.id===btn.dataset.toggleSponsor); if(!item)return;
+      const {error}=await db.from('sponsors').update({is_published:!item.is_published}).eq('id',item.id);
+      if(error) alert('Could not change sponsor visibility: '+error.message); else loadSponsors();
+    }));
+    target.querySelectorAll('[data-delete-sponsor]').forEach(btn => btn.addEventListener('click', async () => {
+      const item=data.find(x=>x.id===btn.dataset.deleteSponsor); if(!item||!confirm(`Delete “${item.name}” from the sponsor list?`))return;
+      const {error}=await db.from('sponsors').delete().eq('id',item.id);
+      if(error) alert('Could not delete sponsor: '+error.message); else {
+        const marker='/storage/v1/object/public/sponsor-logos/';
+        if(item.logo_url?.includes(marker)){const path=item.logo_url.split(marker)[1];if(path)await db.storage.from('sponsor-logos').remove([decodeURIComponent(path)]);}
+        if($('sponsor-id').value===item.id)clearSponsorForm(); loadSponsors();
+      }
+    }));
+  }
+  async function saveSponsor(event) {
+    event.preventDefault();
+    const website=$('sponsor-website').value.trim();
+    if(website){try{if(new URL(website).protocol!=='https:')throw new Error();}catch{$('sponsor-form-message').textContent='Website must be a valid HTTPS URL.';return;}}
+    $('save-sponsor-btn').disabled=true; $('sponsor-form-message').textContent='Uploading logo and saving sponsor…';
+    try {
+      const logo=await uploadSponsorLogo();
+      if($('sponsor-logo-url').value.trim()&&!logo)throw new Error('Logo URL must be a valid HTTPS URL.');
+      const payload={name:$('sponsor-name').value.trim(),website_url:website,logo_url:logo,display_order:Number($('sponsor-order').value||0),is_featured:$('sponsor-featured').checked,is_published:$('sponsor-published').checked};
+      const id=$('sponsor-id').value;
+      const result=id?await db.from('sponsors').update(payload).eq('id',id):await db.from('sponsors').insert(payload);
+      if(result.error)throw result.error;
+      clearSponsorForm(); $('sponsor-form-message').textContent='Sponsor saved successfully.'; loadSponsors();
+    } catch(error) { $('sponsor-form-message').textContent='Save failed: '+(error.message||'Unknown error'); }
+    finally { $('save-sponsor-btn').disabled=false; }
+  }
+
   async function boot() {
     try {
       const { data: { session }, error: sessionError } = await db.auth.getSession();
@@ -338,6 +443,9 @@
       $('update-form').addEventListener('submit', saveUpdate);
       $('cancel-update-btn').addEventListener('click', clearUpdateForm);
       $('refresh-updates').addEventListener('click', loadUpdates);
+      $('sponsor-form').addEventListener('submit', saveSponsor);
+      $('cancel-sponsor-btn').addEventListener('click', clearSponsorForm);
+      $('refresh-sponsors').addEventListener('click', loadSponsors);
       clearUpdateForm();
       $('refresh-stats').addEventListener('click', loadStats);
       $('refresh-members').addEventListener('click', loadMembers);
@@ -348,7 +456,7 @@
           renderMemberAccounts();
         });
       });
-      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : 'overview';
+      const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : location.hash === '#sponsors' ? 'sponsors' : 'overview';
       openSection(initial);
       await loadStats();
     } catch (error) {
