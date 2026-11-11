@@ -17,11 +17,18 @@
   const requestedRedirect = new URLSearchParams(window.location.search).get('redirect') || '';
   function getPostAuthUrl() {
     if (requestedRedirect === 'my-team.html') return new URL('my-team.html', window.location.href).href;
-    const inviteMatch = requestedRedirect.match(/^team-invite\\.html\\?token=([0-9a-f-]{36})$/i);
-    if (inviteMatch) return new URL('team-invite.html?token=' + encodeURIComponent(inviteMatch[1]), window.location.href).href;
+    const invitePrefix = 'team-invite.html?token=';
+    const inviteToken = requestedRedirect.startsWith(invitePrefix) ? requestedRedirect.slice(invitePrefix.length) : '';
+    if (/^[0-9a-f-]{36}$/i.test(inviteToken)) {
+      return new URL('team-invite.html?token=' + encodeURIComponent(inviteToken), window.location.href).href;
+    }
     return new URL('profile.html', window.location.href).href;
   }
   const postAuthUrl = getPostAuthUrl();
+  const emailCallback = new URL('auth.html', window.location.href);
+  if (requestedRedirect === 'my-team.html' || requestedRedirect.startsWith('team-invite.html?token=')) {
+    emailCallback.searchParams.set('redirect', requestedRedirect);
+  }
   let mode = 'signup'; let captchaToken = ''; let widgetId = null;
   const nameInput = document.querySelector('#display-name');
   const nameLabel = document.querySelector('#name-label');
