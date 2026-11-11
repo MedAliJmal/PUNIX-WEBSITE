@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Account and administration pages are not intended for search results.
+Disallow: /admin.html
+Disallow: /admin-media.html
+Disallow: /admin-teams.html
+Disallow: /auth.html
+Disallow: /reset-password.html
+Disallow: /profile.html
+Disallow: /member.html
+
+Sitemap: https://punix.pages.dev/sitemap.xml
