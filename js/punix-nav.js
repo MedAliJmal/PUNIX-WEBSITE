@@ -61,9 +61,78 @@ document.addEventListener('DOMContentLoaded', () => {
     memberLink.setAttribute('aria-label', signedIn ? 'Open my profile' : 'Member access');
   };
 
+  // In-app member notifications. The database RLS policy limits every query to the signed-in member.
+  let notificationUserId = null, notificationTimer = null;
+  let notificationRoot = null, notificationList = null, notificationCount = null;
+  const notificationEsc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function ensureNotificationCenter() {
+    if (notificationRoot || !header.querySelector('.pnx-nav-actions')) return;
+    const actions = header.querySelector('.pnx-nav-actions');
+    notificationRoot = document.createElement('div');
+    notificationRoot.className = 'pnx-notification-center';
+    notificationRoot.innerHTML = '<button class="pnx-notification-toggle" type="button" aria-label="Notifications" aria-expanded="false"><span aria-hidden="true">♧</span><b class="pnx-notification-count" hidden>0</b></button><section class="pnx-notification-panel" hidden aria-label="Notifications"><div class="pnx-notification-heading"><strong>NOTIFICATIONS</strong><button type="button" class="pnx-notification-readall">MARK ALL READ</button></div><div class="pnx-notification-list"><p class="pnx-notification-empty">Sign in to see your notifications.</p></div></section>';
+    actions.insertBefore(notificationRoot, actions.firstChild);
+    notificationList = notificationRoot.querySelector('.pnx-notification-list');
+    notificationCount = notificationRoot.querySelector('.pnx-notification-count');
+    const toggle = notificationRoot.querySelector('.pnx-notification-toggle');
+    const panel = notificationRoot.querySelector('.pnx-notification-panel');
+    toggle.addEventListener('click', () => {
+      const open = panel.hidden;
+      panel.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      if (open) refreshNotifications();
+    });
+    notificationRoot.querySelector('.pnx-notification-readall').addEventListener('click', async () => {
+      if (!notificationUserId) return;
+      const { error } = await client.from('notifications').update({read_at:new Date().toISOString()}).eq('user_id', notificationUserId).is('read_at', null);
+      if (error) { notificationList.innerHTML = '<p class="pnx-notification-empty">Could not update notifications. Please try again.</p>'; return; }
+      refreshNotifications();
+    });
+    document.addEventListener('click', event => {
+      if (!notificationRoot.contains(event.target)) {
+        panel.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+  async function refreshNotifications() {
+    if (!notificationUserId || !notificationList) return;
+    const [items, unread] = await Promise.all([
+      client.from('notifications').select('id,title,body,link,created_at,read_at').eq('user_id', notificationUserId).order('created_at', {ascending:false}).limit(20),
+      client.from('notifications').select('id', {count:'exact',head:true}).eq('user_id', notificationUserId).is('read_at', null)
+    ]);
+    if (items.error) { notificationList.innerHTML = '<p class="pnx-notification-empty">Notifications are temporarily unavailable.</p>'; return; }
+    const total = unread.count || 0;
+    notificationCount.textContent = total > 99 ? '99+' : String(total);
+    notificationCount.hidden = total === 0;
+    const rows = items.data || [];
+    notificationList.innerHTML = rows.length ? rows.map(item => '<button type="button" class="pnx-notification-item '+(item.read_at?'':'is-unread')+'" data-notification-id="'+notificationEsc(item.id)+'" data-notification-link="'+notificationEsc(item.link||'')+'"><strong>'+notificationEsc(item.title)+'</strong><span>'+notificationEsc(item.body)+'</span><small>'+notificationEsc(new Date(item.created_at).toLocaleString())+'</small></button>').join('') : '<p class="pnx-notification-empty">You are all caught up. New PUNIX event announcements and team updates will appear here.</p>';
+    notificationList.querySelectorAll('[data-notification-id]').forEach(button => button.addEventListener('click', async () => {
+      const id = button.dataset.notificationId, link = button.dataset.notificationLink;
+      await client.from('notifications').update({read_at:new Date().toISOString()}).eq('id',id).eq('user_id',notificationUserId);
+      await refreshNotifications();
+      if (link) { try { const target = new URL(link, window.location.origin); if (target.origin === window.location.origin) window.location.href = target.href; } catch (_) {} }
+    }));
+  }
+  function setNotificationSession(session) {
+    const nextId = session?.user?.id || null;
+    if (nextId === notificationUserId) return;
+    notificationUserId = nextId;
+    if (notificationTimer) clearInterval(notificationTimer);
+    ensureNotificationCenter();
+    if (!notificationUserId) {
+      notificationCount.hidden = true;
+      notificationList.innerHTML = '<p class="pnx-notification-empty">Sign in to see your notifications.</p>';
+      return;
+    }
+    refreshNotifications();
+    notificationTimer = setInterval(refreshNotifications, 45000);
+  }
+
   let roleCheckId = 0;
   const updateNavigation = async session => {
     window.PUNIX_AUTH_SESSION = session || null;
+    setNotificationSession(session);
     const currentCheck = ++roleCheckId;
     const signedIn = Boolean(session?.user?.id);
     renderMemberLink(signedIn);
