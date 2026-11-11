@@ -245,8 +245,8 @@ begin
   if not exists(select 1 from public.team_members tm where tm.team_id=p_team_id and tm.user_id=v_user and tm.member_role='captain') then
     raise exception 'Only the team captain can delete this team.' using errcode='42501';
   end if;
-  if exists(select 1 from public.tournament_registrations r where r.team_id=p_team_id and r.status in ('pending','confirmed')) then
-    raise exception 'This team has a pending or confirmed tournament entry. Resolve or withdraw that entry before deleting the team.';
+  if exists(select 1 from public.tournament_registrations r join public.tournaments t on t.id=r.tournament_id where r.team_id=p_team_id and r.status in ('pending','confirmed') and t.status in ('upcoming','live')) then
+    raise exception 'This team has an active tournament entry. Resolve or withdraw it before deleting the team.';
   end if;
   select t.team_name into v_team_name from public.teams t where t.id=p_team_id;
   if v_team_name is null then raise exception 'Team not found.'; end if;
