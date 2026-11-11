@@ -4,6 +4,8 @@
   const form = document.querySelector('#auth-form');
   const submit = document.querySelector('#auth-submit');
   const captchaBox = document.querySelector('#turnstile-container');
+  const redirectParam = new URLSearchParams(window.location.search).get('redirect');
+  const postAuthUrl = redirectParam && redirectParam.startsWith('tournaments.html') && !redirectParam.startsWith('//') ? new URL(redirectParam, window.location.origin + '/').href : new URL('profile.html', window.location.href).href;
   if (!window.supabase || !config || !config.url?.startsWith('https://') || config.url.includes('YOUR_PROJECT') || !config.publishableKey || config.publishableKey.includes('YOUR_')) {
     message.textContent = 'Setup required: check your Supabase URL and publishable key in js/supabase-config.js.';
     message.classList.add('error'); form.querySelectorAll('input,button').forEach(el => el.disabled = true); return;
@@ -14,21 +16,6 @@
   }
 
   const client = window.supabase.createClient(config.url, config.publishableKey);
-  const requestedRedirect = new URLSearchParams(window.location.search).get('redirect') || '';
-  function getPostAuthUrl() {
-    if (requestedRedirect === 'my-team.html') return new URL('my-team.html', window.location.href).href;
-    const invitePrefix = 'team-invite.html?token=';
-    const inviteToken = requestedRedirect.startsWith(invitePrefix) ? requestedRedirect.slice(invitePrefix.length) : '';
-    if (/^[0-9a-f-]{36}$/i.test(inviteToken)) {
-      return new URL('team-invite.html?token=' + encodeURIComponent(inviteToken), window.location.href).href;
-    }
-    return new URL('profile.html', window.location.href).href;
-  }
-  const postAuthUrl = getPostAuthUrl();
-  const emailCallback = new URL('auth.html', window.location.href);
-  if (requestedRedirect === 'my-team.html' || requestedRedirect.startsWith('team-invite.html?token=')) {
-    emailCallback.searchParams.set('redirect', requestedRedirect);
-  }
   let mode = 'signup'; let captchaToken = ''; let widgetId = null;
   const nameInput = document.querySelector('#display-name');
   const nameLabel = document.querySelector('#name-label');
@@ -102,7 +89,7 @@
 
   client.auth.getSession().then(({ data }) => {
     if (data.session) {
-      setMessage(`Already signed in as ${data.session.user.email}. Redirecting…`);
+      setMessage(`Already signed in as ${data.session.user.email}. Redirecting to your profile…`);
       window.location.assign(postAuthUrl);
     }
   });
@@ -125,15 +112,15 @@
         const displayName = nameInput.value.trim();
         const gender = genderInput.value;
         if (!['male', 'female'].includes(gender)) throw new Error('Please select your gender.');
-        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: emailCallback.href } });
+        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: window.location.href } });
         if (error) throw error;
-        if (data.session) { setMessage('Account created. Redirecting…'); window.location.assign(postAuthUrl); return; }
-        setMessage('Account created. Check your email to confirm your address. You will be redirected to the requested PUNIX page after confirming.');
+        setMessage(data.session ? 'Account created. You are signed in.' : 'Account created. Check your email to confirm your address, then sign in.');
       } else {
         setMessage('Signing you in…');
         const { data, error } = await client.auth.signInWithPassword({ email, password: password.value, options: { captchaToken: token } });
         if (error) throw error;
-        setMessage('Signed in successfully. Redirecting…');
+        setMessage('Signed in successfully. Redirecting to your profile…');
+        // Keep the member experience consistent: a successful login opens the member profile.
         window.location.assign(postAuthUrl);
         return;
       }
