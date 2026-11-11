@@ -319,6 +319,7 @@
       const payload={title:$('update-title').value.trim(),category:$('update-category').value.trim(),summary:$('update-summary').value.trim(),published_at:$('update-date').value,display_order:Number($('update-order').value||0),image_url:image,link_url:link,link_label:$('update-link-label').value.trim(),is_published:$('update-published').checked};
       const result=id?await db.from('latest_updates').update(payload).eq('id',id):await db.from('latest_updates').insert(payload);
       if(result.error) throw result.error;
+      setInterval(loadSupportConversations, 5000);
       clearUpdateForm(); $('update-form-message').textContent='Update saved successfully.'; loadUpdates();
     } catch(error) {
       $('update-form-message').textContent='Save failed: '+(error.message||'Unknown error');
@@ -430,6 +431,15 @@
   let supportAdminUserId = null;
   let selectedSupportConversation = null;
   let supportRealtimeChannel = null;
+  const supportAdminSeenKey = 'punix-support-admin-seen-v1:';
+  let supportAdminUnread = new Map();
+  function updateSupportAdminBadge(count) {
+    const badge = $('support-nav-unread');
+    if (badge) { badge.textContent = count > 9 ? '9+' : String(count); badge.hidden = count < 1; }
+    const title = $('support-admin-count');
+    if (title && count > 0) title.dataset.unread = `${count} UNREAD`;
+    else if (title) delete title.dataset.unread;
+  }
 
   async function loadSupportConversations() {
     const target = $('support-admin-list');
@@ -444,6 +454,16 @@
       return;
     }
     const rows = data || [];
+    const { data: recentMessages } = await db.from('support_messages').select('id,conversation_id,sender_type,created_at').order('created_at', {ascending:false}).limit(1000);
+    const latestByConversation = new Map();
+    (recentMessages || []).forEach(message => { if (!latestByConversation.has(message.conversation_id)) latestByConversation.set(message.conversation_id, message); });
+    let unreadCount = 0;
+    rows.forEach(row => {
+      const latest = latestByConversation.get(row.id);
+      let seen = ''; try { seen = localStorage.getItem(supportAdminSeenKey + row.id) || ''; } catch {}
+      if (latest?.sender_type === 'visitor' && latest.id !== seen) unreadCount++;
+    });
+    updateSupportAdminBadge(unreadCount);
     const openCount = rows.filter(row => row.status === 'open').length;
     $('support-admin-count').textContent = `${openCount} OPEN · ${rows.length} TOTAL`;
     $('support-admin-message').textContent = rows.length ? 'Select a conversation to read and reply.' : 'Your support inbox is clear.';
@@ -483,6 +503,8 @@
     $('support-admin-messages').innerHTML = (messages || []).map(message => `
       <article class="pnx-support-admin-message ${message.sender_type === 'admin' ? 'is-admin' : 'is-visitor'}">${escapeHtml(message.body)}<small>${message.sender_type === 'admin' ? 'PUNIX SUPPORT' : escapeHtml(conversation.visitor_name)} · ${escapeHtml(new Date(message.created_at).toLocaleString())}</small></article>`).join('') || '<p class="pnx-recent-empty">No messages in this conversation.</p>';
     $('support-admin-messages').scrollTop = $('support-admin-messages').scrollHeight;
+    const latestVisitorMessage = [...(messages || [])].reverse().find(message => message.sender_type === 'visitor');
+    if (latestVisitorMessage?.id) { try { localStorage.setItem(supportAdminSeenKey + id, latestVisitorMessage.id); } catch {} }
     $('support-admin-reply').hidden = conversation.status !== 'open';
     $('support-admin-reply-text').value = '';
     $('support-toggle-status').hidden = false;
