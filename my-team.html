@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090c10">
+<title>My Team | PUNIX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/profile.css"><link rel="stylesheet" href="css/teams.css"><link rel="stylesheet" href="css/punix-nav.css"><link rel="stylesheet" href="css/my-team.css">
+<link rel="icon" type="image/png" href="/assets/images/punix-logo-original.png">
+</head>
+<body class="profile-page">
+<header class="pnx-site-header">
+<a class="pnx-brand" href="index.html#top" aria-label="PUNIX home"><img src="assets/images/punix-logo-original.png" alt="PUNIX"></a>
+<button class="pnx-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+<nav class="pnx-main-nav" aria-label="Main navigation">
+<a href="index.html#top">Home</a><a href="members.html">Members</a><a href="teams.html" aria-current="page">Teams</a><a href="tournaments.html">Tournaments</a>
+</nav>
+<div class="pnx-nav-actions"><a class="pnx-nav-cta" href="profile.html">MY PROFILE ↗</a></div>
+</header>
+<main class="my-team-shell">
+<div class="my-team-heading"><p class="eyebrow">PUNIX NETWORK / TEAM MANAGEMENT</p><h1>YOUR <span>TEAM.</span></h1><p>Create a roster, invite your players and manage your team from one place.</p></div>
+<p id="team-hub-message" class="team-hub-message" role="status" aria-live="polite">Loading your team space…</p>
+<section id="create-team-panel" class="team-hub-panel" hidden>
+<div class="team-hub-panel-heading"><span>01 / START YOUR ROSTER</span><h2>CREATE A TEAM</h2><p>Every PUNIX member can create a team. You'll become its captain automatically.</p></div>
+<form id="create-team-form" class="team-hub-form">
+<label>TEAM NAME<input id="new-team-name" maxlength="80" required placeholder="e.g. CARTHYX"></label>
+<label>GAME<input id="new-team-game" maxlength="60" required placeholder="e.g. VALORANT"></label>
+<label>DIVISION<select id="new-team-division"><option value="open">Open</option><option value="men">Men's team</option><option value="women">Women's team</option><option value="mixed">Mixed team</option></select></label>
+<label class="team-hub-wide">DESCRIPTION<textarea id="new-team-description" maxlength="500" rows="3" placeholder="Tell players what your team is about…"></textarea></label>
+<button class="button" id="create-team-button" type="submit">CREATE TEAM ↗</button>
+</form>
+</section>
+<section id="my-team-panel" class="team-hub-panel" hidden>
+<div class="team-hub-panel-heading"><span>01 / YOUR ROSTER</span><h2 id="my-team-name">TEAM</h2><p id="my-team-game"></p></div>
+<div class="team-hub-team-meta"><span id="my-team-division"></span><span id="my-team-status"></span></div>
+<p id="my-team-description" class="my-team-description"></p>
+<div class="team-hub-subheading"><div><span>02 / THE ROSTER</span><h3>TEAM MEMBERS</h3></div><span id="my-team-count"></span></div>
+<div id="my-team-roster" class="my-team-roster"></div>
+<section id="captain-tools" class="captain-tools" hidden>
+<div class="team-hub-subheading"><div><span>03 / GROW YOUR ROSTER</span><h3>INVITE A PLAYER</h3></div></div>
+<p>Create a private invitation link and share it with your player. The link expires after 7 days and can only be used once.</p>
+<button class="button" id="create-invite-button" type="button">GENERATE INVITATION LINK ↗</button>
+<div id="new-invite-result" class="new-invite-result" hidden><input id="new-invite-url" readonly><button class="button button-outline" id="copy-invite-button" type="button">COPY LINK</button></div>
+<div class="team-hub-subheading pending-heading"><div><span>04 / INVITATION CONTROL</span><h3>PENDING INVITATIONS</h3></div></div>
+<div id="pending-invitations" class="pending-invitations"></div>
+<div class="team-danger-zone"><div><strong>DELETE THIS TEAM</strong><p>All roster members will be released and can create or join another team. Tournament entries must be resolved first.</p></div><button class="team-delete-button" id="delete-team-button" type="button">DELETE TEAM</button></div>
+</section>
+</section>
+<a class="team-hub-back" href="teams.html">← VIEW ALL PUNIX TEAMS</a>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase-config.js"></script><script src="js/my-team.js"></script><script src="js/punix-nav.js" defer></script>
+</body></html>
