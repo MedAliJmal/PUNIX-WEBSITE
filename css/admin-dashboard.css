@@ -159,3 +159,8 @@
 .pnx-support-admin-reply .button{justify-self:start}
 .pnx-support-admin-reply[hidden]{display:none!important}
 @media(max-width:1050px){.pnx-support-admin-layout{grid-template-columns:1fr}}
+
+/* Unread support notification */
+.pnx-admin-unread{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;margin-left:auto;border-radius:20px;background:#df4949;color:#fff;font:800 9px/1 Inter,Arial,sans-serif;box-shadow:0 0 0 3px rgba(223,73,73,.12)}
+.pnx-admin-unread[hidden]{display:none!important}
+.pnx-admin-nav-item{gap:8px}
