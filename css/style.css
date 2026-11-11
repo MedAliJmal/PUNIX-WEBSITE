@@ -352,3 +352,28 @@ body :is(h1, h2, h3) {
 @media(max-width:680px){
   .hero h1{font-size:clamp(54px,13vw,78px);line-height:.92;letter-spacing:-1px}
 }
+
+
+/* PUNIX ANIME COMMUNITY DIVISION */
+.pnx-anime-section{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);gap:clamp(34px,6vw,82px);align-items:center;padding-top:105px;padding-bottom:110px;border-top:1px solid var(--line)}
+.pnx-anime-art{position:relative;isolation:isolate;min-height:430px;overflow:hidden;border:1px solid rgba(201,164,91,.24);background:radial-gradient(ellipse at 52% 48%,rgba(181,52,72,.24),transparent 42%),radial-gradient(ellipse at 75% 18%,rgba(37,185,176,.12),transparent 35%),linear-gradient(145deg,#171116,#090b0e 68%);display:grid;place-items:center}
+.pnx-anime-art:before,.pnx-anime-art:after{content:"";position:absolute;z-index:-1;inset:12%;border:1px solid rgba(201,164,91,.17);transform:rotate(45deg)}
+.pnx-anime-art:after{inset:22%;border-color:rgba(221,93,111,.22);transform:rotate(45deg) scale(1.15)}
+.pnx-anime-orbit{position:absolute;width:min(66%,330px);aspect-ratio:1;border:1px solid rgba(225,194,137,.42);border-radius:50%;transform:rotate(-28deg) scaleY(.42)}
+.pnx-anime-orbit-one{box-shadow:0 0 55px rgba(196,66,91,.12)}
+.pnx-anime-orbit-two{width:min(84%,420px);transform:rotate(58deg) scaleY(.3);border-color:rgba(37,185,176,.28)}
+.pnx-anime-sigil{font:900 clamp(150px,22vw,260px)/.8 var(--font-display);letter-spacing:-.12em;padding-right:.12em;color:transparent;-webkit-text-stroke:1px rgba(235,205,151,.78);text-shadow:0 0 50px rgba(190,66,91,.18);transform:skew(-9deg);user-select:none}
+.pnx-anime-art-caption{position:absolute;left:25px;bottom:23px;display:flex;flex-direction:column;gap:4px}
+.pnx-anime-art-caption span{font:800 22px/1 var(--font-display);letter-spacing:3px;color:var(--gold-bright)}
+.pnx-anime-art-caption i{font-style:normal;font-size:8px;font-weight:800;letter-spacing:2px;color:#c3aeb0}
+.pnx-anime-art-index{position:absolute;right:22px;top:22px;color:#a98b8d;font-size:8px;font-weight:800;letter-spacing:1.8px;writing-mode:vertical-rl}
+.pnx-anime-overline{margin:18px 0 0;color:#d18b9a;font-size:9px;font-weight:800;letter-spacing:2.2px}
+.pnx-anime-copy h2{margin:12px 0 18px;font-size:clamp(48px,6vw,76px);line-height:.91;letter-spacing:-1px}
+.pnx-anime-copy h2 span{color:#d18b9a}
+.pnx-anime-copy>p:not(.pnx-anime-overline):not(.pnx-anime-note){max-width:480px;color:var(--muted);font-size:12px;line-height:2}
+.pnx-anime-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:23px 0 27px}
+.pnx-anime-pill-row span{padding:9px 11px;border:1px solid rgba(209,139,154,.24);background:rgba(181,52,72,.055);color:#d7b8bd;font-size:8px;font-weight:800;letter-spacing:1.1px}
+.pnx-anime-actions{display:flex;align-items:center;flex-wrap:wrap;gap:22px}
+.pnx-anime-note{max-width:430px;margin:22px 0 0;color:#747d80;font-size:9px;line-height:1.8}
+@media(max-width:800px){.pnx-anime-section{grid-template-columns:1fr;gap:35px;padding-top:75px;padding-bottom:80px}.pnx-anime-art{min-height:330px}.pnx-anime-copy h2{font-size:clamp(48px,11vw,72px)}}
+@media(max-width:480px){.pnx-anime-art{min-height:270px}.pnx-anime-actions{align-items:flex-start;flex-direction:column;gap:18px}}
