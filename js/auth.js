@@ -125,7 +125,7 @@
         const displayName = nameInput.value.trim();
         const gender = genderInput.value;
         if (!['male', 'female'].includes(gender)) throw new Error('Please select your gender.');
-        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: postAuthUrl } });
+        const { data, error } = await client.auth.signUp({ email, password: password.value, options: { captchaToken: token, data: { display_name: displayName, gender, avatar_url: new URL(gender === 'female' ? '/assets/images/punix-avatar-female.png' : '/assets/images/punix-avatar-male.png', window.location.origin).href }, emailRedirectTo: emailCallback.href } });
         if (error) throw error;
         if (data.session) { setMessage('Account created. Redirecting…'); window.location.assign(postAuthUrl); return; }
         setMessage('Account created. Check your email to confirm your address. You will return to your invitation after confirming.');
