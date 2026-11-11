@@ -237,8 +237,8 @@
       $('update-form-message').textContent = 'Update image must be 5 MB or smaller.';
       return;
     }
-    updateImageObjectUrl = URL.createObjectURL(file);
-    showUpdateImagePreview(updateImageObjectUrl, file.name);
+    const previewUrl = URL.createObjectURL(file);
+    showUpdateImagePreview(previewUrl, file.name);
   });
   $('update-image').addEventListener('input', () => {
     if (!updateImageFile.files?.length) showUpdateImagePreview($('update-image').value.trim());
