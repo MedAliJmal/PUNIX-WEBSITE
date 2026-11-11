@@ -136,6 +136,9 @@ begin
   if not exists(select 1 from public.team_members tm where tm.team_id=p_team_id and tm.user_id=v_user and tm.member_role='captain') then
     raise exception 'Only the team captain can invite members.' using errcode='42501';
   end if;
+  if not exists(select 1 from public.teams t where t.id=p_team_id and t.status in ('active','recruiting')) then
+    raise exception 'Only active teams can send invitations.';
+  end if;
   if (select count(*) from public.team_members tm where tm.team_id=p_team_id)>=20 then
     raise exception 'This team has reached the 20-member limit.';
   end if;
