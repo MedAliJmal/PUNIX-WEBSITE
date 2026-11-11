@@ -112,3 +112,40 @@
 .reapply-wrap p{margin:0 0 12px;color:#b7c0bd;font:400 11px/1.6 Inter,Arial,sans-serif}
 .reapply-wrap button{cursor:pointer}
 .reapply-wrap button:disabled{opacity:.55;cursor:wait}
+
+/* Match the gender dropdown to the PUNIX profile form fields */
+#profile-form select {
+  width:100%;
+  min-width:0;
+  appearance:none;
+  -webkit-appearance:none;
+  background-color:#090c10;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23c9a45b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 13px center;
+  background-size:15px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:0;
+  color:var(--text);
+  padding:13px 40px 13px 12px;
+  font:500 12px var(--font-body);
+  line-height:1.4;
+  outline:none;
+  cursor:pointer;
+}
+#profile-form select:focus {
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(201,164,91,.10);
+}
+#profile-form select:disabled {
+  opacity:.6;
+  cursor:not-allowed;
+}
+#profile-form select option {
+  color:#e0e5e5;
+  background:#11171b;
+}
+#profile-form select option:disabled {
+  color:#7f898e;
+}
+
