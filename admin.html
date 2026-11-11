@@ -79,6 +79,7 @@
         <button class="pnx-admin-nav-item" type="button" data-section="tournaments"><span>04</span> Tournament Hub</button>
         <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>05</span> Latest Updates</button>
         <button class="pnx-admin-nav-item" type="button" data-section="sponsors"><span>06</span> Sponsors</button>
+        <button class="pnx-admin-nav-item" type="button" data-section="support"><span>07</span> Support Inbox</button>
         <div class="pnx-sidebar-foot"><span class="pnx-sidebar-mark">P</span><small>CREATE. BUILD.<br>COMPETE. CONQUER.</small></div>
       </aside>
 
@@ -268,6 +269,24 @@
             <section class="pnx-overview-panel pnx-update-list-panel">
               <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">PARTNER WALL</p><h3>EXISTING SPONSORS</h3></div><button class="pnx-text-action" id="refresh-sponsors" type="button">↻ REFRESH</button></div>
               <div id="admin-sponsors-list" class="pnx-admin-updates-list"><p class="pnx-recent-empty">Loading sponsors…</p></div>
+            </section>
+          </div>
+        </section>
+        <section id="support-section" class="pnx-admin-section" hidden aria-labelledby="support-admin-title">
+          <div class="pnx-section-heading pnx-team-section-heading">
+            <div><p class="pnx-admin-kicker">07 / COMMUNITY CARE</p><h2 id="support-admin-title">SUPPORT INBOX</h2><p>Reply to visitor conversations, review contact details and close resolved requests.</p></div>
+            <button class="pnx-refresh-btn" id="refresh-support" type="button">↻ REFRESH INBOX</button>
+          </div>
+          <p id="support-admin-message" class="pnx-member-review-message" role="status">Loading support conversations…</p>
+          <div class="pnx-support-admin-layout">
+            <section class="pnx-overview-panel pnx-support-admin-list-panel">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">VISITOR MESSAGES</p><h3>CONVERSATIONS</h3></div><span id="support-admin-count" class="panel-count">0 OPEN</span></div>
+              <div id="support-admin-list" class="pnx-admin-updates-list"><p class="pnx-recent-empty">Loading inbox…</p></div>
+            </section>
+            <section class="pnx-overview-panel pnx-support-admin-thread-panel">
+              <div class="pnx-panel-top"><div><p class="pnx-admin-kicker">SELECTED CONVERSATION</p><h3 id="support-thread-title">OPEN A MESSAGE</h3><small id="support-thread-meta" class="pnx-support-thread-meta">Choose a conversation from the inbox.</small></div><button class="pnx-text-action" id="support-toggle-status" type="button" hidden>CLOSE CONVERSATION</button></div>
+              <div id="support-admin-messages" class="pnx-support-admin-messages"><p class="pnx-recent-empty">Messages will appear here.</p></div>
+              <form id="support-admin-reply" class="pnx-support-admin-reply" hidden><textarea id="support-admin-reply-text" maxlength="2000" rows="3" required placeholder="Write a reply…"></textarea><button class="button" type="submit">SEND REPLY ↗</button></form>
             </section>
           </div>
         </section>
