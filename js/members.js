@@ -15,7 +15,7 @@
   let members = [];
   let activeFilter = "all";
 
-  const divisionName = value => value === "competitive" ? "Competitive Player" : value === "creators" ? "Streamer" : "Community Member";
+  const divisionName = value => value === "management" ? "Management" : value === "competitive" ? "Competitive Player" : value === "creators" ? "Streamer" : "Community Member";
   const setStatus = (text, error = false) => {
     status.textContent = text;
     status.classList.toggle("directory-error", error);
@@ -69,6 +69,8 @@
     sections.forEach(section => {
       const division = section.dataset.division;
       const matches = filtered.filter(member => member.directory_division === division);
+      const countLabel = section.querySelector(".division-count");
+      if (countLabel) countLabel.textContent = String(matches.length) + " " + (matches.length === 1 ? "MEMBER" : "MEMBERS");
       section.hidden = activeFilter !== "all" && activeFilter !== division;
       const oldGrid = section.querySelector(".public-roster-grid");
       const empty = section.querySelector(".member-empty-card");
