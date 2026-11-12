@@ -59,3 +59,179 @@
   .pnx-video-grid:has(.pnx-video-card-embed) { align-items:start; }
   .pnx-video-card-embed .pnx-social-embed { min-height:360px; }
 }
+
+/* PUNIX Media Center — broadcast presentation refinement */
+.pnx-media-section{
+  isolation:isolate;
+}
+.pnx-media-section:before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  top:8%;
+  right:-7%;
+  width:min(52vw,680px);
+  aspect-ratio:1;
+  pointer-events:none;
+  background:radial-gradient(circle,rgba(37,185,176,.075),rgba(37,185,176,.018) 42%,transparent 70%);
+}
+.pnx-media-heading{
+  position:relative;
+  padding-bottom:22px;
+  border-bottom:1px solid rgba(201,164,91,.2);
+}
+.pnx-media-heading:after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-1px;
+  width:74px;
+  height:2px;
+  background:linear-gradient(90deg,var(--teal,#25b9b0),var(--gold,#c9a45b));
+}
+.pnx-media-tabs{
+  align-items:center;
+  gap:7px;
+  border:0;
+  margin:27px 0 18px;
+}
+.pnx-media-tab{
+  min-height:42px;
+  padding:0 17px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.025);
+  transition:color .2s,border-color .2s,background .2s;
+}
+.pnx-media-tab:hover{
+  color:#fff;
+  border-color:rgba(201,164,91,.4);
+}
+.pnx-media-tab.is-active{
+  color:#f5f2e9;
+  border-color:rgba(201,164,91,.55);
+  border-bottom:1px solid rgba(201,164,91,.55);
+  background:linear-gradient(110deg,rgba(201,164,91,.12),rgba(37,185,176,.07));
+}
+.pnx-media-tab:focus-visible,
+.pnx-live-channel:focus-visible,
+.pnx-live-pill:focus-visible,
+.pnx-video-open:focus-visible{
+  outline:2px solid var(--teal,#25b9b0);
+  outline-offset:3px;
+}
+.pnx-live-layout{
+  gap:14px;
+}
+.pnx-featured-live{
+  border-color:rgba(37,185,176,.28);
+  box-shadow:0 18px 55px rgba(0,0,0,.2);
+}
+.pnx-live-player{
+  min-height:0;
+}
+.pnx-live-feature-meta{
+  min-height:88px;
+  border-top:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(100deg,rgba(37,185,176,.055),rgba(201,164,91,.035) 55%,rgba(0,0,0,.08));
+}
+.pnx-live-feature-meta h3{
+  letter-spacing:.055em;
+}
+.pnx-live-pill{
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.pnx-live-pill:hover{
+  transform:translateY(-1px);
+  background:rgba(229,75,75,.1);
+  border-color:rgba(229,75,75,.8);
+}
+.pnx-live-sidebar{
+  border-color:rgba(255,255,255,.12);
+  background:linear-gradient(155deg,rgba(19,25,29,.98),rgba(8,11,14,.98));
+}
+.pnx-media-side-head{
+  align-items:center;
+}
+.pnx-live-channel-list{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(201,164,91,.45) rgba(255,255,255,.04);
+}
+.pnx-live-channel{
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.pnx-live-channel:hover{
+  transform:translateX(2px);
+}
+.pnx-live-channel.is-selected{
+  border-left:2px solid var(--teal,#25b9b0);
+}
+.pnx-channel-avatar{
+  border:1px solid rgba(255,255,255,.12);
+}
+.pnx-video-card{
+  border-color:rgba(255,255,255,.11);
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.pnx-video-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(201,164,91,.55);
+  box-shadow:0 16px 35px rgba(0,0,0,.22);
+}
+.pnx-video-thumb{
+  overflow:hidden;
+}
+.pnx-video-thumb:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(135deg,rgba(37,185,176,.12),transparent 55%);
+  pointer-events:none;
+}
+.pnx-video-play{
+  transition:transform .2s,background .2s,border-color .2s;
+}
+.pnx-video-card:hover .pnx-video-play{
+  transform:scale(1.07);
+  background:rgba(201,164,91,.2);
+  border-color:var(--gold,#c9a45b);
+}
+.pnx-video-info{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.pnx-video-info h3{
+  line-height:1.12;
+}
+.pnx-video-open{
+  margin-top:auto;
+  padding-top:12px;
+}
+.pnx-media-empty{
+  position:relative;
+  overflow:hidden;
+}
+.pnx-media-empty:before{
+  content:"P";
+  position:absolute;
+  right:4%;
+  bottom:-28%;
+  color:rgba(255,255,255,.025);
+  font:900 clamp(180px,28vw,340px)/1 var(--font-display,Impact,sans-serif);
+  pointer-events:none;
+}
+.pnx-media-empty>*{
+  position:relative;
+  z-index:1;
+}
+@media(max-width:560px){
+  .pnx-media-heading{padding-bottom:18px}
+  .pnx-media-tab{flex:1;justify-content:center;padding:0 9px}
+  .pnx-live-feature-meta{min-height:0}
+  .pnx-media-section:before{width:90vw;right:-35%;top:18%}
+}
+@media(prefers-reduced-motion:reduce){
+  .pnx-media-tab,.pnx-live-pill,.pnx-live-channel,.pnx-video-card,.pnx-video-play{transition:none}
+}
