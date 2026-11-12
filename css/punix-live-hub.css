@@ -58,7 +58,7 @@
 @media(max-width:600px){.pnx-live-hero{padding-top:45px}.pnx-live-hero-art{min-height:220px}.pnx-live-hero-art strong{font-size:190px}.pnx-live-hero-art>span{right:0}.pnx-live-hero-foot{font-size:7px}.pnx-live-feed{padding-top:65px;padding-bottom:70px}.pnx-live-toolbar{align-items:stretch;flex-direction:column}.pnx-live-search{width:100%;box-sizing:border-box}.pnx-live-grid-cards{grid-template-columns:1fr}.pnx-live-card-image{height:190px}.pnx-live-card p{min-height:0}.pnx-live-actions{flex-wrap:wrap}}
 
 /* Free-to-keep games section */
-.pnx-free-games{padding-top:78px;padding-bottom:82px;border-top:1px solid rgba(210,173,104,.18);border-bottom:1px solid rgba(255,255,255,.09);background:radial-gradient(ellipse at 8% 18%,rgba(135,105,49,.09),transparent 35%)}
+.pnx-free-games{padding-top:78px;padding-bottom:82px;border-top:1px solid rgba(210,173,104,.18);border-bottom:1px solid rgba(255,255,255,.09);background:#090b0e}
 .pnx-free-games .pnx-live-heading{margin-bottom:30px}
 .pnx-free-topline{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-block:1px solid rgba(255,255,255,.12);color:#899196;font:800 8px Inter,sans-serif;letter-spacing:1.2px}
 .pnx-free-live{display:flex;align-items:center;gap:9px;color:#d9d6ca}
