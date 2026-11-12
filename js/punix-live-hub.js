@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = document.querySelector('[data-live-hub]');
   if (!page) return;
   const type = page.dataset.liveHub;
+  if (type === 'games') initFreeGames();
   const grid = document.getElementById('live-grid');
   const status = document.getElementById('live-status');
   const search = document.getElementById('live-search');
@@ -96,3 +97,77 @@ document.addEventListener('DOMContentLoaded', () => {
   load(true);
   window.setInterval(() => { if (!document.hidden) load(true); }, refreshEvery);
 });
+
+/* Live PC game giveaways: full-game offers only, with source attribution. */
+function initFreeGames() {
+  const grid = document.getElementById('free-games-grid');
+  if (!grid) return;
+  const updated = document.getElementById('free-games-updated');
+  const search = document.getElementById('free-games-search');
+  const refresh = document.getElementById('free-games-refresh');
+  const filters = [...document.querySelectorAll('[data-free-filter]')];
+  let offers = [], active = 'all', busy = false, lastSync = 0;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safe = value => { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch (_) { return ''; } };
+  const platformOf = value => {
+    const p = String(value || '').toLowerCase();
+    if (p.includes('steam')) return 'steam';
+    if (p.includes('epic')) return 'epic';
+    if (p.includes('gog')) return 'gog';
+    return 'other';
+  };
+  const dateLabel = value => {
+    if (!value || String(value).toUpperCase() === 'N/A') return 'Check offer page';
+    const d = new Date(String(value).replace(' ','T')+'Z');
+    if (Number.isNaN(d.getTime())) return 'Check offer page';
+    return 'Ends '+d.toLocaleString([], {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  };
+  function render() {
+    const term = (search.value || '').trim().toLowerCase();
+    const filtered = offers.filter(o => (active === 'all' || o.platform === active) && (!term || (o.title+' '+o.description+' '+o.platforms).toLowerCase().includes(term)));
+    grid.innerHTML = filtered.length ? filtered.map(o => {
+      const image = safe(o.thumbnail || o.image);
+      const platformLabel = o.platform === 'epic' ? 'EPIC GAMES STORE' : o.platform === 'steam' ? 'STEAM' : o.platform === 'gog' ? 'GOG' : (o.platforms || 'PC').toUpperCase();
+      const worth = o.worth && o.worth !== 'N/A' ? o.worth : 'FREE';
+      const claim = safe(o.open_giveaway_url);
+      return '<article class="pnx-free-card"><div class="pnx-free-image">'+(image ? '<img src="'+esc(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">' : '')+'<span class="pnx-free-platform">'+esc(platformLabel)+'</span><span class="pnx-free-price">WAS '+esc(worth)+'</span></div><div class="pnx-free-content"><div class="pnx-free-meta"><span>FULL GAME GIVEAWAY</span><span>'+esc(dateLabel(o.end_date))+'</span></div><h3>'+esc(o.title)+'</h3><p>'+esc(o.description || 'Limited-time full game giveaway. Check the offer page for redemption details.')+'</p><div class="pnx-free-bottom"><span class="pnx-free-tag">100% OFF</span>'+(claim ? '<a href="'+esc(claim)+'" target="_blank" rel="noopener noreferrer">CLAIM FREE GAME ↗</a>' : '<span>OFFER LINK UNAVAILABLE</span>')+'</div></div></article>';
+    }).join('') : '<div class="pnx-live-empty">No active offers found for this selection right now. Check back later or view all platforms.</div>';
+    updated.textContent = lastSync ? 'LAST CHECK '+new Date(lastSync).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+' · REFRESHES EVERY 15 MIN' : 'WAITING FOR GIVEAWAY DATA';
+  }
+  async function load(force=false) {
+    if (busy || (!force && Date.now()-lastSync < 15*60*1000)) return;
+    busy = true; refresh.disabled = true; updated.textContent = 'CHECKING ACTIVE GIVEAWAYS…';
+    try {
+      const response = await fetch('https://www.gamerpower.com/api/giveaways?platform=pc&type=game&sort-by=date', {cache:'no-store'});
+      if (!response.ok) throw new Error('Giveaway service unavailable');
+      const data = await response.json();
+      if (!Array.isArray(data) || !data.length) {
+        offers = [];
+      } else {
+        const seen = new Set();
+        offers = data.filter(o => {
+          if (String(o.type || '').toLowerCase() !== 'game' || String(o.status || '').toLowerCase() !== 'active') return false;
+          const end = o.end_date && String(o.end_date).toUpperCase() !== 'N/A' ? new Date(String(o.end_date).replace(' ','T')+'Z') : null;
+          if (end && !Number.isNaN(end.getTime()) && end.getTime() < Date.now()) return false;
+          const key = String(o.id || o.title).toLowerCase();
+          if (seen.has(key)) return false; seen.add(key); return true;
+        }).map(o => ({...o,platform:platformOf(o.platforms)}));
+      }
+      lastSync = Date.now(); render();
+    } catch (error) {
+      updated.textContent = 'GIVEAWAY FEED TEMPORARILY UNAVAILABLE';
+      if (!offers.length) grid.innerHTML = '<div class="pnx-live-empty">We could not load the giveaway feed right now. Please try again later, or visit <a href="https://www.gamerpower.com/" target="_blank" rel="noopener noreferrer">GamerPower</a> directly.</div>';
+    } finally {
+      busy = false; refresh.disabled = false;
+    }
+  }
+  filters.forEach(button => button.addEventListener('click', () => {
+    filters.forEach(b => b.classList.toggle('is-active', b === button));
+    active = button.dataset.freeFilter; render();
+  }));
+  search.addEventListener('input', render);
+  refresh.addEventListener('click', () => load(true));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now()-lastSync >= 15*60*1000) load(true); });
+  window.setInterval(() => { if (!document.hidden) load(true); }, 15*60*1000);
+  load(true);
+}
