@@ -14,11 +14,11 @@ from bs4 import BeautifulSoup
 SOURCE_URL = "https://esports.tunesf.com/blog"
 OUTPUT = Path("data/tunesf-news.json")
 ALLOWED_HOSTS = {"tunesf.com", "www.tunesf.com", "esports.tunesf.com"}
-DATE_RE = re.compile(r"\\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\s+\\d{1,2},?\\s+\\d{4}\\b", re.I)
+DATE_RE = re.compile(r"\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{4}\b", re.I)
 
 
 def clean(text: str) -> str:
-    return re.sub(r"\\s+", " ", text or "").strip()
+    return re.sub(r"\s+", " ", text or "").strip()
 
 
 def parse_date(text: str) -> str:
@@ -106,7 +106,7 @@ def main() -> None:
         "articles": articles[:6],
     }
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8")
+    OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Saved {len(payload['articles'])} official TUNESF articles to {OUTPUT}")
 
 
