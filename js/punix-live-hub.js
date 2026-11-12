@@ -107,7 +107,7 @@ function initTunesfOfficial() {
   const status = document.getElementById('tunesf-sync-status');
   if (!grid || !status) return;
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const safe = value => { try { const u = new URL(value); return u.protocol === 'https:' && /(^|\\.)tunesf\\.com$/i.test(u.hostname) ? u.href : ''; } catch (_) { return ''; } };
+  const safe = value => { try { const u = new URL(value); return u.protocol === 'https:' && /(^|\.)tunesf\.com$/i.test(u.hostname) ? u.href : ''; } catch (_) { return ''; } };
   const dateLabel = value => {
     if (!value) return 'LATEST';
     const d = new Date(value);
