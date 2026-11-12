@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const feeds = type === 'games' ? [
     {name:'IGN',url:'https://feeds.feedburner.com/ign/all'},
     {name:'PC Gamer',url:'https://www.pcgamer.com/rss/'},
-    {name:'GameSpot',url:'https://www.gamespot.com/feeds/news/'}
+    {name:'GameSpot',url:'https://www.gamespot.com/feeds/news/'},
+    {name:'TGTV · TUNISIA ESPORTS',url:'https://tgtv.tn/category/esports/feed/'}
   ] : [
     {name:'Esports Insider',url:'https://esportsinsider.com/feed'},
     {name:'Dot Esports',url:'https://dotesports.com/feed'},
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const classify = item => {
     const text = (item.title+' '+item.description+' '+(item.categories||[]).join(' ')).toLowerCase();
     if (type === 'games') {
+      if (item.source === 'TGTV · TUNISIA ESPORTS') return 'tunisia';
       if (/release|launch|out now|coming soon|early access|date announced|pre.?order/.test(text)) return 'releases';
       if (/update|patch|season|hotfix|maintenance|balance|dlc|expansion/.test(text)) return 'updates';
       return 'industry';
