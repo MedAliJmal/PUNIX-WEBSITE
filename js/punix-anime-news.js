@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const visible = items.slice(0, visibleCount);
     grid.innerHTML = visible.length ? visible.map(item => {
       const image = safeUrl(item.image);
-      const imageHtml = image ? '<img src="'+escapeHtml(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer">' : '';
+      const imageHtml = image ? '<img src="'+escapeHtml(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '';
       const date = item.date && !Number.isNaN(new Date(item.date).getTime()) ? new Date(item.date).toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'}) : 'LATEST';
       return '<article class="pnx-anime-news-card"><a class="pnx-anime-news-image" href="'+escapeHtml(item.link)+'" target="_blank" rel="noopener noreferrer">'+imageHtml+'<span>'+escapeHtml(item.category.toUpperCase())+'</span></a><div class="pnx-anime-news-content"><div class="pnx-anime-news-meta"><span>'+escapeHtml(item.source)+'</span><span>'+escapeHtml(date)+'</span></div><h3>'+escapeHtml(item.title)+'</h3><p>'+escapeHtml(item.description || 'Open the original article for the full story.')+'</p><a class="pnx-anime-read" href="'+escapeHtml(item.link)+'" target="_blank" rel="noopener noreferrer">READ ORIGINAL STORY <span>↗</span></a></div></article>';
     }).join('') : '<div class="pnx-anime-empty">No stories match this search right now. Try another filter or refresh the feed.</div>';
