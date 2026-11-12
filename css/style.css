@@ -435,3 +435,14 @@ body :is(h1, h2, h3) {
 .pnx-anime-note{max-width:430px;margin:22px 0 0;color:#747d80;font-size:9px;line-height:1.8}
 @media(max-width:800px){.pnx-anime-section{grid-template-columns:1fr;gap:35px;padding-top:75px;padding-bottom:80px}.pnx-anime-art{min-height:330px}.pnx-anime-copy h2{font-size:clamp(48px,11vw,72px)}}
 @media(max-width:480px){.pnx-anime-art{min-height:270px}.pnx-anime-actions{align-items:flex-start;flex-direction:column;gap:18px}}
+
+
+/* Partner showcase — give a single active partner a deliberate, centered presentation */
+.pnx-sponsors-grid[data-count="1"]{grid-template-columns:minmax(240px,360px);justify-content:center}
+.pnx-sponsors-grid[data-count="1"] .pnx-sponsor-card{min-height:190px;padding:34px}
+.pnx-sponsors-grid[data-count="1"] .pnx-sponsor-card img{height:96px;max-width:100%}
+@media(max-width:680px){
+  .pnx-sponsors-grid[data-count="1"]{grid-template-columns:minmax(0,1fr);padding:0 8px}
+  .pnx-sponsors-grid[data-count="1"] .pnx-sponsor-card{min-height:160px;padding:26px}
+  .pnx-sponsors-grid[data-count="1"] .pnx-sponsor-card img{height:82px}
+}
