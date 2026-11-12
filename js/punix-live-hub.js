@@ -242,10 +242,14 @@ function initTunisiaEsports() {
     'national team','équipe nationale','equipe nationale','sélection',
     'selection','iesf','fifae','enc 202','arabian regional','global esports games'
   ];
-  const relevantCompetition = item => {
+  const relevantCompetition = (item, officialSource=false) => {
+    const headline = item.title.toLocaleLowerCase();
     const text = (item.title+' '+item.description).toLocaleLowerCase();
-    return localTerms.some(term => text.includes(term)) &&
-      competitionTerms.some(term => text.includes(term));
+    // For third-party media, Tunisia must be explicit in the headline so an incidental
+    // mention in a global story (for example, a Falcons article) cannot qualify it.
+    const localMatch = localTerms.some(term => headline.includes(term)) ||
+      (officialSource && localTerms.some(term => text.includes(term)));
+    return localMatch && competitionTerms.some(term => text.includes(term));
   };
   let busy = false, lastSync = 0, stories = [];
   function card(item) {
@@ -283,7 +287,7 @@ function initTunisiaEsports() {
     return data.articles.map(item => ({
       title:plain(item.title), description:plain(item.description).slice(0,500),
       link:tunesfSafe(item.url), image:safe(item.image), source:'TUNESF · OFFICIAL', date:item.date, tag:'OFFICIAL COMPETITION'
-    })).filter(item => item.title && item.link && relevantCompetition(item));
+    })).filter(item => item.title && item.link && relevantCompetition(item, true));
   }
   async function load() {
     if (busy) return;
