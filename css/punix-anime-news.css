@@ -1,0 +1,67 @@
+/* PUNIX Anime Radar — isolated page styles */
+.pnx-anime-page{--anime-accent:#d27b9a;--anime-soft:#f0b4c7;background:#090b0e;color:#f4f3ef}
+.pnx-anime-hero{position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:620px;padding:70px clamp(22px,7vw,110px) 54px;overflow:hidden;border-bottom:1px solid rgba(210,123,154,.22);background:radial-gradient(ellipse at 78% 48%,rgba(142,48,86,.19),transparent 42%),linear-gradient(120deg,#0a0c10,#101016 65%,#0b0c11)}
+.pnx-anime-hero-grid{position:absolute;inset:0;pointer-events:none;opacity:.17;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(90deg,#000,transparent 85%)}
+.pnx-anime-hero-copy{position:relative;z-index:2;align-self:center;max-width:650px}
+.pnx-anime-back{display:inline-block;margin-bottom:38px;color:#aab0b5;text-decoration:none;font:700 9px Inter,Arial,sans-serif;letter-spacing:1.4px}
+.pnx-anime-back:hover{color:var(--anime-soft)}
+.pnx-anime-kicker{display:flex;align-items:center;gap:10px;color:var(--anime-soft);font:800 9px Inter,Arial,sans-serif;letter-spacing:2px}
+.pnx-anime-kicker span{width:25px;height:1px;background:var(--anime-accent)}
+.pnx-anime-hero h1{margin:18px 0 20px;font:900 clamp(64px,8vw,112px)/.82 "Barlow Condensed",sans-serif;letter-spacing:-2px}
+.pnx-anime-hero h1 em,.pnx-anime-news-heading h2 em,.pnx-anime-community h2 em{color:var(--anime-soft);font-style:normal}
+.pnx-anime-intro{max-width:500px;color:#aeb4b9;font:400 13px/1.9 Inter,Arial,sans-serif}
+.pnx-anime-scroll{display:inline-flex;align-items:center;gap:22px;margin-top:28px;color:#f1d1dc;text-decoration:none;font:800 9px Inter,Arial,sans-serif;letter-spacing:1.4px}
+.pnx-anime-scroll span{font-size:17px;color:var(--anime-accent)}
+.pnx-anime-hero-art{position:relative;display:grid;place-items:center;min-height:430px}
+.pnx-anime-hero-ring{position:absolute;width:min(36vw,420px);aspect-ratio:1;border:1px solid rgba(210,123,154,.35);border-radius:50%;transform:rotate(-24deg) scaleY(.72)}
+.pnx-anime-hero-ring:after{content:"";position:absolute;inset:13%;border:1px solid rgba(240,180,199,.24);border-radius:50%}
+.pnx-anime-hero-ring.ring-b{width:min(29vw,340px);transform:rotate(42deg) scaleY(.72);border-color:rgba(240,180,199,.45)}
+.pnx-anime-hero-glyph{position:relative;color:transparent;-webkit-text-stroke:1px rgba(240,180,199,.8);font:900 clamp(220px,30vw,390px)/.8 "Barlow Condensed",sans-serif;text-shadow:0 0 70px rgba(210,123,154,.15)}
+.pnx-anime-hero-stamp{position:absolute;right:3%;bottom:13%;display:flex;flex-direction:column;gap:5px;padding:16px 20px;border-left:2px solid var(--anime-accent);background:rgba(8,9,13,.78);backdrop-filter:blur(8px)}
+.pnx-anime-hero-stamp strong{font:900 20px "Barlow Condensed",sans-serif;letter-spacing:3px}
+.pnx-anime-hero-stamp span,.pnx-anime-hero-stamp i{color:var(--anime-soft);font:800 8px Inter,Arial,sans-serif;letter-spacing:1.4px}
+.pnx-anime-hero-stamp i{margin-top:7px;color:#92999e;font-size:7px;font-style:normal}
+.pnx-anime-hero-index{position:absolute;top:15%;right:8%;color:#697178;font:700 9px Inter,Arial,sans-serif;letter-spacing:2px}
+.pnx-anime-hero-foot{position:absolute;right:clamp(22px,7vw,110px);bottom:18px;left:clamp(22px,7vw,110px);display:flex;justify-content:space-between;gap:18px;color:#737c82;font:700 8px Inter,Arial,sans-serif;letter-spacing:1.4px}
+.pnx-anime-hero-foot b{padding-left:8px;color:var(--anime-accent)}
+.pnx-anime-news{padding-top:100px;padding-bottom:105px}
+.pnx-anime-news-heading{display:flex;justify-content:space-between;align-items:end;gap:40px;margin-bottom:45px}
+.pnx-anime-news-heading h2,.pnx-anime-community h2{margin:15px 0 0;font:900 clamp(48px,6vw,76px)/.85 "Barlow Condensed",sans-serif;letter-spacing:-1px}
+.pnx-anime-news-heading>p{max-width:390px;margin:0 0 5px;color:#9ca3a7;font:400 12px/1.8 Inter,Arial,sans-serif}
+.pnx-anime-feed-tools{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:16px 0;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
+.pnx-anime-filters{display:flex;flex-wrap:wrap;gap:7px}
+.pnx-anime-filters button,.pnx-anime-feed-actions button{padding:11px 14px;border:1px solid rgba(255,255,255,.13);background:transparent;color:#aeb4b9;font:800 8px Inter,Arial,sans-serif;letter-spacing:1px;cursor:pointer}
+.pnx-anime-filters button:hover,.pnx-anime-filters button.is-active{border-color:var(--anime-accent);background:rgba(210,123,154,.12);color:#f1c1d1}
+.pnx-anime-search{display:flex;align-items:center;gap:8px;width:min(260px,100%);padding:0 12px;border:1px solid rgba(255,255,255,.15);color:var(--anime-soft)}
+.pnx-anime-search input{width:100%;height:38px;border:0;outline:0;background:transparent;color:#f4f3ef;font:400 11px Inter,Arial,sans-serif}
+.pnx-anime-search input::placeholder{color:#707980}
+.pnx-anime-feed-status{display:flex;align-items:center;gap:11px;min-height:72px;color:#9ca3a7;font:700 9px Inter,Arial,sans-serif;letter-spacing:1.1px}
+.pnx-anime-loader{width:13px;height:13px;border:2px solid rgba(210,123,154,.2);border-top-color:var(--anime-accent);border-radius:50%;animation:pnxAnimeSpin .8s linear infinite}
+@keyframes pnxAnimeSpin{to{transform:rotate(360deg)}}
+.pnx-anime-news-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.pnx-anime-news-card{min-width:0;border:1px solid rgba(255,255,255,.1);background:#101318;transition:transform .2s ease,border-color .2s ease}
+.pnx-anime-news-card:hover{transform:translateY(-4px);border-color:rgba(210,123,154,.55)}
+.pnx-anime-news-image{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;background:radial-gradient(circle at 50% 45%,rgba(210,123,154,.2),transparent 60%),#17151c}
+.pnx-anime-news-image img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.pnx-anime-news-card:hover .pnx-anime-news-image img{transform:scale(1.04)}
+.pnx-anime-news-image:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(5,7,9,.38),transparent 55%)}
+.pnx-anime-news-image span{position:absolute;z-index:1;left:13px;bottom:12px;padding:6px 8px;background:rgba(10,11,15,.85);color:#f1c1d1;font:800 8px Inter,Arial,sans-serif;letter-spacing:1px}
+.pnx-anime-news-content{padding:17px 17px 19px}
+.pnx-anime-news-meta{display:flex;justify-content:space-between;gap:12px;margin-bottom:11px;color:#9b7a88;font:700 8px Inter,Arial,sans-serif;letter-spacing:.8px;text-transform:uppercase}
+.pnx-anime-news-content h3{margin:0 0 10px;color:#f3f1ef;font:700 17px/1.25 Inter,Arial,sans-serif}
+.pnx-anime-news-content p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:57px;margin:0;color:#9ca3a7;font:400 10px/1.8 Inter,Arial,sans-serif}
+.pnx-anime-read{display:inline-flex;gap:9px;margin-top:17px;color:#f1c1d1;text-decoration:none;font:800 8px Inter,Arial,sans-serif;letter-spacing:1px}
+.pnx-anime-empty{grid-column:1/-1;padding:34px;border:1px dashed rgba(210,123,154,.3);color:#aeb4b9;font:400 12px/1.8 Inter,Arial,sans-serif}
+.pnx-anime-feed-actions{display:flex;justify-content:center;gap:10px;margin-top:35px}
+.pnx-anime-feed-actions button{color:#f1c1d1;border-color:rgba(210,123,154,.4)}
+.pnx-anime-feed-actions button:hover{background:rgba(210,123,154,.12)}
+.pnx-anime-feed-actions button[hidden]{display:none}
+.pnx-anime-sources{margin:32px 0 0;color:#707980;font:700 8px/1.8 Inter,Arial,sans-serif;letter-spacing:.7px}
+.pnx-anime-sources a{color:#c58ca1;text-decoration:none}
+.pnx-anime-community{border-top:1px solid rgba(210,123,154,.2);border-bottom:1px solid rgba(210,123,154,.2);background:radial-gradient(ellipse at 80% 50%,rgba(142,48,86,.15),transparent 45%),#0d0f14}
+.pnx-anime-community-inner{display:flex;align-items:center;justify-content:space-between;gap:35px;padding-top:65px;padding-bottom:65px}
+.pnx-anime-community h2{margin-bottom:16px}
+.pnx-anime-community-inner>div>p:last-child{max-width:440px;color:#9ca3a7;font:400 11px/1.8 Inter,Arial,sans-serif}
+.pnx-anime-community .button{border-color:rgba(210,123,154,.65);color:#f1c1d1}
+@media(max-width:900px){.pnx-anime-hero{grid-template-columns:1fr;min-height:0;padding-top:55px}.pnx-anime-hero-art{min-height:330px}.pnx-anime-hero-ring{width:min(65vw,360px)}.pnx-anime-hero-ring.ring-b{width:min(52vw,290px)}.pnx-anime-hero-glyph{font-size:280px}.pnx-anime-hero-stamp{right:12%;bottom:5%}.pnx-anime-news-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.pnx-anime-hero{padding:38px 20px 58px}.pnx-anime-hero h1{font-size:68px}.pnx-anime-hero-art{min-height:260px}.pnx-anime-hero-glyph{font-size:230px}.pnx-anime-hero-foot{left:20px;right:20px;font-size:7px}.pnx-anime-news{padding-top:65px;padding-bottom:70px}.pnx-anime-news-heading{display:block}.pnx-anime-news-heading>p{margin-top:20px}.pnx-anime-feed-tools{align-items:stretch;flex-direction:column}.pnx-anime-search{width:100%}.pnx-anime-news-grid{grid-template-columns:1fr}.pnx-anime-community-inner{align-items:flex-start;flex-direction:column;padding-top:48px;padding-bottom:48px}}
