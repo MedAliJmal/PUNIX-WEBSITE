@@ -1,0 +1,60 @@
+/* PUNIX Game Hub — game discovery only */
+.pnx-game-page{background:#090b0e;color:#f2f0e9}
+.pnx-game-hero{position:relative;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;min-height:570px;padding:70px max(6vw,24px) 82px;overflow:hidden;border-bottom:1px solid rgba(210,173,104,.2);background:radial-gradient(ellipse at 78% 45%,rgba(153,42,35,.19),transparent 42%),linear-gradient(135deg,#11151a,#090b0e 68%)}
+.pnx-game-hero-grid{position:absolute;inset:0;opacity:.13;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(120deg,#000,transparent 82%)}
+.pnx-game-hero-copy,.pnx-game-hero-mark,.pnx-game-hero-foot{position:relative;z-index:1}
+.pnx-game-back{display:inline-block;margin-bottom:35px;color:#9ca5a8;text-decoration:none;font:800 9px Inter,sans-serif;letter-spacing:1.3px}
+.pnx-game-kicker{display:flex;align-items:center;gap:10px;color:#d7c08c;font:800 8px Inter,sans-serif;letter-spacing:1.5px}
+.pnx-game-kicker>span{width:19px;height:1px;background:#d2ad68}
+.pnx-game-hero h1{margin:22px 0;color:#f2f0e9;font:900 clamp(72px,10vw,132px)/.78 "Barlow Condensed",sans-serif;letter-spacing:-2px}
+.pnx-game-hero h1 em,.pnx-game-heading h2 em,.pnx-game-bottom h2 em{color:#d2ad68;font-style:normal}
+.pnx-game-hero-copy>p:not(.pnx-game-kicker){max-width:570px;color:#a5adb0;font:400 12px/1.9 Inter,sans-serif}
+.pnx-game-hero-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
+.pnx-game-hero-tags span{padding:9px 11px;border:1px solid rgba(210,173,104,.28);color:#e0d3b4;font:800 8px Inter,sans-serif;letter-spacing:1px}
+.pnx-game-hero-mark{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px}
+.pnx-game-hero-mark span{color:#d2ad68;font:900 clamp(250px,34vw,430px)/.75 "Barlow Condensed",sans-serif;text-shadow:0 20px 90px rgba(210,173,104,.13)}
+.pnx-game-hero-mark i{margin-top:35px;color:#828c91;font:800 8px Inter,sans-serif;letter-spacing:2px;font-style:normal}
+.pnx-game-hero-foot{position:absolute;bottom:22px;left:max(6vw,24px);right:max(6vw,24px);display:flex;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);color:#8a9499;font:800 8px Inter,sans-serif;letter-spacing:1.3px}
+.pnx-game-directory{padding-top:85px;padding-bottom:90px}
+.pnx-game-heading{display:flex;justify-content:space-between;align-items:end;gap:35px;margin-bottom:32px}
+.pnx-game-heading h2{margin:15px 0 0;color:#f2f0e9;font:900 clamp(48px,6vw,76px)/.83 "Barlow Condensed",sans-serif}
+.pnx-game-heading>p{max-width:430px;margin:0 0 5px;color:#9ca6aa;font:400 11px/1.9 Inter,sans-serif}
+.pnx-game-tools{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;padding:13px 0;border-block:1px solid rgba(255,255,255,.13)}
+.pnx-game-filters{display:flex;flex-wrap:wrap;gap:7px}
+.pnx-game-filters button{padding:10px 12px;border:1px solid rgba(255,255,255,.13);background:transparent;color:#a4adb0;cursor:pointer;font:800 8px Inter,sans-serif;letter-spacing:.8px}
+.pnx-game-filters button:hover,.pnx-game-filters button.is-active{border-color:rgba(210,173,104,.65);background:rgba(210,173,104,.1);color:#f0d7a3}
+.pnx-game-search{display:flex;align-items:center;gap:8px;width:min(260px,100%);padding:0 11px;border:1px solid rgba(255,255,255,.14);color:#d2ad68}
+.pnx-game-search input{width:100%;height:38px;border:0;outline:0;background:transparent;color:#f2f0e9;font:400 10px Inter,sans-serif}
+.pnx-game-search input::placeholder{color:#737e83}
+.pnx-game-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.pnx-game-card{min-width:0;border:1px solid rgba(255,255,255,.11);background:linear-gradient(145deg,#15191e,#0e1115);transition:transform .2s,border-color .2s}
+.pnx-game-card:hover{transform:translateY(-4px);border-color:rgba(210,173,104,.5)}
+.pnx-game-card[hidden]{display:none}
+.pnx-game-card-art{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;height:175px;overflow:hidden;background:#171b20}
+.pnx-game-card-art:before,.pnx-game-card-art:after{position:absolute;content:"";border:1px solid rgba(255,255,255,.13);transform:rotate(35deg)}
+.pnx-game-card-art:before{width:190px;height:190px}
+.pnx-game-card-art:after{width:135px;height:135px}
+.pnx-game-card-art>span,.pnx-game-card-art>strong,.pnx-game-card-art>small{position:relative;z-index:1}
+.pnx-game-card-art>span{position:absolute;top:14px;left:15px;color:rgba(255,255,255,.65);font:800 7px Inter,sans-serif;letter-spacing:1.3px}
+.pnx-game-card-art>strong{color:#fff;font:900 88px/.85 "Barlow Condensed",sans-serif;text-shadow:0 8px 35px rgba(0,0,0,.35)}
+.pnx-game-card-art>small{margin-top:10px;color:rgba(255,255,255,.82);font:800 8px Inter,sans-serif;letter-spacing:2px}
+.art-valorant{background:radial-gradient(circle at 70% 40%,#a83c35,#39191d 58%,#151316)}
+.art-cs2{background:radial-gradient(circle at 70% 40%,#b98b40,#39301d 58%,#151515)}
+.art-lol{background:radial-gradient(circle at 70% 40%,#387f9c,#142e45 58%,#10151c)}
+.art-rocket{background:radial-gradient(circle at 70% 40%,#328db7,#15334c 58%,#10151c)}
+.art-fortnite{background:radial-gradient(circle at 70% 40%,#7652ae,#302044 58%,#15131c)}
+.art-pubg{background:radial-gradient(circle at 70% 40%,#b17a39,#49311e 58%,#151515)}
+.art-mlbb{background:radial-gradient(circle at 70% 40%,#4777bd,#1c3156 58%,#10151c)}
+.pnx-game-card-body{padding:17px 18px 20px}
+.pnx-game-meta{display:flex;justify-content:space-between;gap:8px;color:#d2b77d;font:800 7px Inter,sans-serif;letter-spacing:.8px}
+.pnx-game-card h3{margin:14px 0 9px;color:#f2f0e9;font:900 25px/1 "Barlow Condensed",sans-serif}
+.pnx-game-card p{min-height:105px;margin:0;color:#9da7ab;font:400 10px/1.8 Inter,sans-serif}
+.pnx-game-card-body>a{display:inline-block;margin-top:16px;padding-top:13px;border-top:1px solid rgba(255,255,255,.12);color:#e2c98f;text-decoration:none;font:900 8px Inter,sans-serif;letter-spacing:.8px}
+.pnx-game-card-body>a:hover{color:#fff}
+.pnx-game-footnote{margin:22px 0 0;color:#737e83;text-align:center;font:400 9px/1.8 Inter,sans-serif}
+.pnx-game-empty{padding:35px 15px;border:1px dashed rgba(255,255,255,.18);color:#9ca6aa;text-align:center;font:500 11px Inter,sans-serif}
+.pnx-game-bottom{padding:65px 0;border-top:1px solid rgba(255,255,255,.1);background:radial-gradient(ellipse at 70% 50%,rgba(151,111,43,.12),transparent 50%),#0d1014}
+.pnx-game-bottom h2{margin:15px 0 0;color:#f2f0e9;font:900 clamp(40px,6vw,68px)/.86 "Barlow Condensed",sans-serif}
+.pnx-game-bottom .button{display:inline-flex;margin-top:25px}
+@media(max-width:950px){.pnx-game-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pnx-game-hero{min-height:500px}.pnx-game-hero-mark span{font-size:300px}}
+@media(max-width:650px){.pnx-game-hero{grid-template-columns:1fr;min-height:0;padding:48px 24px 80px}.pnx-game-hero-mark{min-height:180px}.pnx-game-hero-mark span{font-size:210px}.pnx-game-hero-mark i{margin-top:20px}.pnx-game-hero-foot{font-size:7px}.pnx-game-heading{align-items:flex-start;flex-direction:column;gap:16px}.pnx-game-tools{align-items:stretch;flex-direction:column}.pnx-game-search{width:auto}.pnx-game-grid{grid-template-columns:1fr}.pnx-game-card p{min-height:0}.pnx-game-directory{padding-top:60px;padding-bottom:65px}}
