@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hash = window.location.hash;
   const activeByPage = {
     'index.html': hash === '#sponsors' ? 'sponsors' : hash === '#about' ? 'about' : hash === '#creators' ? 'creators' : hash === '#watch' ? 'watch' : hash === '#esports' ? 'esports' : hash === '#community' ? 'community' : hash === '#news' ? 'news' : 'home',
-    'anime.html': 'anime',
+    'anime-news.html': 'anime-news',
     'members.html': 'members', 'teams.html': 'teams', 'tournaments.html': 'tournaments',
     'admin.html': 'admin', 'game-hub.html': 'game-hub', 'world-esports-news.html': 'world-esports-news'
   };
