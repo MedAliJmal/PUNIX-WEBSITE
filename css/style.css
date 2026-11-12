@@ -572,3 +572,33 @@ body :is(h1, h2, h3) {
   #creators .creator-steps>div{min-height:0;padding:14px 12px 14px 45px}
   #creators .creator-steps>div>span{top:17px}
 }
+
+
+/* Competitive and anime visuals — match the About identity treatment */
+#esports .esports-visual,
+#anime .pnx-anime-art{
+  border:1px solid rgba(201,164,91,.22);
+  box-shadow:0 18px 55px rgba(0,0,0,.22);
+  isolation:isolate;
+}
+#esports .esports-visual:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  border:1px solid rgba(37,185,176,.16);
+  background:radial-gradient(ellipse at 88% 8%,rgba(37,185,176,.12),transparent 42%),linear-gradient(110deg,rgba(201,164,91,.08),transparent 58%);
+}
+#esports .esports-photo{transition:transform .7s,filter .7s;filter:saturate(.72) contrast(1.08)}
+#esports .esports-visual:hover .esports-photo{transform:scale(1.035);filter:saturate(.9) contrast(1.08)}
+#esports .esports-tag{z-index:2;padding:11px 14px;border:1px solid rgba(201,164,91,.35);background:rgba(5,8,10,.72);backdrop-filter:blur(8px)}
+#anime .pnx-anime-art{
+  border-left:2px solid var(--gold);
+  background:radial-gradient(ellipse at 92% 10%,rgba(37,185,176,.11),transparent 42%),radial-gradient(ellipse at 48% 48%,rgba(201,164,91,.12),transparent 48%),linear-gradient(110deg,#101719,#090b0e 72%);
+}
+#anime .pnx-anime-art:before{border-color:rgba(201,164,91,.2)}
+#anime .pnx-anime-art:after{border-color:rgba(37,185,176,.18)}
+#anime .pnx-anime-orbit-one{box-shadow:0 0 55px rgba(201,164,91,.13);border-color:rgba(225,194,137,.46)}
+#anime .pnx-anime-orbit-two{border-color:rgba(37,185,176,.32)}
+#anime .pnx-anime-sigil{text-shadow:0 0 50px rgba(37,185,176,.13)}
+#anime .pnx-anime-overline{color:var(--teal)}
+#anime .pnx-anime-copy h2 span{color:var(--gold-bright)}
+#anime .pnx-anime-pill-row span{border-color:rgba(201,164,91,.24);background:rgba(201,164,91,.045);color:#d7c69e}
+@media(prefers-reduced-motion:reduce){#esports .esports-photo{transition:none}}
