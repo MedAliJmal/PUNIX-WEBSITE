@@ -115,3 +115,13 @@
 .pnx-trend-idea span{color:#929ba0;font:400 9px/1.7 Inter,sans-serif}
 @media(max-width:850px){.pnx-trend-feature{grid-template-columns:1fr}.pnx-trend-visual{min-height:290px}.pnx-trend-visual strong{font-size:110px}.pnx-trend-ideas{grid-template-columns:1fr 1fr}.pnx-trend-ideas>div:first-child{grid-column:1/-1}}
 @media(max-width:560px){.pnx-trending{padding-top:60px;padding-bottom:60px}.pnx-trend-visual{min-height:240px;padding:25px}.pnx-trend-visual strong{font-size:92px}.pnx-trend-copy{padding:24px}.pnx-trend-stats{grid-template-columns:1fr;gap:13px}.pnx-trend-ideas{grid-template-columns:1fr;padding:20px}.pnx-trend-ideas>div:first-child{grid-column:auto}.pnx-trend-idea{padding:13px 0 0;border-left:0;border-top:1px solid rgba(210,173,104,.25)}}
+
+
+/* Game Hub hero section shortcuts */
+.pnx-hub-jump{display:flex;flex-wrap:wrap;gap:9px;margin-top:25px}
+.pnx-hub-jump a{display:inline-flex;align-items:center;gap:11px;min-height:42px;padding:0 13px;border:1px solid rgba(210,173,104,.38);background:rgba(9,11,14,.58);color:#e9e3d5;text-decoration:none;font:800 8px Inter,sans-serif;letter-spacing:1px;transition:background .2s,border-color .2s,transform .2s}
+.pnx-hub-jump a span{color:#c9a969;font-size:8px}
+.pnx-hub-jump a b{color:#c9a969;font-size:12px}
+.pnx-hub-jump a:hover{transform:translateY(-2px);border-color:#e5c98e;background:rgba(210,173,104,.13);color:#fff}
+.pnx-hub-jump a:focus-visible{outline:2px solid #f0d7a3;outline-offset:3px}
+@media(max-width:600px){.pnx-hub-jump{display:grid;grid-template-columns:1fr;max-width:330px}.pnx-hub-jump a{justify-content:space-between;min-height:46px}}
