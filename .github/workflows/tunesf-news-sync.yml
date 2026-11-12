@@ -1,0 +1,42 @@
+name: PUNIX TUNESF official news sync
+
+on:
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tunesf-news-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install scraper dependencies
+        run: python -m pip install requests beautifulsoup4
+      - name: Import official TUNESF articles
+        run: python scripts/sync_tunesf_news.py
+      - name: Commit updated official news snapshot
+        run: |
+          if git diff --quiet -- data/tunesf-news.json; then
+            echo "No official news changes."
+            exit 0
+          fi
+          git config user.name "PUNIX News Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/tunesf-news.json
+          git commit -m "Sync official TUNESF news"
+          git push
