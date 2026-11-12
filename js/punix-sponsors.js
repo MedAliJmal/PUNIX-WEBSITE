@@ -6,6 +6,7 @@
   const db=window.supabase.createClient(config.url,config.publishableKey);
   db.from('sponsors').select('id,name,logo_url,website_url,is_featured,display_order').eq('is_published',true).not('logo_url','is',null).neq('logo_url','').order('display_order',{ascending:true}).order('is_featured',{ascending:false}).then(({data,error})=>{
     if(error||!data?.length)return;
+    target.dataset.count=String(data.length);
     target.innerHTML=data.map(item=>{
       const logo=escapeHtml(item.logo_url);
       const name=escapeHtml(item.name);
