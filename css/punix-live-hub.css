@@ -145,34 +145,3 @@
 .pnx-trend-card-foot a:hover{color:#fff}
 @media(max-width:900px){.pnx-trend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pnx-trend-meta{align-items:flex-start;flex-direction:column}.pnx-trend-grid{grid-template-columns:1fr}.pnx-trend-card{min-height:220px}}
-
-
-/* Tunisia-first trend radar refresh */
-.pnx-rob-run-feature{display:grid;grid-template-columns:.82fr 1.18fr;min-height:410px;margin:22px 0 58px;border:1px solid rgba(210,173,104,.38);background:#101318;box-shadow:0 24px 70px rgba(0,0,0,.22)}
-.pnx-rob-run-art{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:350px;padding:clamp(25px,4vw,48px);overflow:hidden;background:radial-gradient(ellipse at 55% 48%,rgba(177,46,37,.42),transparent 55%),linear-gradient(145deg,#211416,#0b0d11 76%)}
-.pnx-rob-run-art:before,.pnx-rob-run-art:after{content:"";position:absolute;inset:18px;border:1px solid rgba(220,186,124,.17);pointer-events:none}
-.pnx-rob-run-art:after{inset:30px;border-color:rgba(255,255,255,.06)}
-.pnx-rob-run-kicker,.pnx-rob-run-stamp{position:relative;z-index:1;color:#e1c88e;font:900 8px Inter,sans-serif;letter-spacing:1.7px}
-.pnx-rob-run-art strong{position:relative;z-index:1;color:#f3eee5;font:900 clamp(90px,12vw,158px)/.7 "Barlow Condensed",sans-serif;letter-spacing:-5px;text-shadow:0 15px 45px rgba(0,0,0,.55)}
-.pnx-rob-run-art strong em{color:#d2ad68;font-style:normal}
-.pnx-rob-run-stamp{color:#a7a0a0}
-.pnx-rob-run-copy{align-self:center;padding:clamp(25px,4vw,52px)}
-.pnx-rob-run-copy .pnx-trend-tags{margin-bottom:22px}
-.pnx-local-tag{background:rgba(125,190,145,.1);border-color:rgba(125,190,145,.4)!important;color:#a8dfb8!important}
-.pnx-rob-run-copy h3{margin:0 0 14px;color:#f3f0e8;font:900 clamp(36px,4.7vw,57px)/.88 "Barlow Condensed",sans-serif}
-.pnx-rob-run-copy>p:not(.pnx-trend-note){max-width:650px;color:#a7afb2;font:400 11px/1.9 Inter,sans-serif}
-.pnx-rob-run-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0;padding:17px 0;border-block:1px solid rgba(255,255,255,.11)}
-.pnx-rob-run-facts div{display:flex;flex-direction:column;gap:7px}
-.pnx-rob-run-facts strong{color:#f0d7a3;font:900 12px Inter,sans-serif}
-.pnx-rob-run-facts span{color:#818b90;font:800 7px/1.5 Inter,sans-serif;letter-spacing:.7px}
-.pnx-rob-run-copy .pnx-trend-actions{margin-top:5px}
-.pnx-global-trends-heading{display:flex;align-items:end;justify-content:space-between;gap:25px;margin:0 0 22px}
-.pnx-global-trends-heading h3{margin:12px 0 0;color:#f2eee5;font:900 clamp(36px,4.5vw,54px)/.86 "Barlow Condensed",sans-serif}
-.pnx-global-trends-heading h3 em{color:#d2ad68;font-style:normal}
-.pnx-global-trends-heading>p{max-width:430px;margin:0 0 3px;color:#929ba0;font:400 10px/1.8 Inter,sans-serif}
-.pnx-global-trend-grid{margin-top:0}
-.pnx-global-trend-grid .pnx-trend-card{min-height:285px}
-.pnx-global-trend-grid .pnx-trend-card h3{font-size:clamp(34px,3.5vw,48px)}
-.pnx-global-trend-grid .pnx-trend-card p{line-height:1.85}
-@media(max-width:850px){.pnx-rob-run-feature{grid-template-columns:1fr}.pnx-rob-run-art{min-height:270px}.pnx-rob-run-art strong{font-size:120px}.pnx-global-trends-heading{align-items:flex-start;flex-direction:column;gap:13px}}
-@media(max-width:600px){.pnx-rob-run-feature{margin-bottom:45px}.pnx-rob-run-art{min-height:235px;padding:25px}.pnx-rob-run-art strong{font-size:100px}.pnx-rob-run-copy{padding:24px}.pnx-rob-run-facts{grid-template-columns:1fr;gap:13px}.pnx-rob-run-facts div{padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.07)}.pnx-rob-run-facts div:last-child{padding-bottom:0;border-bottom:0}.pnx-global-trends-heading{margin-bottom:18px}}
