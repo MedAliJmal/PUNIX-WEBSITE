@@ -225,10 +225,10 @@ function initTunisiaEsports() {
   const refresh = document.getElementById('tn-live-refresh');
   if (!grid || !status || !refresh) return;
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const plain = value => { const el = document.createElement('div'); el.innerHTML = String(value || ''); return (el.textContent || '').replace(/\\s+/g,' ').trim(); };
+  const plain = value => { const el = document.createElement('div'); el.innerHTML = String(value || ''); return (el.textContent || '').replace(/\s+/g,' ').trim(); };
   const safe = value => { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch (_) { return ''; } };
-  const tunesfSafe = value => { const url = safe(value); if (!url) return ''; try { return /(^|\\.)tunesf\\.com$/i.test(new URL(url).hostname) ? url : ''; } catch (_) { return ''; } };
-  const localTerms = /\\b(tunisia|tunisian|tunisie|tunisien|tunisienne|carthage|north africa)\\b/i;
+  const tunesfSafe = value => { const url = safe(value); if (!url) return ''; try { return /(^|\.)tunesf\.com$/i.test(new URL(url).hostname) ? url : ''; } catch (_) { return ''; } };
+  const localTerms = /\b(tunisia|tunisian|tunisie|tunisien|tunisienne|carthage|north africa)\b/i;
   let busy = false, lastSync = 0;
   function card(item) {
     const image = safe(item.image);
