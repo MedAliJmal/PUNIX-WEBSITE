@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = document.querySelector('[data-live-hub]');
   if (!page) return;
   const type = page.dataset.liveHub;
-  if (type === 'games') { initFreeGames(); initTunesfOfficial(); }
+  if (type === 'games') initFreeGames();
   if (type === 'esports') initTunisiaEsports();
   const grid = document.getElementById('live-grid');
   const status = document.getElementById('live-status');
