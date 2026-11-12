@@ -14,11 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     {name:'IGN',url:'https://feeds.feedburner.com/ign/all'},
     {name:'PC Gamer',url:'https://www.pcgamer.com/rss/'},
     {name:'GameSpot',url:'https://www.gamespot.com/feeds/news/'},
-    {name:'TGTV · TUNISIA ESPORTS',url:'https://tgtv.tn/category/esports/feed/'}
+    {name:'TGTV · TUNISIA ESPORTS',url:'https://tgtv.tn/category/esports/feed/'},
+    {name:'VLR.gg · TUNISIA VALORANT',url:'https://vlr.gg/rss',tunisiaOnly:true}
   ] : [
     {name:'Esports Insider',url:'https://esportsinsider.com/feed'},
     {name:'Dot Esports',url:'https://dotesports.com/feed'},
-    {name:'HLTV',url:'https://www.hltv.org/rss/news'}
+    {name:'HLTV',url:'https://www.hltv.org/rss/news'},
+    {name:'VLR.gg · VALORANT ESPORTS',url:'https://vlr.gg/rss'}
   ];
   const refreshEvery = 15 * 60 * 1000;
   let stories = [], active = 'all', visibleCount = 12, lastUpdated = 0, loading = false;
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = (item.title+' '+item.description+' '+(item.categories||[]).join(' ')).toLowerCase();
     if (type === 'games') {
       if (item.source === 'TGTV · TUNISIA ESPORTS') return 'tunisia';
+      if (item.source === 'VLR.gg · TUNISIA VALORANT') return 'tunisia';
       if (/release|launch|out now|coming soon|early access|date announced|pre.?order/.test(text)) return 'releases';
       if (/update|patch|season|hotfix|maintenance|balance|dlc|expansion/.test(text)) return 'updates';
       return 'industry';
@@ -61,7 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
       title:plain(item.title), description:plain(item.description || item.content).slice(0,300),
       link:safeUrl(item.link), image:safeUrl(item.thumbnail || item.enclosure?.link || ''),
       source:feed.name, date:item.pubDate, categories:item.categories || []
-    })).filter(item => item.title && item.link).map(item => ({...item,category:classify(item)}));
+    })).filter(item => item.title && item.link).filter(item => {
+      if (!feed.tunisiaOnly) return true;
+      return /\\b(tunisia|tunisian|tunisie|tunisien|tunisienne|carthage|north africa)\\b/i.test(item.title+' '+item.description+' '+(item.categories||[]).join(' '));
+    }).map(item => ({...item,category:classify(item)}));
   }
   async function load(force=false) {
     if (loading || (!force && Date.now()-lastUpdated < refreshEvery)) return;
