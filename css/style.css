@@ -446,3 +446,58 @@ body :is(h1, h2, h3) {
   .pnx-sponsors-grid[data-count="1"] .pnx-sponsor-card{min-height:160px;padding:26px}
   .pnx-sponsors-grid[data-count="1"] .pnx-sponsor-card img{height:82px}
 }
+
+
+/* PUNIX identity section — manifesto and principles */
+#about .identity-manifesto{
+  position:relative;
+  overflow:hidden;
+  margin-top:42px;
+  padding:34px 38px 36px;
+  border:1px solid rgba(201,164,91,.18);
+  border-left:2px solid var(--gold);
+  background:
+    radial-gradient(ellipse at 92% 10%,rgba(37,185,176,.09),transparent 42%),
+    linear-gradient(110deg,rgba(201,164,91,.075),rgba(255,255,255,.012) 68%);
+}
+#about .identity-manifesto:after{
+  content:"P";
+  position:absolute;
+  right:25px;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(201,164,91,.045);
+  font:900 clamp(150px,22vw,260px)/.8 var(--font-display);
+  pointer-events:none;
+}
+#about .identity-manifesto h3,
+#about .identity-manifesto p,
+#about .identity-kicker{position:relative;z-index:1}
+#about .identity-manifesto h3{max-width:780px}
+#about .identity-manifesto p{max-width:600px}
+#about .values-row{gap:12px;margin-top:25px}
+#about .values-row>div{
+  min-height:142px;
+  padding:19px 17px 17px 43px;
+  border:1px solid rgba(255,255,255,.085);
+  background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.008));
+  transition:border-color .25s,transform .25s,background .25s;
+}
+#about .values-row>div:hover{
+  transform:translateY(-3px);
+  border-color:rgba(37,185,176,.32);
+  background:linear-gradient(145deg,rgba(37,185,176,.07),rgba(255,255,255,.012));
+}
+#about .values-row .value-number{left:16px;top:22px}
+#about .values-row strong{font-size:22px}
+#about .values-row p{max-width:190px}
+@media(max-width:900px){
+  #about .values-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  #about .identity-manifesto{padding:27px 22px 29px}
+  #about .identity-manifesto:after{right:8px;font-size:150px}
+  #about .values-row{grid-template-columns:1fr;gap:9px}
+  #about .values-row>div{min-height:0;padding:17px 15px 17px 43px}
+  #about .values-row .value-number{top:20px}
+}
