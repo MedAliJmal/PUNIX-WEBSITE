@@ -56,3 +56,28 @@
 .pnx-live-footer-cta .button{display:inline-flex;margin-top:25px}
 @media(max-width:900px){.pnx-live-hero{grid-template-columns:1fr;min-height:0;padding-bottom:65px}.pnx-live-hero-art{min-height:260px}.pnx-live-hero-art strong{font-size:220px}.pnx-live-orbit{width:260px}.pnx-live-orbit.orbit-two{width:210px}.pnx-live-heading{align-items:start;flex-direction:column;gap:16px}.pnx-live-grid-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pnx-live-hero{padding-top:45px}.pnx-live-hero-art{min-height:220px}.pnx-live-hero-art strong{font-size:190px}.pnx-live-hero-art>span{right:0}.pnx-live-hero-foot{font-size:7px}.pnx-live-feed{padding-top:65px;padding-bottom:70px}.pnx-live-toolbar{align-items:stretch;flex-direction:column}.pnx-live-search{width:100%;box-sizing:border-box}.pnx-live-grid-cards{grid-template-columns:1fr}.pnx-live-card-image{height:190px}.pnx-live-card p{min-height:0}.pnx-live-actions{flex-wrap:wrap}}
+
+/* Free-to-keep games section */
+.pnx-free-games{padding-top:78px;padding-bottom:82px;border-top:1px solid rgba(210,173,104,.18);border-bottom:1px solid rgba(255,255,255,.09);background:radial-gradient(ellipse at 8% 18%,rgba(135,105,49,.09),transparent 35%)}
+.pnx-free-games .pnx-live-heading{margin-bottom:30px}
+.pnx-free-topline{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-block:1px solid rgba(255,255,255,.12);color:#899196;font:800 8px Inter,sans-serif;letter-spacing:1.2px}
+.pnx-free-live{display:flex;align-items:center;gap:9px;color:#d9d6ca}
+.pnx-free-live i{width:7px;height:7px;border-radius:50%;background:#79c69b;box-shadow:0 0 10px #79c69b}
+.pnx-free-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin-top:20px}
+.pnx-free-card{min-width:0;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#111419;transition:border-color .2s,transform .2s}
+.pnx-free-card:hover{transform:translateY(-3px);border-color:rgba(210,173,104,.55)}
+.pnx-free-image{position:relative;height:178px;overflow:hidden;background:linear-gradient(135deg,#20242a,#171811)}
+.pnx-free-image img{width:100%;height:100%;object-fit:cover;opacity:.83}
+.pnx-free-platform,.pnx-free-price{position:absolute;top:12px;padding:7px 9px;background:rgba(7,9,12,.88);font:800 8px Inter,sans-serif;letter-spacing:.8px}
+.pnx-free-platform{left:12px;color:#f0d7a3}
+.pnx-free-price{right:12px;color:#8ee0aa}
+.pnx-free-content{padding:16px}
+.pnx-free-meta{display:flex;justify-content:space-between;gap:8px;color:#858e94;font:700 8px Inter,sans-serif}
+.pnx-free-card h3{margin:13px 0 8px;color:#f2f1ec;font:800 22px/1.05 "Barlow Condensed",sans-serif}
+.pnx-free-card p{min-height:56px;margin:0;color:#a0a7ab;font:400 10px/1.7 Inter,sans-serif}
+.pnx-free-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:17px;padding-top:13px;border-top:1px solid rgba(255,255,255,.1)}
+.pnx-free-tag{color:#83d5a1;font:900 9px Inter,sans-serif;letter-spacing:1px}
+.pnx-free-bottom a{color:#f0d7a3;text-decoration:none;font:900 8px Inter,sans-serif;letter-spacing:.7px}
+.pnx-free-bottom a:hover{color:#fff}
+@media(max-width:900px){.pnx-free-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.pnx-free-games{padding-top:58px;padding-bottom:60px}.pnx-free-grid{grid-template-columns:1fr}.pnx-free-image{height:195px}.pnx-free-card p{min-height:0}.pnx-free-topline{align-items:flex-start;flex-direction:column;gap:8px}}
