@@ -157,6 +157,11 @@ Google's own account authentication and Supabase OAuth protections apply to this
 
 ## PUNIX Live Support Chat
 
-Apply `supabase/migrations/202611110019_punix_live_support.sql` in the Supabase SQL Editor before using the visitor chat. It creates the private support inbox tables, token-protected anonymous visitor RPCs, admin-only inbox policies, and Realtime publication entries.
+Apply these database migrations in order in the Supabase SQL Editor:
 
-The floating visitor chat is loaded on the public pages from `js/punix-support-chat.js`. Visitors can return to their conversation from the same browser using its saved random access token. Admins can manage conversations in **Admin Dashboard → Support Inbox**. Visitor replies are polled every five seconds while the chat is open; admin inbox changes use Supabase Realtime.
+1. `supabase/migrations/202611110019_punix_live_support.sql` — creates the support conversation and message tables, admin inbox policies, and the initial support functions.
+2. `supabase/migrations/202611110020_punix_support_accounts_only.sql` — updates the support system to require an authenticated PUNIX account and limits each member to their own conversations.
+
+The second migration is required. The current support chat is **for signed-in PUNIX members only**; it does not provide anonymous visitor access.
+
+The floating support chat is loaded on public pages from `js/punix-support-chat.js`. Members can return to their conversation from the same browser using its saved conversation reference. Admins can manage conversations in **Admin Dashboard → Support Inbox**. Member-side replies are refreshed while the chat is open; admin inbox updates use Supabase Realtime.
