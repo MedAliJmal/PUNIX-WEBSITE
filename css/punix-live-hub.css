@@ -81,3 +81,37 @@
 .pnx-free-bottom a:hover{color:#fff}
 @media(max-width:900px){.pnx-free-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.pnx-free-games{padding-top:58px;padding-bottom:60px}.pnx-free-grid{grid-template-columns:1fr}.pnx-free-image{height:195px}.pnx-free-card p{min-height:0}.pnx-free-topline{align-items:flex-start;flex-direction:column;gap:8px}}
+
+
+/* Streaming trends / featured game */
+.pnx-trending{padding-top:88px;padding-bottom:86px;border-top:1px solid rgba(210,173,104,.2);border-bottom:1px solid rgba(255,255,255,.1);background:radial-gradient(ellipse at 90% 25%,rgba(150,37,35,.12),transparent 38%),#0b0d11}
+.pnx-trend-feature{display:grid;grid-template-columns:.82fr 1.18fr;min-height:430px;border:1px solid rgba(210,173,104,.25);background:#101318}
+.pnx-trend-visual{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-height:390px;padding:38px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,rgba(153,42,35,.38),transparent 56%),linear-gradient(145deg,#191316,#090b0e 72%)}
+.pnx-trend-visual-grid{position:absolute;inset:0;opacity:.15;background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:34px 34px;mask-image:linear-gradient(135deg,#000,transparent 90%)}
+.pnx-trend-index,.pnx-trend-visual-foot{position:relative;color:#d7c08c;font:800 8px Inter,sans-serif;letter-spacing:1.7px}
+.pnx-trend-visual strong{position:relative;margin:25px 0;color:#f4f0e8;font:900 clamp(82px,10vw,140px)/.72 "Barlow Condensed",sans-serif;letter-spacing:-3px;text-shadow:0 10px 45px rgba(0,0,0,.5)}
+.pnx-trend-visual strong em{color:#d2ad68;font-style:normal}
+.pnx-trend-visual-foot{color:#9da2a4;font-size:7px}
+.pnx-trend-copy{padding:clamp(25px,4vw,52px);align-self:center}
+.pnx-trend-tags{display:flex;flex-wrap:wrap;gap:7px}
+.pnx-trend-tags span{padding:7px 9px;border:1px solid rgba(210,173,104,.3);color:#e0c88f;font:800 7px Inter,sans-serif;letter-spacing:1px}
+.pnx-trend-copy h3{margin:22px 0 13px;color:#f3f0e8;font:900 clamp(39px,5vw,62px)/.85 "Barlow Condensed",sans-serif}
+.pnx-trend-copy>p:not(.pnx-trend-note){max-width:650px;color:#a7afb2;font:400 11px/1.9 Inter,sans-serif}
+.pnx-trend-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:25px 0;padding:17px 0;border-block:1px solid rgba(255,255,255,.1)}
+.pnx-trend-stats div{display:flex;flex-direction:column;gap:7px}
+.pnx-trend-stats strong{color:#f0d7a3;font:800 10px Inter,sans-serif}
+.pnx-trend-stats span{color:#7f898e;font:700 7px/1.5 Inter,sans-serif;letter-spacing:.8px}
+.pnx-trend-actions{display:flex;flex-wrap:wrap;gap:10px}
+.pnx-trend-actions a{display:inline-flex;gap:12px;align-items:center;padding:13px 15px;border:1px solid rgba(210,173,104,.45);color:#f0d7a3;text-decoration:none;font:900 8px Inter,sans-serif;letter-spacing:.8px}
+.pnx-trend-actions a:first-child{background:#c6a15e;color:#101114}
+.pnx-trend-actions a:hover{border-color:#f0d7a3;filter:brightness(1.12)}
+.pnx-trend-note{margin:18px 0 0;color:#7f898e;font:400 9px/1.7 Inter,sans-serif}
+.pnx-trend-ideas{display:grid;grid-template-columns:1.15fr repeat(3,1fr);gap:15px;margin-top:25px;padding:25px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.018)}
+.pnx-trend-ideas h3{margin:12px 0 0;color:#f2eee5;font:900 32px/.85 "Barlow Condensed",sans-serif}
+.pnx-trend-ideas h3 em{color:#d2ad68;font-style:normal}
+.pnx-trend-idea{display:flex;flex-direction:column;gap:9px;padding-left:16px;border-left:1px solid rgba(210,173,104,.3)}
+.pnx-trend-idea b{color:#d2ad68;font:800 9px Inter,sans-serif}
+.pnx-trend-idea strong{color:#f0eee8;font:800 11px Inter,sans-serif}
+.pnx-trend-idea span{color:#929ba0;font:400 9px/1.7 Inter,sans-serif}
+@media(max-width:850px){.pnx-trend-feature{grid-template-columns:1fr}.pnx-trend-visual{min-height:290px}.pnx-trend-visual strong{font-size:110px}.pnx-trend-ideas{grid-template-columns:1fr 1fr}.pnx-trend-ideas>div:first-child{grid-column:1/-1}}
+@media(max-width:560px){.pnx-trending{padding-top:60px;padding-bottom:60px}.pnx-trend-visual{min-height:240px;padding:25px}.pnx-trend-visual strong{font-size:92px}.pnx-trend-copy{padding:24px}.pnx-trend-stats{grid-template-columns:1fr;gap:13px}.pnx-trend-ideas{grid-template-columns:1fr;padding:20px}.pnx-trend-ideas>div:first-child{grid-column:auto}.pnx-trend-idea{padding:13px 0 0;border-left:0;border-top:1px solid rgba(210,173,104,.25)}}
