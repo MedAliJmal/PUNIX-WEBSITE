@@ -1,12 +1,16 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="en">
+<head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090b0e">
-<title>Game Hub | PUNIX</title><meta name="description" content="Gaming news from around the world, plus a dedicated feed for Tunisian teams, tournaments, national players and local esports events.">
-<meta property="og:type" content="website"><meta property="og:site_name" content="PUNIX"><meta property="og:title" content="Game Hub | PUNIX"><meta property="og:description" content="Gaming news, new releases, updates, reviews and industry stories from leading gaming publications, refreshed automatically."><meta property="og:image" content="https://punix.pages.dev/assets/images/punix-logo-original.png">
-<link rel="icon" type="image/png" href="/assets/images/punix-logo-original.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/punix-nav.css"><link rel="stylesheet" href="css/punix-live-hub.css"><link rel="stylesheet" href="css/punix-support-chat.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/supabase-config.js"></script>
-</head><body><div class="site-shell">
+<title>Game Hub | PUNIX</title>
+<meta name="description" content="Explore the PUNIX Game Hub: discover games, learn their genres, platforms and gameplay, and find your next game to play.">
+<meta property="og:type" content="website"><meta property="og:site_name" content="PUNIX"><meta property="og:title" content="Game Hub | PUNIX"><meta property="og:description" content="Discover games, explore genres and learn what makes each title unique."><meta property="og:image" content="https://punix.pages.dev/assets/images/punix-logo-original.png">
+<link rel="icon" type="image/png" href="/assets/images/punix-logo-original.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/punix-nav.css"><link rel="stylesheet" href="css/punix-game-directory.css"><link rel="stylesheet" href="css/punix-support-chat.css">
+</head>
+<body><div class="site-shell">
 <header class="pnx-site-header">
   <a class="pnx-brand" href="index.html#top" aria-label="PUNIX home"><img src="assets/images/punix-logo-original.png" alt="PUNIX"></a>
   <button class="pnx-menu-toggle menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -17,63 +21,45 @@
   </nav>
   <div class="pnx-nav-actions"><a class="pnx-nav-cta" href="auth.html">LOG IN <span>↗</span></a></div>
 </header>
-<main class="pnx-live-page" data-live-hub="games">
-<section class="pnx-live-hero">
-<div class="pnx-live-grid"></div><div class="pnx-live-hero-copy">
-<a class="pnx-live-back" href="index.html#esports">← PUNIX / EXPLORE</a>
-<p class="pnx-live-kicker"><span></span>PUNIX GAME HUB / 01</p>
-<h1>THE WORLD<br><em>OF PLAY.</em></h1><p class="pnx-live-intro">Your gaming radar. Discover the latest game announcements, releases, updates, industry moves and stories from across PC and console gaming.</p>
-<nav class="pnx-hub-jump" aria-label="Explore Game Hub sections">
-<a href="#free-games"><span>01</span> FREE GAMES <b>↘</b></a>
-<a href="#streaming-trends"><span>02</span> TRENDING GAMES <b>↘</b></a>
-<a href="#live-stories"><span>03</span> GAMING NEWS <b>↘</b></a>
-</nav>
-<div class="pnx-live-pulse"><i></i> LIVE FEED · AUTOMATIC UPDATES</div>
-</div><div class="pnx-live-hero-art" aria-hidden="true"><div class="pnx-live-orbit orbit-one"></div><div class="pnx-live-orbit orbit-two"></div><strong>G</strong><span>PUNIX / GAME HUB</span></div>
-<div class="pnx-live-hero-foot"><span>DISCOVER · FOLLOW · PLAY</span><span>STAY IN THE LOOP <b>✳</b></span></div>
-</section>
-<section class="pnx-free-games section-wrap" id="free-games">
-  <div class="pnx-live-heading"><div><p class="pnx-live-kicker"><span></span> CLAIM THEM BEFORE THEY'RE GONE</p><h2>PAID GAMES.<br><em>FREE TO KEEP.</em></h2></div><p>Limited-time PC game giveaways from Steam, Epic Games Store, GOG and other platforms. Claim eligible offers before they expire and keep the game according to each platform's terms.</p></div>
-  <div class="pnx-free-topline"><span class="pnx-free-live"><i></i> LIVE GIVEAWAYS</span><span id="free-games-updated">CHECKING CURRENT OFFERS…</span></div>
-  <div class="pnx-live-toolbar"><div class="pnx-live-filters" role="group" aria-label="Filter free game offers"><button type="button" data-free-filter="all" class="is-active">ALL PLATFORMS</button><button type="button" data-free-filter="steam">STEAM</button><button type="button" data-free-filter="epic">EPIC GAMES</button><button type="button" data-free-filter="gog">GOG</button><button type="button" data-free-filter="other">OTHER PC</button></div><label class="pnx-live-search"><span>⌕</span><input type="search" id="free-games-search" placeholder="Find a game…" aria-label="Search free games"></label></div>
-  <div class="pnx-free-grid" id="free-games-grid" aria-live="polite"><div class="pnx-live-empty">Checking current free game offers…</div></div>
-  <div class="pnx-live-actions"><button type="button" id="free-games-refresh">↻ CHECK FOR NEW OFFERS</button></div>
-  <p class="pnx-live-source-note">Giveaway data provided by <a href="https://www.gamerpower.com/" target="_blank" rel="noopener noreferrer">GamerPower</a>. Offers can have account, region, eligibility or redemption requirements. Always check the claim page for the exact terms and expiration time before redeeming.</p>
-</section>
-<section class="pnx-trending section-wrap" id="streaming-trends">
-  <div class="pnx-live-heading"><div><p class="pnx-live-kicker"><span></span> THE STREAMING RADAR / TREND WATCH</p><h2>WHAT'S POPPING<br><em>OFF RIGHT NOW.</em></h2></div><p>Fresh international releases and breakout titles gaining attention — selected for their streaming potential, not just their player counts.</p></div>
-  <div class="pnx-trend-meta"><span><i></i> TREND WATCH · 12 NOV 2026</span><span>GLOBAL STREAMING RADAR · NEW RELEASES</span></div>
-  <div class="pnx-global-trends-heading"><div><p class="pnx-live-kicker"><span></span> 02 / THE GLOBAL RADAR</p><h3>NEW RELEASES.<br><em>REAL MOMENTUM.</em></h3></div><p>Fresh games with measurable launch attention or a strong creator-friendly format. A watchlist, not a list of the usual biggest games.</p></div>
-  <div class="pnx-trend-grid pnx-global-trend-grid">
-    <article class="pnx-trend-card pnx-trend-card-featured"><div class="pnx-trend-card-top"><span>01 / STREAMING BREAKOUT</span><b>BREAKOUT</b></div><h3>PHANTOM<br>BLADE ZERO</h3><p>Launched 29 October. Its first November Twitch snapshot recorded 4.69 million hours watched through 12 November, with high-energy action that makes strong highlight material.</p><div class="pnx-trend-card-foot"><span>ACTION RPG · OCT 29</span><a href="https://www.streamablecharts.com/games/twitch/306019403" target="_blank" rel="noopener noreferrer">VIEW STREAM DATA ↗</a></div></article>
-    <article class="pnx-trend-card"><div class="pnx-trend-card-top"><span>02 / VIRAL SIM FORMAT</span><b>RISING</b></div><h3>PROBABLY<br>STOLEN</h3><p>A cyberpunk shopkeeping sim built around risky deals, strange customers and escalating choices. Its publisher reported 350,000 copies sold in the first 24 hours — a strong sign of launch buzz and a fun format for creator reactions.</p><div class="pnx-trend-card-foot"><span>SIMULATION · OCT 28</span><a href="https://store.steampowered.com/app/4348910/Probably_Stolen/" target="_blank" rel="noopener noreferrer">GAME DETAILS ↗</a></div></article>
-    <article class="pnx-trend-card"><div class="pnx-trend-card-top"><span>03 / JUST RELEASED</span><b>NEW RELEASE</b></div><h3>WARHAMMER<br>SURVIVORS</h3><p>Released 10 November. A fresh bullet-heaven roguelite with over 40 playable champions — a good pick for challenge runs, build experiments and quick sessions.</p><div class="pnx-trend-card-foot"><span>ROGUELITE · NOV 10</span><a href="https://store.steampowered.com/app/3669620/Warhammer_Survivors/" target="_blank" rel="noopener noreferrer">PLAY / DETAILS ↗</a></div></article>
-  </div>
-  <div class="pnx-trend-ideas"><div><p class="pnx-live-kicker"><span></span> FOR CREATORS</p><h3>SPOT IT EARLY.<br><em>MAKE IT YOURS.</em></h3></div><div class="pnx-trend-idea"><b>01</b><strong>LOCAL FIRST</strong><span>Catch the games your audience is already talking about.</span></div><div class="pnx-trend-idea"><b>02</b><strong>TRY THE NEW</strong><span>Early coverage gives your channel a chance to stand out.</span></div><div class="pnx-trend-idea"><b>03</b><strong>MAKE A FORMAT</strong><span>Turn a game into challenges, reactions and community sessions.</span></div></div>
-  <p class="pnx-live-source-note">SOURCES: <a href="https://www.streamablecharts.com/games/twitch/306019403" target="_blank" rel="noopener noreferrer">Streamable Charts · Phantom Blade Zero Twitch data</a> · <a href="https://store.steampowered.com/app/4348910/Probably_Stolen/" target="_blank" rel="noopener noreferrer">Probably Stolen · Steam</a> · <a href="https://store.steampowered.com/app/3669620/Warhammer_Survivors/" target="_blank" rel="noopener noreferrer">Warhammer Survivors · Steam</a>. Snapshot checked 12 November 2026. Local directory counts and streaming metrics can change.</p>
-</section>
-<section class="pnx-tunesf-official section-wrap" id="tunesf-official">
-  <div class="pnx-live-heading"><div><p class="pnx-live-kicker"><span></span> OFFICIAL SOURCE / TUNESF</p><h2>FROM THE<br><em>FEDERATION.</em></h2></div><p>Official announcements from the Tunisian Esports Federation. These stories are curated from TUNESF's published news so official statements stay distinct from independent reporting.</p></div>
-  <div class="pnx-tunesf-label"><span><i></i> OFFICIAL TUNESF UPDATES</span><span id="tunesf-sync-status">LOADING FEDERATION NEWS…</span><a href="https://esports.tunesf.com/blog" target="_blank" rel="noopener noreferrer">ALL FEDERATION NEWS ↗</a></div>
-  <div class="pnx-tunesf-grid" id="tunesf-official-grid">
-    <article class="pnx-tunesf-card pnx-tunesf-featured"><div class="pnx-tunesf-card-meta"><span>OFFICIAL ANNOUNCEMENT</span><time datetime="2026-11-11">11 NOV 2026</time></div><h3>LOS ANGELES GLOBAL ESPORTS GAMES MOVED TO SPRING 2027</h3><p>TUNESF confirms that the Global Esports Games in Los Angeles have been postponed from December 2026 to Spring 2027. The federation says further schedule and participation details will follow.</p><a href="https://www.tunesf.com/blog/post/the-los-angeles-2026-global-esports-games-will-move-to-spring-2027" target="_blank" rel="noopener noreferrer">READ OFFICIAL STATEMENT ↗</a></article>
-    <article class="pnx-tunesf-card"><div class="pnx-tunesf-card-meta"><span>FEDERATION STATEMENT</span><time datetime="2026-10-11">11 OCT 2026</time></div><h3>OFFICIAL STATEMENT REGARDING FIFAe FINALS PARTICIPATION</h3><p>The federation published its statement concerning Tunisia's participation in the FIFAe Finals scheduled for October 2026.</p><a href="https://esports.tunesf.com/blog" target="_blank" rel="noopener noreferrer">FIND ON TUNESF NEWS ↗</a></article>
-    <article class="pnx-tunesf-card"><div class="pnx-tunesf-card-meta"><span>NATIONAL TEAM</span><time datetime="2026-10-02">02 OCT 2026</time></div><h3>TUNISIA SET TO COMPETE IN THE ARABIAN REGIONAL CHAMPIONSHIP</h3><p>Tunisia announced participation in VALORANT and League of Legends, with national qualifiers for players and teams seeking to represent the country.</p><a href="https://tunesf.com/blog/post/tunisia-set-to-compete-in-the-arabian-regional-championship" target="_blank" rel="noopener noreferrer">READ FEDERATION UPDATE ↗</a></article>
-  </div>
-  <div class="pnx-tunesf-bottom"><span>CHECK COMPETITION DATES, REGISTRATION AND RESULTS DIRECTLY WITH THE FEDERATION.</span><a href="https://esports.tunesf.com/events" target="_blank" rel="noopener noreferrer">OFFICIAL EVENTS CALENDAR ↗</a></div>
-  <p class="pnx-live-source-note">Source: <a href="https://esports.tunesf.com/blog" target="_blank" rel="noopener noreferrer">Tunisian Esports Federation — official news</a>. Official articles are imported from TUNESF by a scheduled GitHub sync (every 6 hours). If the source is unavailable, the last published stories remain visible.</p>
-</section>
-<section class="pnx-live-feed section-wrap" id="live-stories">
-<div class="pnx-live-heading"><div><p class="pnx-live-kicker"><span></span>THE GAMING RADAR / GLOBAL + LOCAL</p><h2>WHAT'S HAPPENING<br><em>IN GAMING.</em></h2></div><p>Follow international gaming coverage and a dedicated Tunisia Esports feed for local teams, national competitions, Tunisian players and federation announcements.</p></div>
-<div class="pnx-live-toolbar"><div class="pnx-live-filters" role="group" aria-label="Filter stories"><button type="button" data-live-filter="all" class="is-active">ALL STORIES</button><button type="button" data-live-filter="releases" class="">RELEASES</button><button type="button" data-live-filter="updates" class="">UPDATES</button><button type="button" data-live-filter="industry" class="">INDUSTRY</button><button type="button" data-live-filter="tunisia" class="">TUNISIA ESPORTS</button></div><label class="pnx-live-search"><span>⌕</span><input type="search" id="live-search" placeholder="Search headlines…" aria-label="Search headlines"></label></div>
-<div class="pnx-live-status" id="live-status" role="status" aria-live="polite"><i class="pnx-live-spinner"></i> CONNECTING TO NEWS SOURCES…</div>
-<div class="pnx-live-grid-cards" id="live-grid" aria-live="polite"></div>
-<div class="pnx-live-actions"><button type="button" id="live-more" hidden>LOAD MORE <span>↓</span></button><button type="button" id="live-refresh">↻ REFRESH NOW</button></div>
-<p class="pnx-live-source-note">TUNISIA ESPORTS: <a href="https://tgtv.tn/category/esports/" target="_blank" rel="noopener noreferrer">TGTV · Local esports reporting</a> · <a href="https://www.vlr.gg/" target="_blank" rel="noopener noreferrer">VLR.gg · Valorant coverage (Tunisian-related headlines)</a> · <a href="https://esports.tunesf.com/blog" target="_blank" rel="noopener noreferrer">TUNESF · Official federation announcements</a> · <a href="https://esports.tunesf.com/events" target="_blank" rel="noopener noreferrer">TUNESF · National tournament calendar</a>. INTERNATIONAL GAMING: <a href="https://www.ign.com/" target="_blank" rel="noopener">IGN</a> · <a href="https://www.pcgamer.com/" target="_blank" rel="noopener">PC Gamer</a> · <a href="https://www.gamespot.com/" target="_blank" rel="noopener">GameSpot</a>. The Tunisia filter combines TGTV reporting with VLR.gg headlines only when they mention Tunisia or Tunisian esports; TUNESF links provide direct access to primary federation news and event details. Headlines and summaries are for discovery; full articles remain with their publishers.</p>
-</section>
-<section class="pnx-live-footer-cta"><div class="section-wrap"><p class="pnx-live-kicker"><span></span> PART OF THE PUNIX NETWORK</p><h2>PLAY YOUR PART.<br><em>JOIN THE COMMUNITY.</em></h2><a class="button button-outline" href="index.html#community">EXPLORE PUNIX <span>↗</span></a></div></section>
+<main class="pnx-game-page">
+  <section class="pnx-game-hero">
+    <div class="pnx-game-hero-grid"></div>
+    <div class="pnx-game-hero-copy">
+      <a class="pnx-game-back" href="index.html#esports">← PUNIX / EXPLORE</a>
+      <p class="pnx-game-kicker"><span></span> PUNIX GAME HUB / 01</p>
+      <h1>DISCOVER<br><em>THE GAME.</em></h1>
+      <p>From tactical shooters to competitive sports and mobile adventures, explore the games, understand how they play and find the worlds you want to jump into.</p>
+      <div class="pnx-game-hero-tags"><span>GAME OVERVIEWS</span><span>GENRES</span><span>PLATFORMS</span></div>
+    </div>
+    <div class="pnx-game-hero-mark" aria-hidden="true"><span>G</span><i>PLAY / EXPLORE / REPEAT</i></div>
+    <div class="pnx-game-hero-foot"><span>THE PUNIX GAME DIRECTORY</span><span>DISCOVER · LEARN · PLAY</span></div>
+  </section>
+  <section class="pnx-game-directory section-wrap" id="games">
+    <div class="pnx-game-heading"><div><p class="pnx-game-kicker"><span></span> THE DIRECTORY</p><h2>FIND YOUR<br><em>NEXT GAME.</em></h2></div><p>Quick introductions to different games: what they are, how they play, and where you can play them. This is a game guide—not a news or competition feed.</p></div>
+    <div class="pnx-game-tools">
+      <div class="pnx-game-filters" role="group" aria-label="Filter games by platform">
+        <button class="is-active" type="button" data-game-filter="all">ALL GAMES</button>
+        <button type="button" data-game-filter="pc">PC</button>
+        <button type="button" data-game-filter="console">CONSOLE</button>
+        <button type="button" data-game-filter="mobile">MOBILE</button>
+      </div>
+      <label class="pnx-game-search"><span>⌕</span><input id="game-search" type="search" placeholder="Search games…" aria-label="Search games"></label>
+    </div>
+    <div class="pnx-game-grid" id="game-grid">
+      <article class="pnx-game-card" data-platform="pc" data-search="valorant tactical shooter riot games pc"><div class="pnx-game-card-art art-valorant"><span>01 / TACTICAL FPS</span><strong>V</strong><small>VALORANT</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>PC</span><span>TACTICAL SHOOTER</span></div><h3>VALORANT</h3><p>A character-based 5v5 tactical shooter where precise gunplay meets unique agent abilities. Teams attack and defend around an objective, making coordination and smart utility essential.</p><a href="https://playvalorant.com/" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+      <article class="pnx-game-card" data-platform="pc" data-search="counter strike 2 cs2 tactical fps valve pc"><div class="pnx-game-card-art art-cs2"><span>02 / TACTICAL FPS</span><strong>CS</strong><small>COUNTER-STRIKE 2</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>PC</span><span>TACTICAL SHOOTER</span></div><h3>COUNTER-STRIKE 2</h3><p>A round-based first-person shooter built around teamwork, economy management, map control and precise mechanics. Terrorists and counter-terrorists compete to complete opposing objectives.</p><a href="https://www.counter-strike.net/cs2" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+      <article class="pnx-game-card" data-platform="pc" data-search="league of legends lol moba riot games pc"><div class="pnx-game-card-art art-lol"><span>03 / MOBA</span><strong>LoL</strong><small>LEAGUE OF LEGENDS</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>PC</span><span>MOBA</span></div><h3>LEAGUE OF LEGENDS</h3><p>A 5v5 multiplayer online battle arena where players choose champions, build items, work with their team and push lanes to destroy the enemy Nexus.</p><a href="https://www.leagueoflegends.com/" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+      <article class="pnx-game-card" data-platform="pc console" data-search="rocket league football cars psyonix pc console"><div class="pnx-game-card-art art-rocket"><span>04 / SPORTS ACTION</span><strong>RL</strong><small>ROCKET LEAGUE</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>PC · CONSOLE</span><span>SPORTS / ACTION</span></div><h3>ROCKET LEAGUE</h3><p>Football meets rocket-powered cars. Players boost, jump and flip across an arena to score goals, with a high skill ceiling built around movement and teamwork.</p><a href="https://www.rocketleague.com/" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+      <article class="pnx-game-card" data-platform="pc console mobile" data-search="fortnite battle royale epic games pc console mobile"><div class="pnx-game-card-art art-fortnite"><span>05 / BATTLE ROYALE</span><strong>FN</strong><small>FORTNITE</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>PC · CONSOLE · MOBILE*</span><span>BATTLE ROYALE</span></div><h3>FORTNITE</h3><p>A constantly evolving action game known for its battle royale mode, building mechanics, creative experiences and large collection of limited-time game modes.</p><a href="https://www.fortnite.com/" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+      <article class="pnx-game-card" data-platform="pc console mobile" data-search="pubg battlegrounds playerunknown battle royale pc console mobile"><div class="pnx-game-card-art art-pubg"><span>06 / BATTLE ROYALE</span><strong>P</strong><small>PUBG BATTLEGROUNDS</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>PC · CONSOLE</span><span>BATTLE ROYALE</span></div><h3>PUBG: BATTLEGROUNDS</h3><p>A tactical battle royale focused on looting, positioning, survival and gunfights. Players or squads compete to be the last ones standing as the playable area shrinks.</p><a href="https://pubg.com/" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+      <article class="pnx-game-card" data-platform="mobile" data-search="mobile legends bang bang mlbb moba mobile moonton"><div class="pnx-game-card-art art-mlbb"><span>07 / MOBILE MOBA</span><strong>ML</strong><small>MOBILE LEGENDS</small></div><div class="pnx-game-card-body"><div class="pnx-game-meta"><span>MOBILE</span><span>MOBA</span></div><h3>MOBILE LEGENDS: BANG BANG</h3><p>A mobile 5v5 arena game built around lanes, heroes, team fights and objectives. Shorter match formats make it accessible while still rewarding strategy and mechanical skill.</p><a href="https://www.mobilelegends.com/" target="_blank" rel="noopener noreferrer">OFFICIAL GAME WEBSITE ↗</a></div></article>
+    </div>
+    <p class="pnx-game-footnote">*Availability can vary by platform, region and device. Visit each official website for current platform and system requirements.</p>
+    <div class="pnx-game-empty" id="game-empty" hidden>No games match your search. Try another title or platform.</div>
+  </section>
+  <section class="pnx-game-bottom"><div class="section-wrap"><p class="pnx-game-kicker"><span></span> PART OF THE PUNIX NETWORK</p><h2>WHATEVER YOU PLAY.<br><em>MAKE IT YOUR GAME.</em></h2><a class="button button-outline" href="index.html#community">EXPLORE PUNIX <span>↗</span></a></div></section>
 </main>
 <footer class="site-footer"><div class="section-wrap"><a href="index.html#top">PUNIX</a><span>INSPIRED BY PUNIC HERITAGE · BUILT FOR THE FUTURE</span><span>CREATE. BUILD. COMPETE. CONQUER.</span></div></footer>
 </div>
-<script src="js/punix-nav.js" defer></script><script src="js/punix-support-chat.js" defer></script><script src="js/punix-live-hub.js" defer></script>
+<script src="js/punix-nav.js" defer></script><script src="js/punix-support-chat.js" defer></script><script src="js/punix-game-directory.js" defer></script>
 </body></html>
