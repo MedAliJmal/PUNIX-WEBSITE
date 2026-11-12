@@ -8,9 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const refresh = document.getElementById('anime-refresh');
   const filters = [...document.querySelectorAll('[data-anime-filter]')];
   const feeds = [
-    {name:'Anime News Network',url:'https://www.animenewsnetwork.com/all/rss.xml'},
+    {name:'Anime News Network',url:'https://www.animenewsnetwork.com/all/rss.xml?ann-edition=us'},
     {name:'Anime Corner',url:'https://animecorner.me/feed/'},
-    {name:'Crunchyroll News',url:'https://www.crunchyroll.com/news/rss'}
+    {name:'Crunchyroll News',url:'https://cr-news-api-service.prd.crunchyrollsvc.com/v1/en-US/rss'},
+    {name:'MyAnimeList',url:'https://myanimelist.net/rss/news.xml'}
   ];
   let stories = [], activeFilter = 'all', visibleCount = 12;
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
