@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     {name:'Crunchyroll News',url:'https://cr-news-api-service.prd.crunchyrollsvc.com/v1/en-US/rss'},
     {name:'MyAnimeList',url:'https://myanimelist.net/rss/news.xml'}
   ];
-  let stories = [], activeFilter = 'all', visibleCount = 12;
+  let stories = [], activeFilter = 'all', visibleCount = 12, lastUpdated = 0, loading = false;
+  const refreshEvery = 15 * 60 * 1000;
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl = value => { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch (_) { return ''; } };
   const plainText = value => { const node = document.createElement('div'); node.innerHTML = String(value || ''); return (node.textContent || '').replace(/\s+/g,' ').trim(); };
@@ -53,24 +54,30 @@ document.addEventListener('DOMContentLoaded', () => {
       return {title:plainText(item.title),description:plainText(item.description || item.content).slice(0,360),link,image,source:feed.name,date:item.pubDate,categories:item.categories||[],category:classify({title:item.title,description:item.description,categories:item.categories||[]})};
     }).filter(item => item.title && item.link);
   }
-  async function load() {
+  async function load(force = false) {
+    if (loading || (!force && Date.now() - lastUpdated < refreshEvery)) return;
+    loading = true;
     status.innerHTML = '<span class="pnx-anime-loader"></span> LOADING THE LATEST ANIME STORIES…';
     refresh.disabled = true;
     const results = await Promise.allSettled(feeds.map(fetchFeed));
     const merged = results.flatMap(result => result.status === 'fulfilled' ? result.value : []);
     const seen = new Set();
-    stories = merged.filter(item => {
+    const freshStories = merged.filter(item => {
       const key = item.title.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,90);
       if (seen.has(key)) return false;
       seen.add(key); return true;
     }).sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
     refresh.disabled = false;
-    if (!stories.length) {
-      status.textContent = 'THE LIVE FEED IS TEMPORARILY UNAVAILABLE.';
+    loading = false;
+    if (!freshStories.length) {
+      status.textContent = stories.length ? 'UPDATE FAILED · SHOWING THE LAST SUCCESSFUL FEED' : 'THE LIVE FEED IS TEMPORARILY UNAVAILABLE.';
+      if (stories.length) { render(); return; }
       grid.innerHTML = '<div class="pnx-anime-empty">We could not connect to the news feeds. You can still visit the publishers directly: <a href="https://www.animenewsnetwork.com/" target="_blank" rel="noopener noreferrer">Anime News Network</a>, <a href="https://animecorner.me/" target="_blank" rel="noopener noreferrer">Anime Corner</a> and <a href="https://www.crunchyroll.com/news" target="_blank" rel="noopener noreferrer">Crunchyroll News</a>. Please try refreshing in a moment.</div>';
       loadMore.hidden = true;
       return;
     }
+    stories = freshStories;
+    lastUpdated = Date.now();
     visibleCount = 12;
     status.textContent = 'CONNECTED · '+stories.length+' STORIES COLLECTED FROM '+results.filter(r=>r.status==='fulfilled').length+' SOURCES';
     render();
@@ -82,6 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }));
   search?.addEventListener('input', () => { visibleCount = 12; render(); });
   loadMore.addEventListener('click', () => { visibleCount += 12; render(); });
-  refresh.addEventListener('click', load);
-  load();
+  refresh.addEventListener('click', () => load(true));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastUpdated >= refreshEvery) load(true); });
+  load(true);
+  window.setInterval(() => { if (!document.hidden) load(true); }, refreshEvery);
 });
