@@ -257,7 +257,7 @@ function initTunisiaEsports() {
     'regional championship','regional league','regional cup','regional qualifier'
   ];
   const containsTerm = (text, terms) => terms.some(term => {
-    if (term === 'arc') return /\\barc\\b/i.test(text);
+    if (term === 'arc') return /\barc\b/i.test(text);
     return text.includes(term);
   });
   const relevantCompetition = (item, officialSource=false) => {
