@@ -127,7 +127,10 @@ def aggregate(samples, start, end):
             bucket["platforms"].update(values.get("platforms", []))
             bucket["sample_count"] += 1
     for game, bucket in result.items():
-        avg_viewers = statistics.mean(bucket["viewers"]) if bucket["viewers"] else 0
+        # Include zero-activity intervals so a one-off spike cannot dominate a weekly average.
+        avg_viewers = statistics.mean([
+            s.get("games", {}).get(game, {}).get("viewers", 0) for s in selected
+        ]) if selected else 0
         avg_channels = statistics.mean([
             len(s.get("games", {}).get(game, {}).get("channels", [])) for s in selected
         ]) if selected else 0
@@ -166,9 +169,12 @@ def main():
 
     samples = history.get("samples", [])
     # Avoid duplicate timestamps on workflow retries within the same 3-hour collection slot.
-    slot = NOW.replace(minute=0, second=0, microsecond=0)
-    samples = [s for s in samples if datetime.fromisoformat(s["timestamp"].replace("Z", "+00:00")) < slot - timedelta(hours=2)]
-    samples.append({"timestamp": NOW_ISO, "games": games})
+    slot = NOW.replace(hour=(NOW.hour // 3) * 3, minute=0, second=0, microsecond=0)
+    def sample_slot(sample):
+        stamp = datetime.fromisoformat(sample["timestamp"].replace("Z", "+00:00"))
+        return stamp.replace(hour=(stamp.hour // 3) * 3, minute=0, second=0, microsecond=0)
+    samples = [sample for sample in samples if sample_slot(sample) != slot]
+    samples.append({"timestamp": slot.isoformat(timespec="seconds").replace("+00:00", "Z"), "games": games})
     samples = [s for s in samples if datetime.fromisoformat(s["timestamp"].replace("Z", "+00:00")) >= NOW - timedelta(days=14)]
     current, current_count = aggregate(samples, NOW - timedelta(days=7), NOW + timedelta(seconds=1))
     previous, previous_count = aggregate(samples, NOW - timedelta(days=14), NOW - timedelta(days=7))
@@ -177,7 +183,7 @@ def main():
     for name, stats in current.items():
         old = previous.get(name)
         growth = None
-        if old and old["score"] > 0:
+        if old and old["score"] > 0 and old["sample_count"] >= 20:
             growth = round((stats["score"] - old["score"]) / old["score"] * 100, 1)
         ranked.append({
             "name": name, "score": stats["score"], "avg_viewers": stats["avg_viewers"],
