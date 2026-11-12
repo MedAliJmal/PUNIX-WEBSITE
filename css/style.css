@@ -99,6 +99,19 @@ h2 { font:800 clamp(48px,6.4vw,78px)/.88 var(--font-display); letter-spacing:-.5
 .card-label { color:var(--teal); font-size:9px; letter-spacing:2px; font-weight:800; }
 .card-copy h3 { font:800 48px/.88 var(--font-display); margin:12px 0; }
 .card-copy p { color:#b4b9b9; font-size:11px; line-height:1.7; margin:0; }
+
+.creator-intro { display:flex; align-items:flex-end; justify-content:space-between; gap:30px; margin:-15px 0 30px; }
+.creator-intro p { max-width:590px; margin:0; color:var(--muted); font-size:13px; line-height:1.9; }
+.creator-intro > span { color:var(--teal); font-size:8px; font-weight:800; letter-spacing:1.5px; text-align:right; }
+.creator-journey { margin-top:26px; padding:22px 25px 25px; border:1px solid var(--line); background:linear-gradient(110deg,rgba(255,255,255,.025),rgba(37,185,176,.025)); }
+.creator-journey-heading { display:flex; justify-content:space-between; gap:15px; color:var(--teal); font-size:8px; font-weight:800; letter-spacing:1.6px; }
+.creator-journey-heading span:last-child { color:#788487; }
+.creator-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:25px; margin-top:22px; }
+.creator-steps > div { position:relative; padding-left:37px; }
+.creator-steps > div > span { position:absolute; left:0; top:2px; color:var(--gold); font-size:10px; font-weight:800; }
+.creator-steps strong { font:800 22px var(--font-display); letter-spacing:1px; }
+.creator-steps p { max-width:260px; margin:6px 0 0; color:var(--muted); font-size:10px; line-height:1.8; }
+
 .esports-section { display:grid; grid-template-columns:minmax(0, .95fr) minmax(0, 1.05fr); gap:clamp(28px,4.5vw,64px); align-items:center; padding:35px 0 125px; }
 .esports-visual { width:100%; aspect-ratio:1/1; height:auto; min-height:0; max-height:620px; position:relative; overflow:hidden; background:#13191b; clip-path:polygon(0 0,94% 0,100% 6%,100% 100%,0 100%); }
 .esports-photo { position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; object-position:center; filter:none; }
@@ -202,6 +215,12 @@ h2 { font:800 clamp(48px,6.4vw,78px)/.88 var(--font-display); letter-spacing:-.5
   .section-heading h2 { font-size:clamp(53px,13vw,70px); }
   .feature-grid { grid-template-columns:1fr; }
   .feature-card { min-height:390px; }
+  .creator-intro { display:block; margin:-5px 0 24px; }
+  .creator-intro > span { display:block; margin-top:13px; text-align:left; line-height:1.7; }
+  .creator-journey { padding:19px 17px 20px; }
+  .creator-journey-heading { flex-direction:column; gap:7px; }
+  .creator-steps { grid-template-columns:1fr; gap:19px; margin-top:19px; }
+  .creator-steps p { max-width:340px; }
   .esports-section { grid-template-columns:1fr; gap:35px; padding:10px 0 85px; }
   .roster-grid { grid-template-columns:1fr 1fr; }
   .esports-visual { width:100%; height:auto; aspect-ratio:1/1; max-height:none; }
