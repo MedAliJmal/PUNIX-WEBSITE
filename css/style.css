@@ -188,7 +188,6 @@ h2 { font:800 clamp(48px,6.4vw,78px)/.88 var(--font-display); letter-spacing:-.5
   .hero-manifesto { font-size:14px; }
   .hero-proof { margin-top:35px; }
   .hero-visual { height:350px; margin:0; }
-  .hero-logo-lockup { width:140px; height:140px; }
   .hero-caption strong { font-size:37px; }
   .hero-bottom-line { bottom:24px; gap:8px; font-size:8px; }
   .scroll-note { display:none; }
