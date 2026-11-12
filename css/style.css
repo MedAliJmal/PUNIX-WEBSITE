@@ -167,6 +167,15 @@ h2 { font:800 clamp(48px,6.4vw,78px)/.88 var(--font-display); letter-spacing:-.5
 .footer-links { display:flex; justify-content:flex-end; gap:20px; }
 .footer-links a { color:#aeb4b6; font-size:9px; }
 .footer-links a:hover { color:var(--gold-bright); }
+.footer-social { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:0 0 22px; }
+.footer-social-label { color:var(--muted); font-size:9px; font-weight:800; letter-spacing:1.8px; }
+.footer-social-icons { display:flex; align-items:center; gap:10px; }
+.footer-social-icon { width:36px; height:36px; display:grid; place-items:center; border:1px solid rgba(210,173,104,.2); border-radius:50%; color:#aeb4b6; background:rgba(255,255,255,.025); transition:color .2s ease,border-color .2s ease,background .2s ease,transform .2s ease; }
+.footer-social-icon svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.footer-social-icon:hover { color:var(--gold-bright); border-color:var(--gold-bright); background:rgba(210,173,104,.08); transform:translateY(-2px); }
+.footer-social-icon[aria-label^="Kick"] svg { fill:currentColor; stroke:none; }
+.footer-social-icon[aria-label^="Facebook"] svg { fill:currentColor; stroke:none; }
+.footer-social-icon[aria-label^="X"] svg { stroke-width:2.2; }
 .footer-bottom { border-top:1px solid var(--line); padding:18px 0 25px; display:flex; justify-content:space-between; color:#687174; font-size:8px; letter-spacing:1.2px; }
 .footer-bottom b { color:var(--teal); font-size:13px; margin-left:5px; }
 .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s ease; }
