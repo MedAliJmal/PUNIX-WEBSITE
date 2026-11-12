@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!page) return;
   const type = page.dataset.liveHub;
   if (type === 'games') { initFreeGames(); initTunesfOfficial(); }
+  if (type === 'esports') initTunisiaEsports();
   const grid = document.getElementById('live-grid');
   const status = document.getElementById('live-status');
   const search = document.getElementById('live-search');
@@ -214,4 +215,76 @@ function initFreeGames() {
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now()-lastSync >= 15*60*1000) load(true); });
   window.setInterval(() => { if (!document.hidden) load(true); }, 15*60*1000);
   load(true);
+}
+
+
+/* Dedicated Tunisian esports feed on the World Esports page. */
+function initTunisiaEsports() {
+  const grid = document.getElementById('tn-live-grid');
+  const status = document.getElementById('tn-live-status');
+  const refresh = document.getElementById('tn-live-refresh');
+  if (!grid || !status || !refresh) return;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const plain = value => { const el = document.createElement('div'); el.innerHTML = String(value || ''); return (el.textContent || '').replace(/\\s+/g,' ').trim(); };
+  const safe = value => { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch (_) { return ''; } };
+  const tunesfSafe = value => { const url = safe(value); if (!url) return ''; try { return /(^|\\.)tunesf\\.com$/i.test(new URL(url).hostname) ? url : ''; } catch (_) { return ''; } };
+  const localTerms = /\\b(tunisia|tunisian|tunisie|tunisien|tunisienne|carthage|north africa)\\b/i;
+  let busy = false, lastSync = 0;
+  function card(item) {
+    const image = safe(item.image);
+    const date = item.date && !Number.isNaN(new Date(item.date).getTime()) ? new Date(item.date).toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'}) : 'LATEST';
+    return '<article class="pnx-live-card"><a class="pnx-live-card-image" href="'+esc(item.link)+'" target="_blank" rel="noopener noreferrer">'+(image ? '<img src="'+esc(image)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '')+'<span>'+esc(item.tag || 'TUNISIA')+'</span></a><div class="pnx-live-card-content"><div class="pnx-live-card-meta"><span>'+esc(item.source)+'</span><span>'+esc(date)+'</span></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description || 'Open the publisher article to read the full story.')+'</p><a class="pnx-live-read" href="'+esc(item.link)+'" target="_blank" rel="noopener noreferrer">READ FULL STORY <span>↗</span></a></div></article>';
+  }
+  async function rss(url, source, filterLocal) {
+    const endpoint = 'https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(url)+'&count=30';
+    const response = await fetch(endpoint,{cache:'no-store'});
+    if (!response.ok) throw new Error(source+' unavailable');
+    const data = await response.json();
+    if (data.status !== 'ok' || !Array.isArray(data.items)) throw new Error(source+' returned no stories');
+    return data.items.map(item => ({
+      title:plain(item.title), description:plain(item.description || item.content).slice(0,300),
+      link:safe(item.link), image:safe(item.thumbnail || item.enclosure?.link || ''),
+      source, date:item.pubDate, tag:'TUNISIA'
+    })).filter(item => item.title && item.link && (!filterLocal || localTerms.test(item.title+' '+item.description)));
+  }
+  async function official() {
+    const response = await fetch('data/tunesf-news.json?ts='+Date.now(),{cache:'no-store'});
+    if (!response.ok) throw new Error('TUNESF snapshot unavailable');
+    const data = await response.json();
+    if (!Array.isArray(data.articles)) throw new Error('TUNESF snapshot invalid');
+    return data.articles.map(item => ({
+      title:plain(item.title), description:plain(item.description).slice(0,300),
+      link:tunesfSafe(item.url), image:safe(item.image), source:'TUNESF · OFFICIAL', date:item.date, tag:'OFFICIAL'
+    })).filter(item => item.title && item.link);
+  }
+  async function load() {
+    if (busy) return;
+    busy = true; refresh.disabled = true;
+    status.innerHTML = '<i class="pnx-live-spinner"></i> CHECKING TGTV, TUNESF AND TUNISIA-RELATED VALORANT STORIES…';
+    const results = await Promise.allSettled([
+      rss('https://tgtv.tn/category/esports/feed/','TGTV · TUNISIA',false),
+      official(),
+      rss('https://vlr.gg/rss','VLR.gg · TUNISIA VALORANT',true)
+    ]);
+    const items = results.flatMap(result => result.status === 'fulfilled' ? result.value : []);
+    const seen = new Set();
+    const unique = items.filter(item => {
+      const key = item.title.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,100);
+      if (seen.has(key)) return false;
+      seen.add(key); return true;
+    }).sort((a,b) => new Date(b.date || 0)-new Date(a.date || 0));
+    if (unique.length) {
+      grid.innerHTML = unique.map(card).join('');
+      lastSync = Date.now();
+      const failed = results.filter(result => result.status === 'rejected').length;
+      status.textContent = unique.length+' TUNISIAN STORIES · UPDATED '+new Date(lastSync).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+(failed ? ' · '+failed+' SOURCE(S) TEMPORARILY UNAVAILABLE' : ' · ALL SOURCES CHECKED');
+    } else {
+      status.textContent = 'TUNISIAN NEWS SOURCES ARE TEMPORARILY UNAVAILABLE.';
+      grid.innerHTML = '<div class="pnx-live-empty">No local stories could be loaded right now. Try refreshing, or visit the source websites below.</div>';
+    }
+    busy = false; refresh.disabled = false;
+  }
+  refresh.addEventListener('click',load);
+  load();
+  window.setInterval(() => { if (!document.hidden && Date.now()-lastSync >= 15*60*1000) load(); },15*60*1000);
 }
