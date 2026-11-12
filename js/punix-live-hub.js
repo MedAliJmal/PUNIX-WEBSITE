@@ -244,6 +244,10 @@ function initTunisiaEsports() {
     'libya','libyan','libye','libyen','libyenne',
     'mauritania','mauritanian','mauritanie','mauritanien',
     'sudan','sudanese','soudan','soudanais',
+    'saudi arabia','saudi','ksa','united arab emirates','uae','emirati',
+    'qatar','qatari','bahrain','bahraini','kuwait','kuwaiti','oman','omani',
+    'jordan','jordanian','lebanon','lebanese','iraq','iraqi','syria','syrian',
+    'yemen','yemeni','palestine','palestinian',
     'arabian regional','arab regional','africa regional championship',
     'african regional championship','arc'
   ];
