@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = document.querySelector('[data-live-hub]');
   if (!page) return;
   const type = page.dataset.liveHub;
-  if (type === 'games') initFreeGames();
+  if (type === 'games') { initFreeGames(); initTunesfOfficial(); }
   const grid = document.getElementById('live-grid');
   const status = document.getElementById('live-status');
   const search = document.getElementById('live-search');
@@ -99,6 +99,42 @@ document.addEventListener('DOMContentLoaded', () => {
   load(true);
   window.setInterval(() => { if (!document.hidden) load(true); }, refreshEvery);
 });
+
+
+/* Official TUNESF news is mirrored into a small JSON snapshot by GitHub Actions. */
+function initTunesfOfficial() {
+  const grid = document.getElementById('tunesf-official-grid');
+  const status = document.getElementById('tunesf-sync-status');
+  if (!grid || !status) return;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const safe = value => { try { const u = new URL(value); return u.protocol === 'https:' && /(^|\\.)tunesf\\.com$/i.test(u.hostname) ? u.href : ''; } catch (_) { return ''; } };
+  const dateLabel = value => {
+    if (!value) return 'LATEST';
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? 'LATEST' : d.toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'});
+  };
+  async function sync() {
+    try {
+      const response = await fetch('data/tunesf-news.json?ts='+Date.now(), {cache:'no-store'});
+      if (!response.ok) throw new Error('Snapshot unavailable');
+      const data = await response.json();
+      if (!Array.isArray(data.articles) || !data.articles.length) throw new Error('No verified articles');
+      const cards = data.articles.slice(0,6).filter(item => item.title && safe(item.url));
+      if (!cards.length) throw new Error('No valid article links');
+      grid.innerHTML = cards.map((item,index) => {
+        const url = safe(item.url);
+        const date = item.date || '';
+        const meta = index === 0 ? 'LATEST OFFICIAL UPDATE' : 'FEDERATION NEWS';
+        return '<article class="pnx-tunesf-card '+(index===0?'pnx-tunesf-featured':'')+'"><div class="pnx-tunesf-card-meta"><span>'+meta+'</span><time>'+esc(dateLabel(date))+'</time></div><h3>'+esc(item.title)+'</h3><p>'+esc(item.description || 'Official update published by the Tunisian Esports Federation.')+'</p><a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">READ OFFICIAL UPDATE ↗</a></article>';
+      }).join('');
+      const checked = data.updated_at ? new Date(data.updated_at) : null;
+      status.textContent = 'AUTO-SYNC · '+(checked && !Number.isNaN(checked.getTime()) ? 'UPDATED '+checked.toLocaleString(undefined,{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : 'LATEST PUBLISHED STORIES');
+    } catch (_) {
+      status.textContent = 'SYNC TEMPORARILY UNAVAILABLE · LAST PUBLISHED STORIES SHOWN';
+    }
+  }
+  sync();
+}
 
 /* Live PC game giveaways: full-game offers only, with source attribution. */
 function initFreeGames() {
