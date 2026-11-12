@@ -315,7 +315,7 @@ body :is(h1, h2, h3) {
 
 /* PUNIX hero refresh — official competitive artwork, not stock photography */
 .hero-visual{isolation:isolate;border:1px solid rgba(201,164,91,.18);box-shadow:0 28px 80px rgba(0,0,0,.38)}
-.hero-image{background-image:url("../assets/images/punix-esports-team.png");background-position:center 38%;filter:saturate(.72) contrast(1.08)}
+.hero-image{background-image:url("https://greenfinchwebsitestorage.blob.core.windows.net/media/2018/12/Esports-Arena.jpg");background-position:center 45%;filter:saturate(.72) contrast(1.08)}
 .hero-image-overlay{background:linear-gradient(90deg,rgba(9,11,14,.08),rgba(9,11,14,.12) 38%,rgba(9,11,14,.68)),linear-gradient(0deg,rgba(9,11,14,.94),rgba(9,11,14,.02) 70%),linear-gradient(135deg,rgba(37,185,176,.16),transparent 55%)}
 .hero h1{max-width:650px;text-wrap:balance}
 .hero-proof{border-top:1px solid rgba(255,255,255,.1);padding-top:17px;max-width:330px}
