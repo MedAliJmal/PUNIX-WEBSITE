@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
       source:feed.name, date:item.pubDate, categories:item.categories || []
     })).filter(item => item.title && item.link).filter(item => {
       if (!feed.tunisiaOnly) return true;
-      return /\\b(tunisia|tunisian|tunisie|tunisien|tunisienne|carthage|north africa)\\b/i.test(item.title+' '+item.description+' '+(item.categories||[]).join(' '));
+      return /\b(tunisia|tunisian|tunisie|tunisien|tunisienne|carthage|north africa)\b/i.test(item.title+' '+item.description+' '+(item.categories||[]).join(' '));
     }).map(item => ({...item,category:classify(item)}));
   }
   async function load(force=false) {
