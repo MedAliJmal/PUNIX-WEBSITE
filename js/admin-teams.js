@@ -20,7 +20,36 @@
   async function loadMembers(){const {data,error}=await db.from('profiles').select('id,display_name,avatar_url').order('display_name');if(error){picker.innerHTML='<p>Could not load members. Confirm the public member-directory migration and admin permissions.</p>';say('Member list unavailable: '+error.message,true);return;}members=data||[];renderPicker();}
   async function loadTeams(){const {data,error}=await db.from('teams').select('*').order('game_name').order('display_order').order('team_name');if(error){say('Could not load teams: '+error.message+'. Run the teams migration first.',true);return;}teams=data||[];renderTeams();}
   function renderTeams(){ $('team-total').textContent=`${teams.length} ${teams.length===1?'TEAM':'TEAMS'}`; if(!teams.length){list.innerHTML='<p class="list-empty">No teams created yet. Start with your first roster.</p>';return;}list.innerHTML=teams.map(t=>`<article class="admin-team-item"><div class="admin-team-item-main"><span>${esc(t.game_name)} · ${divisionLabel(t.division)}</span><strong>${esc(t.team_name)}</strong><small>${esc(t.status.toUpperCase())}</small></div><div class="admin-team-item-actions"><button type="button" data-edit="${t.id}">EDIT</button><button type="button" data-delete="${t.id}" class="danger-action">DELETE</button></div></article>`).join('');list.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>editTeam(b.dataset.edit)));list.querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteTeam(b.dataset.delete)));}
-  function renderPicker(){const q=$('member-search').value.trim().toLowerCase();const filtered=members.filter(m=>(m.display_name||'').toLowerCase().includes(q));if(!filtered.length){picker.innerHTML='<p class="list-empty">No matching members found.</p>';return;}picker.innerHTML=filtered.map(m=>{const current=selected.get(m.id)||{role:'player',order:selected.size};return `<label class="member-choice"><input type="checkbox" data-member="${m.id}" ${selected.has(m.id)?'checked':''}><span class="member-choice-name">${esc(m.display_name)}</span><select data-role="${m.id}" aria-label="Role for ${esc(m.display_name)}" ${selected.has(m.id)?'':'disabled'}><option value="captain" ${current.role==='captain'?'selected':''}>Captain</option><option value="player" ${current.role==='player'?'selected':''}>Player</option><option value="coach" ${current.role==='coach'?'selected':''}>Coach</option><option value="manager" ${current.role==='manager'?'selected':''}>Manager</option><option value="substitute" ${current.role==='substitute'?'selected':''}>Substitute</option></select></label>`;}).join('');picker.querySelectorAll('[data-member]').forEach(c=>c.addEventListener('change',()=>{const id=c.dataset.member;if(c.checked)selected.set(id,{role:'player',order:selected.size});else selected.delete(id);renderPicker();updateSelected();}));picker.querySelectorAll('[data-role]').forEach(s=>s.addEventListener('change',()=>{const v=selected.get(s.dataset.role);if(v)v.role=s.value;}));updateSelected();}
+  function renderPicker(){
+    const q=$('member-search').value.trim().toLowerCase();
+    const chosen=[...selected.entries()];
+    const rosterHtml=chosen.length?chosen.map(([id,v])=>{
+      const member=members.find(m=>m.id===id);
+      const name=member?.display_name||'Unknown member';
+      return `<div class="roster-selected-member"><div class="roster-selected-info"><strong>${esc(name)}</strong><small>ON THIS ROSTER</small></div><select data-role="${id}" aria-label="Role for ${esc(name)}"><option value="captain" ${v.role==='captain'?'selected':''}>Captain</option><option value="player" ${v.role==='player'?'selected':''}>Player</option><option value="coach" ${v.role==='coach'?'selected':''}>Coach</option><option value="manager" ${v.role==='manager'?'selected':''}>Manager</option><option value="substitute" ${v.role==='substitute'?'selected':''}>Substitute</option></select><button type="button" class="roster-remove-member" data-remove-member="${id}" aria-label="Remove ${esc(name)}">REMOVE</button></div>`;
+    }).join(''):'<p class="list-empty">No players added yet. Search below to build this roster.</p>';
+    const matches=q?members.filter(m=>!selected.has(m.id)&&(m.display_name||'').toLowerCase().includes(q)).slice(0,12):[];
+    const resultsHtml=!q?'<p class="list-empty">Start typing a member name to find an account.</p>':matches.length?matches.map(m=>`<button type="button" class="roster-search-result" data-add-member="${m.id}"><span>${esc(m.display_name||'Unnamed member')}</span><span>+ ADD</span></button>`).join(''):'<p class="list-empty">No matching available members found.</p>';
+    picker.innerHTML=`<section class="roster-current"><h4>CURRENT ROSTER</h4><div class="roster-current-list">${rosterHtml}</div></section><section class="roster-search-results"><h4>SEARCH RESULTS</h4><div>${resultsHtml}</div></section>`;
+    picker.querySelectorAll('[data-add-member]').forEach(button=>button.addEventListener('click',()=>{
+      const id=button.dataset.addMember;
+      if(!selected.has(id))selected.set(id,{role:'player',order:selected.size});
+      $('member-search').value='';
+      renderPicker();
+      updateSelected();
+      $('member-search').focus();
+    }));
+    picker.querySelectorAll('[data-remove-member]').forEach(button=>button.addEventListener('click',()=>{
+      selected.delete(button.dataset.removeMember);
+      renderPicker();
+      updateSelected();
+    }));
+    picker.querySelectorAll('[data-role]').forEach(select=>select.addEventListener('change',()=>{
+      const entry=selected.get(select.dataset.role);
+      if(entry)entry.role=select.value;
+    }));
+    updateSelected();
+  }
   function updateSelected(){$('selected-count').textContent=`${selected.size} SELECTED`;}
   function clearForm(){form.reset();showLogo('');logoFile.value='';$('team-id').value='';$('team-order').value='0';$('editor-title').textContent='CREATE A TEAM';selected=new Map();renderPicker();say('Ready to create a team.');}
   async function editTeam(id){const t=teams.find(x=>x.id===id);if(!t)return;const {data:roster,error}=await db.from('team_members').select('user_id,member_role,display_order').eq('team_id',id).order('display_order');if(error){say('Could not load this roster: '+error.message,true);return;} $('team-id').value=t.id;$('team-name').value=t.team_name;$('game-name').value=t.game_name;$('team-division').value=t.division;$('team-status').value=t.status;showLogo(t.logo_url||'');logoFile.value='';$('team-description').value=t.description||'';$('team-order').value=t.display_order||0;$('editor-title').textContent='EDIT TEAM';selected=new Map((roster||[]).map(m=>[m.user_id,{role:m.member_role,order:m.display_order}]));renderPicker();$('team-form').scrollIntoView({behavior:'smooth',block:'start'});say(`Editing ${t.team_name}.`);}
