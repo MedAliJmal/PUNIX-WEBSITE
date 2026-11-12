@@ -234,22 +234,40 @@ function initTunisiaEsports() {
     'équipe nationale tunisienne','equipe nationale tunisienne',
     'sélection tunisienne','selection tunisienne'
   ];
+  // Regional coverage expands the feed beyond Tunisia to North African and MENA events.
+  const regionalTerms = [
+    'north africa','north african','afrique du nord','nord-africain','nord africaine',
+    'mena','middle east and north africa','middle east & north africa',
+    'algeria','algerian','algérie','algérien','algerien',
+    'morocco','moroccan','maroc','marocain','marocaine',
+    'egypt','egyptian','égypte','egyptien','egyptienne',
+    'libya','libyan','libye','libyen','libyenne',
+    'mauritania','mauritanian','mauritanie','mauritanien',
+    'sudan','sudanese','soudan','soudanais',
+    'arabian regional','arab regional','africa regional championship',
+    'african regional championship','arc'
+  ];
   const competitionTerms = [
     'tournament','championship','championnat','cup','coupe','league','ligue',
     'qualifier','qualification','qualifications','playoff','play-off',
     'final','finals','finale','bracket','standings','trophy','tournoi',
     'résultats','resultats','results','matchday','eliminatoires','éliminatoires',
     'national team','équipe nationale','equipe nationale','sélection',
-    'selection','iesf','fifae','enc 202','arabian regional','global esports games'
+    'selection','iesf','fifae','enc 202','arabian regional','global esports games',
+    'regional championship','regional league','regional cup','regional qualifier'
   ];
+  const containsTerm = (text, terms) => terms.some(term => {
+    if (term === 'arc') return /\\barc\\b/i.test(text);
+    return text.includes(term);
+  });
   const relevantCompetition = (item, officialSource=false) => {
     const headline = item.title.toLocaleLowerCase();
     const text = (item.title+' '+item.description).toLocaleLowerCase();
-    // For third-party media, Tunisia must be explicit in the headline so an incidental
-    // mention in a global story (for example, a Falcons article) cannot qualify it.
-    const localMatch = localTerms.some(term => headline.includes(term)) ||
-      (officialSource && localTerms.some(term => text.includes(term)));
-    return localMatch && competitionTerms.some(term => text.includes(term));
+    // Third-party stories must identify the country/region in the headline and be about
+    // a competition. This avoids unrelated global stories that only mention a team.
+    const headlineHasLocation = containsTerm(headline, localTerms) || containsTerm(headline, regionalTerms);
+    const officialHasLocation = officialSource && containsTerm(text, localTerms);
+    return (headlineHasLocation || officialHasLocation) && containsTerm(text, competitionTerms);
   };
   let busy = false, lastSync = 0, stories = [];
   function card(item) {
@@ -264,7 +282,7 @@ function initTunisiaEsports() {
       if (seen.has(key)) return false;
       seen.add(key); return true;
     }).sort((a,b) => new Date(b.date || 0)-new Date(a.date || 0));
-    grid.innerHTML = unique.length ? unique.map(card).join('') : '<div class="pnx-live-empty">No Tunisia-related tournament stories found. Unrelated international esports news is intentionally filtered out. Check back after the next local competition update.</div>';
+    grid.innerHTML = unique.length ? unique.map(card).join('') : '<div class="pnx-live-empty">No Tunisia, North African or MENA tournament stories found. Unrelated international esports news is intentionally filtered out. Check back after the next regional competition update.</div>';
     return unique.length;
   }
   async function rss(url, source) {
@@ -292,7 +310,7 @@ function initTunisiaEsports() {
   async function load() {
     if (busy) return;
     busy = true; refresh.disabled = true;
-    status.innerHTML = '<i class="pnx-live-spinner"></i> FILTERING FOR TUNISIAN TOURNAMENTS AND COMPETITIONS…';
+    status.innerHTML = '<i class="pnx-live-spinner"></i> FILTERING FOR TUNISIAN, NORTH AFRICAN AND MENA TOURNAMENTS…';
     const failures = [];
     try {
       try {
@@ -315,7 +333,7 @@ function initTunisiaEsports() {
       });
       const count = render();
       lastSync = Date.now();
-      status.textContent = count+' TUNISIA-RELATED COMPETITION STORIES · UPDATED '+new Date(lastSync).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+(failures.length ? ' · LIMITED SOURCES: '+failures.join(', ') : ' · STRICT LOCAL FILTER ACTIVE');
+      status.textContent = count+' REGIONAL COMPETITION STORIES · UPDATED '+new Date(lastSync).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+(failures.length ? ' · LIMITED SOURCES: '+failures.join(', ') : ' · STRICT LOCAL FILTER ACTIVE');
     } catch (error) {
       status.textContent = 'FEED UPDATE INTERRUPTED · '+(error.message || 'PLEASE RETRY');
       if (!stories.length) render();
