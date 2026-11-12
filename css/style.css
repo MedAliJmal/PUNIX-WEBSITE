@@ -602,3 +602,15 @@ body :is(h1, h2, h3) {
 #anime .pnx-anime-copy h2 span{color:var(--gold-bright)}
 #anime .pnx-anime-pill-row span{border-color:rgba(201,164,91,.24);background:rgba(201,164,91,.045);color:#d7c69e}
 @media(prefers-reduced-motion:reduce){#esports .esports-photo{transition:none}}
+
+
+/* Restore the original PUNIX Anime salmon accent palette */
+#anime .pnx-anime-art{
+  background:radial-gradient(ellipse at 52% 48%,rgba(181,52,72,.24),transparent 42%),radial-gradient(ellipse at 75% 18%,rgba(37,185,176,.12),transparent 35%),linear-gradient(145deg,#171116,#090b0e 68%);
+}
+#anime .pnx-anime-art:after{border-color:rgba(221,93,111,.22)}
+#anime .pnx-anime-orbit-one{box-shadow:0 0 55px rgba(196,66,91,.12)}
+#anime .pnx-anime-sigil{text-shadow:0 0 50px rgba(190,66,91,.18)}
+#anime .pnx-anime-overline{color:#d18b9a}
+#anime .pnx-anime-copy h2 span{color:#d18b9a}
+#anime .pnx-anime-pill-row span{border-color:rgba(209,139,154,.24);background:rgba(181,52,72,.055);color:#d7b8bd}
