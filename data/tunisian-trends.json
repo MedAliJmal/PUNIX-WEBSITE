@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "samples": [],
+  "current": {
+    "status": "setup_required",
+    "updated_at": null,
+    "sample_count_7d": 0,
+    "featured": null,
+    "leaderboard": [],
+    "coverage_note": "Add verified Tunisian creator channels and API credentials to activate the tracker."
+  },
+  "state": {
+    "featured_game": null,
+    "challenger": null,
+    "challenger_streak": 0
+  }
+}
