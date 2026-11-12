@@ -501,3 +501,65 @@ body :is(h1, h2, h3) {
   #about .values-row>div{min-height:0;padding:17px 15px 17px 43px}
   #about .values-row .value-number{top:20px}
 }
+
+
+/* Creator network — sharper PUNIX visual language */
+#creators .creator-card{
+  min-height:460px;
+  border:1px solid rgba(201,164,91,.16);
+  background:#090e11;
+  isolation:isolate;
+}
+#creators .creator-card:before{
+  content:"";
+  position:absolute;
+  z-index:2;
+  left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--teal),rgba(201,164,91,.75));
+  opacity:.8;
+}
+#creators .creator-card .card-image{
+  filter:saturate(.48) contrast(1.12);
+  transform:scale(1.015);
+}
+#creators .creator-card:hover .card-image{transform:scale(1.06)}
+#creators .creator-card .card-shade{
+  background:linear-gradient(0deg,rgba(5,7,9,.98),rgba(5,7,9,.18) 78%),linear-gradient(120deg,rgba(5,7,9,.48),rgba(5,7,9,.02) 70%),linear-gradient(135deg,rgba(37,185,176,.12),transparent 55%);
+}
+#creators .creator-card .card-topline{
+  padding-bottom:13px;
+  border-bottom:1px solid rgba(255,255,255,.16);
+}
+#creators .creator-card .card-symbol{
+  display:grid;place-items:center;width:31px;height:31px;
+  border:1px solid rgba(201,164,91,.5);
+  color:var(--gold-bright);font-size:15px;
+}
+#creators .creator-card .card-copy{left:32px;right:28px;bottom:32px;max-width:390px}
+#creators .creator-card .card-copy h3{font-size:clamp(39px,4.2vw,52px);line-height:.9}
+#creators .creator-card .card-copy p{max-width:320px}
+#creators .creator-journey{
+  position:relative;
+  margin-top:22px;
+  padding:25px 27px 27px;
+  border-color:rgba(201,164,91,.2);
+  background:linear-gradient(110deg,rgba(201,164,91,.055),rgba(37,185,176,.035) 70%,rgba(255,255,255,.012));
+}
+#creators .creator-steps{gap:12px}
+#creators .creator-steps>div{
+  min-height:105px;
+  padding:16px 14px 14px 46px;
+  border:1px solid rgba(255,255,255,.075);
+  background:rgba(5,8,10,.35);
+}
+#creators .creator-steps>div>span{left:15px;top:19px}
+#creators .creator-steps strong{font-size:21px}
+#creators .creator-steps p{max-width:230px}
+@media(max-width:680px){
+  #creators .creator-card{min-height:390px}
+  #creators .creator-card .card-copy{left:23px;right:20px;bottom:24px}
+  #creators .creator-journey{padding:20px 17px}
+  #creators .creator-steps{grid-template-columns:1fr;gap:8px}
+  #creators .creator-steps>div{min-height:0;padding:14px 12px 14px 45px}
+  #creators .creator-steps>div>span{top:17px}
+}
