@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname.split('/').pop() || 'index.html';
   const hash = window.location.hash;
   const activeByPage = {
-    'index.html': hash === '#anime' ? 'anime' : hash === '#sponsors' ? 'sponsors' : hash === '#about' ? 'about' : hash === '#creators' ? 'creators' : hash === '#watch' ? 'watch' : hash === '#esports' ? 'esports' : hash === '#community' ? 'community' : hash === '#news' ? 'world-esports-news' : 'home',
+    'index.html': hash === '#anime' ? 'anime' : hash === '#sponsors' ? 'sponsors' : hash === '#about' ? 'about' : hash === '#creators' ? 'creators' : hash === '#watch' ? 'watch' : hash === '#esports' ? 'esports' : hash === '#community' ? 'community' : hash === '#news' ? 'latest-updates' : 'home',
     'members.html': 'members', 'teams.html': 'teams', 'tournaments.html': 'tournaments',
-    'admin.html': 'admin', 'game-hub.html': 'game-hub', 'world-esports-news.html': 'world-esports-news'
+    'admin.html': 'admin', 'game-hub.html': 'game-hub', 'world-esports-news.html': 'world-esports-news', 'world-esports-news.html': 'world-esports-news'
   };
   const active = activeByPage[path] || (path === 'profile.html' || path === 'member.html' ? 'members' : '');
   if (active) {
