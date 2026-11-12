@@ -125,3 +125,23 @@
 .pnx-hub-jump a:hover{transform:translateY(-2px);border-color:#e5c98e;background:rgba(210,173,104,.13);color:#fff}
 .pnx-hub-jump a:focus-visible{outline:2px solid #f0d7a3;outline-offset:3px}
 @media(max-width:600px){.pnx-hub-jump{display:grid;grid-template-columns:1fr;max-width:330px}.pnx-hub-jump a{justify-content:space-between;min-height:46px}}
+
+
+/* Multi-title streaming trend radar */
+.pnx-trend-meta{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-block:1px solid rgba(255,255,255,.13);color:#8d969b;font:800 8px Inter,sans-serif;letter-spacing:1.2px}
+.pnx-trend-meta span:first-child{display:flex;align-items:center;gap:9px;color:#e2c98f}
+.pnx-trend-meta i{width:7px;height:7px;border-radius:50%;background:#80d4a0;box-shadow:0 0 10px #80d4a0}
+.pnx-trend-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:20px}
+.pnx-trend-card{position:relative;display:flex;flex-direction:column;min-height:255px;padding:22px;border:1px solid rgba(255,255,255,.11);background:linear-gradient(145deg,#15191e,#0e1115);transition:transform .2s,border-color .2s,background .2s}
+.pnx-trend-card:hover{transform:translateY(-3px);border-color:rgba(210,173,104,.48);background:linear-gradient(145deg,#1b1d20,#101318)}
+.pnx-trend-card-featured{border-color:rgba(210,173,104,.48);background:radial-gradient(ellipse at 90% 10%,rgba(210,173,104,.15),transparent 52%),linear-gradient(145deg,#1b1b1a,#101318)}
+.pnx-trend-card-top,.pnx-trend-card-foot{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pnx-trend-card-top{color:#8d969b;font:800 8px Inter,sans-serif;letter-spacing:1px}
+.pnx-trend-card-top b{padding:6px 7px;border:1px solid rgba(210,173,104,.28);color:#e2c98f;font-size:7px}
+.pnx-trend-card h3{margin:25px 0 12px;color:#f2f0e9;font:900 clamp(30px,3vw,43px)/.9 "Barlow Condensed",sans-serif;letter-spacing:-.4px}
+.pnx-trend-card p{flex:1;margin:0 0 23px;color:#a3aaae;font:400 10px/1.8 Inter,sans-serif}
+.pnx-trend-card-foot{padding-top:13px;border-top:1px solid rgba(255,255,255,.1);color:#7e888e;font:800 7px Inter,sans-serif;letter-spacing:.8px}
+.pnx-trend-card-foot a{color:#e2c98f;text-decoration:none;white-space:nowrap}
+.pnx-trend-card-foot a:hover{color:#fff}
+@media(max-width:900px){.pnx-trend-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.pnx-trend-meta{align-items:flex-start;flex-direction:column}.pnx-trend-grid{grid-template-columns:1fr}.pnx-trend-card{min-height:220px}}
