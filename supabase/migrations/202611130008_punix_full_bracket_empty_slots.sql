@@ -56,18 +56,10 @@ begin
 
   -- The configured capacity determines the bracket size. With no capacity,
   -- create the smallest power-of-two bracket that fits the approved entries.
-  v_bracket_size := greatest(2, coalesce(v_tournament.max_participants, v_count));
-  while v_bracket_size < coalesce(v_tournament.max_participants, v_count)
-     or (v_tournament.max_participants is null and v_bracket_size < v_count) loop
+  v_bracket_size := 2;
+  while v_bracket_size < coalesce(v_tournament.max_participants, v_count) loop
     v_bracket_size := v_bracket_size * 2;
   end loop;
-  -- A configured capacity may not itself be a power of two.
-  if v_tournament.max_participants is not null then
-    v_bracket_size := 2;
-    while v_bracket_size < v_tournament.max_participants loop
-      v_bracket_size := v_bracket_size * 2;
-    end loop;
-  end if;
 
   if v_bracket_size > 512 then
     raise exception 'The bracket capacity exceeds the supported 512 slots.';
