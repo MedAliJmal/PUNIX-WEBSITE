@@ -43,7 +43,7 @@
     else history.replaceState(null, '', '#overview');
     if (currentSection === 'members') loadMembers();
     if (currentSection === 'updates') loadUpdates();
-    if (currentSection === 'tournaments') window.loadPunixTournamentsAdmin?.();
+    if (currentSection === 'tournaments') { markTournamentEntriesSeen(); window.loadPunixTournamentsAdmin?.(); }
     if (currentSection === 'sponsors') loadSponsors();
     if (currentSection === 'support') loadSupportConversations();
   }
@@ -428,6 +428,66 @@
   }
 
   let supportAdminUserId = null;
+  let tournamentEntryTimer = null;
+  let tournamentEntryChannel = null;
+  let tournamentEntryPollBusy = false;
+  const tournamentEntrySeenKey = 'punix-tournament-entry-seen-v1:';
+  let tournamentEntryUserId = null;
+
+  function renderTournamentEntryAlert(rows) {
+    const badge = $('tournament-sidebar-unread');
+    const alert = $('tournament-entry-alert');
+    const message = $('tournament-entry-alert-message');
+    const count = rows.length;
+    if (badge) { badge.textContent = count > 9 ? '9+' : String(count); badge.hidden = count === 0; }
+    if (!alert || !message) return;
+    if (!count) { alert.hidden = true; return; }
+    const names = rows.slice(0, 3).map(row => {
+      const tournament = Array.isArray(row.tournaments) ? row.tournaments[0] : row.tournaments;
+      return (row.team_name || row.in_game_name || 'New entrant') + ' — ' + (tournament?.title || 'Tournament');
+    });
+    const extra = count > names.length ? ' +' + (count - names.length) + ' more' : '';
+    message.textContent = count + ' new tournament ' + (count === 1 ? 'entry' : 'entries') + ': ' + names.join(' · ') + extra;
+    alert.hidden = false;
+  }
+
+  async function refreshTournamentEntryAlert() {
+    if (!tournamentEntryUserId || tournamentEntryPollBusy) return;
+    tournamentEntryPollBusy = true;
+    try {
+      let since = '';
+      try { since = localStorage.getItem(tournamentEntrySeenKey + tournamentEntryUserId) || ''; } catch {}
+      if (!since) {
+        since = new Date().toISOString();
+        try { localStorage.setItem(tournamentEntrySeenKey + tournamentEntryUserId, since); } catch {}
+      }
+      const { data, error } = await db.from('tournament_registrations')
+        .select('id,tournament_id,team_name,in_game_name,created_at,tournaments(title)')
+        .gt('created_at', since).order('created_at', { ascending: true }).limit(100);
+      if (error) return;
+      renderTournamentEntryAlert(data || []);
+    } finally {
+      tournamentEntryPollBusy = false;
+    }
+  }
+
+  function markTournamentEntriesSeen() {
+    if (!tournamentEntryUserId) return;
+    try { localStorage.setItem(tournamentEntrySeenKey + tournamentEntryUserId, new Date().toISOString()); } catch {}
+    renderTournamentEntryAlert([]);
+  }
+
+  function startTournamentEntryAlerts(userId) {
+    tournamentEntryUserId = userId;
+    refreshTournamentEntryAlert();
+    if (tournamentEntryChannel) db.removeChannel(tournamentEntryChannel);
+    tournamentEntryChannel = db.channel('punix-admin-tournament-entry-alerts')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'tournament_registrations' }, refreshTournamentEntryAlert)
+      .subscribe();
+    if (tournamentEntryTimer) clearInterval(tournamentEntryTimer);
+    tournamentEntryTimer = setInterval(refreshTournamentEntryAlert, 30000);
+    $('tournament-entry-alert-dismiss')?.addEventListener('click', markTournamentEntriesSeen);
+  }
   let selectedSupportConversation = null;
   let supportRealtimeChannel = null;
   const supportAdminSeenKey = 'punix-support-admin-seen-v1:';
@@ -577,6 +637,7 @@
       gate.hidden = true;
       app.hidden = false;
       supportAdminUserId = session.user.id;
+      startTournamentEntryAlerts(session.user.id);
       document.querySelectorAll('[data-section]').forEach((button) => button.addEventListener('click', () => openSection(button.dataset.section)));
       document.querySelectorAll('[data-open-section="teams"]').forEach((button) => button.addEventListener('click', () => openSection('teams')));
       $('update-form').addEventListener('submit', saveUpdate);
