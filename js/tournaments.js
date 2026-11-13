@@ -63,7 +63,7 @@
    return {id:i+1,stage_id:stageId,group_id:groupId,round_id:roundId,number:Number(m.match_number)||1,child_count:0,status,opponent1:side(a,m.score_a,'a'),opponent2:side(b,m.score_b,'b')};
   });
   const firstRound=ordered.filter(m=>sectionKey(m)==='winners'&&roundNumber(m)===1);
-  const bracketSize=Math.max(2,firstRound.length*2,Number(active?.max_participants)||0);
+  const bracketSize=Math.max(2,firstRound.length*2);
   const hasReset=ordered.some(m=>sectionKey(m)==='grand_final_reset');
   const viewerData={
    stages:[{id:stageId,tournament_id:stageTournamentId,name:active?.title||'PUNIX Tournament',type:doubleElim?'double_elimination':'single_elimination',number:1,settings:{size:bracketSize,seedOrdering:['natural'],grandFinal:hasReset?'double':'single',matchesChildCount:0}}],
@@ -73,7 +73,35 @@
   };
   host.innerHTML='<div id="punix-brackets-viewer" class="brackets-viewer"></div>';
   try{
-   await window.bracketsViewer.render(viewerData,{selector:'#punix-brackets-viewer',clear:true});
+   await window.bracketsViewer.render(viewerData,{
+    selector:'#punix-brackets-viewer',
+    clear:true,
+    customRoundName:(info)=>{
+     const type=String(info.groupType||'');
+     const round=Number(info.roundNumber)||1;
+     const count=Number(info.roundCount)||1;
+     if(type==='winner_bracket'){
+      if(round===count)return 'UPPER FINAL';
+      if(round===count-1)return 'UPPER SEMIFINALS';
+      if(round===count-2)return 'UPPER QUARTERFINALS';
+      return 'UPPER ROUND '+round;
+     }
+     if(type==='loser_bracket'){
+      if(round===count)return 'LOWER FINAL';
+      return 'LOWER ROUND '+round;
+     }
+     if(type==='single_bracket'){
+      if(round===count)return 'FINAL';
+      if(round===count-1)return 'SEMIFINALS';
+      if(round===count-2)return 'QUARTERFINALS';
+      return 'ROUND '+round;
+     }
+     return 'ROUND '+round;
+    },
+    showRankingTable:false,
+    showSlotsOrigin:true,
+    showLowerBracketSlotsOrigin:true
+   });
   }catch(error){
    console.error('PUNIX bracket rendering failed:',error);
    host.innerHTML='<p class="tournament-status">The bracket could not be displayed. Match data is still saved.</p>';
