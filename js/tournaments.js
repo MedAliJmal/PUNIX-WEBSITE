@@ -11,8 +11,14 @@
   const mr=await db.from('public_tournament_matches').select('*').eq('tournament_id',id).order('round_number').order('match_number');
   if(mr.error){host.innerHTML='<p class="tournament-status">The live bracket is temporarily unavailable.</p>';return;}
   const matches=mr.data||[];$('match-count').textContent=matches.length+' MATCHES';
-  const rounds={};matches.forEach(m=>{(rounds[m.round_number] ||= []).push(m);});
-  host.innerHTML=matches.length?Object.keys(rounds).sort((a,b)=>Number(a)-Number(b)).map(round=>'<div class="bracket-round"><h4>ROUND '+round+'</h4>'+rounds[round].map(m=>'<article class="bracket-match"><small>MATCH '+m.match_number+' · '+esc(m.status.toUpperCase())+'</small><div class="bracket-side '+(m.winner_registration_id===m.participant_a_id?'winner':'')+'"><span>'+esc(m.participant_a_name||(m.status==='completed'&&m.participant_b_id?'BYE':'TBD'))+'</span><b>'+(m.score_a??'—')+'</b></div><div class="bracket-side '+(m.winner_registration_id===m.participant_b_id?'winner':'')+'"><span>'+esc(m.participant_b_name||(m.status==='completed'&&m.participant_a_id?'BYE':'TBD'))+'</span><b>'+(m.score_b??'—')+'</b></div></article>').join('')+'</div>').join(''):'<p class="tournament-status">The tournament bracket has not been published yet.</p>';
+  const sectionNames={winners:'WINNERS BRACKET',losers:'LOSERS BRACKET',grand_final:'GRAND FINAL',grand_final_reset:'GRAND FINAL RESET'};
+  const sections={};matches.forEach(m=>{const key=m.bracket_section||'winners';(sections[key] ||= []).push(m);});
+  const order=['winners','losers','grand_final','grand_final_reset'];
+  host.innerHTML=matches.length?order.filter(key=>sections[key]?.length).map(key=>{
+   const rows=sections[key].sort((a,b)=>a.round_number-b.round_number||a.match_number-b.match_number);
+   const rounds={};rows.forEach(m=>{(rounds[m.round_number] ||= []).push(m);});
+   return '<section class="bracket-lane bracket-lane-'+key+'"><h3>'+sectionNames[key]+'</h3><div class="bracket-lane-rounds">'+Object.keys(rounds).sort((a,b)=>Number(a)-Number(b)).map(round=>'<div class="bracket-round"><h4>'+(key==='grand_final'||key==='grand_final_reset'?'FINAL':'ROUND '+round)+'</h4>'+rounds[round].map(m=>'<article class="bracket-match"><small>MATCH '+m.match_number+' · '+esc(m.status.toUpperCase())+'</small><div class="bracket-side '+(m.winner_registration_id===m.participant_a_id?'winner':'')+'"><span>'+esc(m.participant_a_name||(m.status==='completed'&&m.participant_b_id?'BYE':'TBD'))+'</span><b>'+(m.score_a??'—')+'</b></div><div class="bracket-side '+(m.winner_registration_id===m.participant_b_id?'winner':'')+'"><span>'+esc(m.participant_b_name||(m.status==='completed'&&m.participant_a_id?'BYE':'TBD'))+'</span><b>'+(m.score_b??'—')+'</b></div></article>').join('')+'</div>').join('')+'</div></section>';
+  }).join(''):'<p class="tournament-status">The tournament bracket has not been published yet.</p>';
  }
  function watchPublicBracket(id){if(bracketRefreshTimer)clearInterval(bracketRefreshTimer);renderBracket(id);bracketRefreshTimer=setInterval(()=>{if(active?.id===id)renderBracket(id);},10000);}
  function renderList(){const q=$('tournament-search').value.trim().toLowerCase();const rows=events.filter(t=>(filter==='all'||t.status===filter)&&(t.title+' '+t.game_name).toLowerCase().includes(q));
