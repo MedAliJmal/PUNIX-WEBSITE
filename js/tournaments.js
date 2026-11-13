@@ -46,7 +46,7 @@
    const unit=104, laneHeight=Math.max(150,firstCount*unit);
    const columns=rounds.map((round,ri)=>{
     const matches=laneRows.filter(m=>roundOf(m)===round).sort((a,b)=>Number(a.match_number)-Number(b.match_number));
-    const col='<div class="punix-tree-round"><h4>'+esc(m=>m)(matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\\s*/,'')+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
+    const col='<div class="punix-tree-round"><h4>'+esc((matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\\s*/,''))+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
     const cards=matches.map(m=>{
      const count=Math.max(1,matches.length),idx=Math.max(1,Number(m.match_number)||1);
      let center;
@@ -73,7 +73,6 @@
     const d=paths.map(p=>'M0 '+p.sourceCenter+' H27 V'+p.targetCenter+' H54').join(' ');
     return '<svg class="punix-tree-connectors" width="54" height="'+laneHeight+'" viewBox="0 0 54 '+laneHeight+'" aria-hidden="true"><path d="'+d+'"/></svg>';
    }).join('');
-   const roundGroups=columns.map((c,i)=>c+(i<rounds.length-1?connectorHtml.split('</svg>')[i]+'</svg>':'')).join('');
    return '<section class="punix-tree-lane '+(section==='losers'?'is-lower':'is-upper')+'"><header class="punix-tree-lane-heading"><div><span>'+esc(title)+'</span><small>'+esc(subtitle)+'</small></div><b>'+laneRows.length+' MATCHES</b></header><div class="punix-tree-scroll"><div class="punix-tree-rounds">'+columns.map((c,i)=>c+(i<rounds.length-1?connectorHtml.split('</svg>')[i]+'</svg>':'')).join('')+'</div></div></section>';
   };
   const upper=laneHtml('winners',isDouble?'WINNERS BRACKET':'TOURNAMENT BRACKET',isDouble?'Stay in the upper bracket with every win':'Follow the tournament path','winner');
