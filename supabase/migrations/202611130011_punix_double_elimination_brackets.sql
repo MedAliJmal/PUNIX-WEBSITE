@@ -65,7 +65,7 @@ begin
     -- Losers bracket: two rounds for each winners-bracket round after the first.
     l_rounds:=greatest(0,2*w_rounds-2);
     for r in 1..l_rounds loop
-      l_size:=n / (1 << ((r+2)/2));
+      l_size:=n / (1 << ((r+3)/2));
       for i in 1..l_size loop
         insert into public.tournament_matches(tournament_id,round_number,match_number,status,bracket_section,bracket_label)
         values(p_tournament_id,r,i,'scheduled','losers','Losers · Round '||r)
@@ -114,7 +114,7 @@ begin
 
     -- Losers bracket winners alternate between same-index and paired-index rounds.
     for r in 1..l_rounds loop
-      l_size:=n / (1 << ((r+2)/2));
+      l_size:=n / (1 << ((r+3)/2));
       for i in 1..l_size loop
         v_key:='l:'||r||':'||i;
         if r=l_rounds then
@@ -204,7 +204,44 @@ begin
 end;
 $$;
 revoke all on function private.route_punix_double_elimination_result() from public,anon,authenticated;
-drop trigger if exists punix_advance_tournament_bracket on public.tournament_matches;
+-- Keep the existing single-elimination tree advancement trigger. The new router
+-- handles only double-elimination matches.
+create or replace function private.route_punix_double_elimination_result()
+returns trigger language plpgsql security definer set search_path = ''
+as $
+declare v_loser uuid; v_format text;
+begin
+  select t.format into v_format from public.tournaments t where t.id=new.tournament_id;
+  if v_format <> 'double_elimination' then return new; end if;
+  if new.status <> 'completed' or new.winner_registration_id is null then return new; end if;
+  if old.winner_registration_id is not distinct from new.winner_registration_id and old.status='completed' then return new; end if;
+  v_loser:=case when new.winner_registration_id=new.participant_a_id then new.participant_b_id else new.participant_a_id end;
+  if new.bracket_section='grand_final' then
+    if new.winner_registration_id=new.participant_b_id then
+      update public.tournament_matches set participant_a_id=new.participant_a_id,participant_b_id=new.participant_b_id,status='scheduled',winner_registration_id=null,score_a=null,score_b=null
+      where id=new.winner_to_match_id;
+    else
+      update public.tournament_matches set status='completed',winner_registration_id=null
+      where id=new.winner_to_match_id;
+    end if;
+    return new;
+  end if;
+  if new.winner_to_match_id is not null then
+    update public.tournament_matches set
+      participant_a_id=case when new.winner_to_slot='a' then new.winner_registration_id else participant_a_id end,
+      participant_b_id=case when new.winner_to_slot='b' then new.winner_registration_id else participant_b_id end
+    where id=new.winner_to_match_id;
+  end if;
+  if v_loser is not null and new.loser_to_match_id is not null then
+    update public.tournament_matches set
+      participant_a_id=case when new.loser_to_slot='a' then v_loser else participant_a_id end,
+      participant_b_id=case when new.loser_to_slot='b' then v_loser else participant_b_id end
+    where id=new.loser_to_match_id;
+  end if;
+  return new;
+end;
+$;
+revoke all on function private.route_punix_double_elimination_result() from public,anon,authenticated;
 drop trigger if exists punix_route_double_elimination_result on public.tournament_matches;
 create trigger punix_route_double_elimination_result
 after update of winner_registration_id,status on public.tournament_matches
