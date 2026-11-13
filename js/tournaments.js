@@ -10,49 +10,74 @@
   const host=$('tournament-bracket-grid');
   const mr=await db.from('public_tournament_matches').select('*').eq('tournament_id',id).order('round_number').order('match_number');
   if(mr.error){host.innerHTML='<p class="tournament-status">The live bracket is temporarily unavailable.</p>';return;}
-  const matches=mr.data||[];$('match-count').textContent=matches.length+' MATCHES';
-  const sectionNames={winners:'WINNERS BRACKET',losers:'LOSERS BRACKET',grand_final:'GRAND FINAL',grand_final_reset:'GRAND FINAL RESET'};
-  const sections={};matches.forEach(m=>{const key=m.bracket_section||'winners';(sections[key] ||= []).push(m);});
-  const order=['winners','losers','grand_final','grand_final_reset'];
-  host.innerHTML=matches.length?order.filter(key=>sections[key]?.length).map(key=>{
-   const rows=sections[key].sort((a,b)=>a.round_number-b.round_number||a.match_number-b.match_number);
-   const rounds={};rows.forEach(m=>{(rounds[m.round_number] ||= []).push(m);});
-   const divider=key==='losers'&&sections.winners?.length?'<div class="bracket-structure-divider" aria-hidden="true"><span>UPPER BRACKET</span><i></i><span>LOWER BRACKET</span></div>':'';
-   const heading=key==='winners'?'UPPER BRACKET · WINNERS':key==='losers'?'LOWER BRACKET · LOSERS':sectionNames[key];
-   const roundKeys=Object.keys(rounds).sort((a,b)=>Number(a)-Number(b));
-   const maxMatches=Math.max(1,...roundKeys.map(round=>rounds[round].length));
-   const gridRows=maxMatches*2-1;
-   const rowFor=(i,count)=>Math.max(1,Math.min(gridRows,Math.round((i+.5)*(2*maxMatches/count)-.5)));
-   const roundMarkup=roundKeys.map((round,roundIndex)=>{
-    const roundMatches=rounds[round];
-    const label=roundMatches[0]?.bracket_label||'';
-    const labelRound=label.match(/Round\s+(\d+)/i);
-    const roundTitle=key==='grand_final'||key==='grand_final_reset'?'FINAL':(labelRound?'ROUND '+labelRound[1]:'ROUND '+(roundIndex+1));
-    const cards=roundMatches.map((m,i)=>{
-     const rowPosition=rowFor(i,roundMatches.length);
-     return '<article class="bracket-match" style="grid-row:'+rowPosition+'"><small>MATCH '+m.match_number+' · '+esc(m.status.toUpperCase())+'</small><div class="bracket-side '+(m.winner_registration_id===m.participant_a_id?'winner':'')+'"><span>'+esc(m.participant_a_name||(m.status==='completed'&&m.participant_b_id?'BYE':'TBD'))+'</span><b>'+(m.score_a??'—')+'</b></div><div class="bracket-side '+(m.winner_registration_id===m.participant_b_id?'winner':'')+'"><span>'+esc(m.participant_b_name||(m.status==='completed'&&m.participant_a_id?'BYE':'TBD'))+'</span><b>'+(m.score_b??'—')+'</b></div></article>';
-    }).join('');
-    const nextRound=roundKeys[roundIndex+1];
-    let connectors='';
-    if(nextRound){
-     const nextCount=rounds[nextRound].length;
-     const paths=[];
-     roundMatches.forEach((m,i)=>{
-      const targetIndex=roundMatches.length>nextCount?Math.floor(i*nextCount/roundMatches.length):Math.min(i,nextCount-1);
-      const sourceY=(rowFor(i,roundMatches.length)-.5)*82;
-      const targetY=(rowFor(targetIndex,nextCount)-.5)*82;
-      if(roundMatches.length>nextCount && i%Math.max(1,Math.ceil(roundMatches.length/nextCount))!==0)return;
-      if(roundMatches.length>nextCount){
-       const partnerY=(rowFor(Math.min(i+1,roundMatches.length-1),roundMatches.length)-.5)*82;
-       paths.push('M0 '+sourceY+' H10 V'+partnerY+' H16 V'+targetY+' H24');
-      }else paths.push('M0 '+sourceY+' H24');
-     });
-     connectors='<svg class="bracket-connectors" style="height:'+(gridRows*82)+'px" viewBox="0 0 24 '+(gridRows*82)+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+paths.join(' ')+'"/></svg>';
-    }
-    return '<div class="bracket-round-group"><div class="bracket-round"><h4>'+roundTitle+'</h4><div class="bracket-round-matches" style="--bracket-rows:'+gridRows+'">'+cards+'</div></div>'+connectors+'</div>';
-   }).join('');
-   return divider+'<section class="bracket-lane bracket-lane-'+key+'"><h3>'+heading+'</h3><div class="bracket-lane-rounds">'+roundMarkup+'</div></section>';
-  }).join(''):'<p class="tournament-status">The tournament bracket has not been published yet.</p>';
+  const rows=mr.data||[];$('match-count').textContent=rows.length+' MATCHES';
+  if(!rows.length){host.innerHTML='<p class="tournament-status">The tournament bracket has not been published yet.</p>';return;}
+  if(!window.bracketsViewer||typeof window.bracketsViewer.render!=='function'){
+   host.innerHTML='<p class="tournament-status">The bracket display could not load. Please refresh the page.</p>';return;
+  }
+  const doubleElim=(active?.format||'single_elimination')==='double_elimination';
+  const sectionKey=m=>m.bracket_section||'winners';
+  const roundNumber=m=>{
+   if(sectionKey(m)==='grand_final')return 1;
+   if(sectionKey(m)==='grand_final_reset')return 2;
+   const label=(m.bracket_label||'').match(/Round\s+(\d+)/i);
+   if(label)return Number(label[1]);
+   return Number(m.round_number)||1;
+  };
+  const groupFor=section=>!doubleElim?1:({winners:1,losers:2,grand_final:3,grand_final_reset:3}[section]||1);
+  const groupNumbers=[...new Set(rows.map(m=>groupFor(sectionKey(m))))].sort((a,b)=>a-b);
+  const stageId=1,stageTournamentId=1;
+  const groupIds=new Map(groupNumbers.map(n=>[n,n]));
+  const roundIds=new Map();let nextRoundId=1;
+  const ordered=rows.slice().sort((a,b)=>groupFor(sectionKey(a))-groupFor(sectionKey(b))||roundNumber(a)-roundNumber(b)||a.match_number-b.match_number);
+  const roundCounts={};
+  ordered.forEach(m=>{
+   const key=groupFor(sectionKey(m))+':'+roundNumber(m);
+   if(!roundIds.has(key))roundIds.set(key,nextRoundId++);
+   roundCounts[key]=(roundCounts[key]||0)+1;
+  });
+  const participants=new Map();
+  ordered.forEach(m=>{
+   if(m.participant_a_id)participants.set(String(m.participant_a_id),{id:String(m.participant_a_id),tournament_id:stageTournamentId,name:m.participant_a_name||'Participant'});
+   if(m.participant_b_id)participants.set(String(m.participant_b_id),{id:String(m.participant_b_id),tournament_id:stageTournamentId,name:m.participant_b_name||'Participant'});
+  });
+  const sourcePosition=(section,round,matchNo,slot)=>{
+   if(section==='winners')return round===1?(matchNo-1)*2+(slot==='a'?1:2):(matchNo-1)*2+(slot==='a'?1:2);
+   if(section==='losers'){
+    if(round===1)return (matchNo-1)*2+(slot==='a'?1:2);
+    if(round%2===0)return matchNo;
+    return (matchNo-1)*2+(slot==='a'?1:2);
+   }
+   return 1;
+  };
+  const matchIds=new Map(ordered.map((m,i)=>[String(m.id),i+1]));
+  const matches=ordered.map((m,i)=>{
+   const section=sectionKey(m),round=roundNumber(m),groupId=groupFor(section),roundId=roundIds.get(groupId+':'+round);
+   const a=m.participant_a_id?String(m.participant_a_id):null,b=m.participant_b_id?String(m.participant_b_id):null;
+   const winner=m.winner_registration_id?String(m.winner_registration_id):null;
+   const status=m.status==='completed'?4:(m.status==='live'||m.status==='in_progress'?3:((a?1:0)+(b?1:0)===2?2:((a||b)?1:0)));
+   const side=(participantId,score,slot)=>{
+    const result=winner&&participantId?(winner===participantId?'win':'loss'):undefined;
+    return {id:participantId,position:sourcePosition(section,round,Number(m.match_number)||1,slot),...(score===null||score===undefined?{}:{score:Number(score)}),...(result?{result}:{})};
+   };
+   return {id:i+1,stage_id:stageId,group_id:groupId,round_id:roundId,number:Number(m.match_number)||1,child_count:0,status,opponent1:side(a,m.score_a,'a'),opponent2:side(b,m.score_b,'b')};
+  });
+  const firstRound=ordered.filter(m=>sectionKey(m)==='winners'&&roundNumber(m)===1);
+  const bracketSize=Math.max(2,firstRound.length*2,Number(active?.max_participants)||0);
+  const hasReset=ordered.some(m=>sectionKey(m)==='grand_final_reset');
+  const viewerData={
+   stages:[{id:stageId,tournament_id:stageTournamentId,name:active?.title||'PUNIX Tournament',type:doubleElim?'double_elimination':'single_elimination',number:1,settings:{size:bracketSize,seedOrdering:['natural'],grandFinal:hasReset?'double':'single',matchesChildCount:0}}],
+   matches,
+   matchGames:[],
+   participants:[...participants.values()]
+  };
+  host.innerHTML='<div id="punix-brackets-viewer" class="brackets-viewer"></div>';
+  try{
+   await window.bracketsViewer.render(viewerData,{selector:'#punix-brackets-viewer',clear:true});
+  }catch(error){
+   console.error('PUNIX bracket rendering failed:',error);
+   host.innerHTML='<p class="tournament-status">The bracket could not be displayed. Match data is still saved.</p>';
+  }
  }
  function watchPublicBracket(id){if(bracketRefreshTimer)clearInterval(bracketRefreshTimer);renderBracket(id);bracketRefreshTimer=setInterval(()=>{if(active?.id===id)renderBracket(id);},10000);}
  function renderList(){const q=$('tournament-search').value.trim().toLowerCase();const rows=events.filter(t=>(filter==='all'||t.status===filter)&&(t.title+' '+t.game_name).toLowerCase().includes(q));
