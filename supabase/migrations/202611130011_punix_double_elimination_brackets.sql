@@ -218,7 +218,7 @@ revoke all on function private.sync_punix_double_elimination_bracket(uuid) from 
 -- handles only double-elimination matches.
 create or replace function private.route_punix_double_elimination_result()
 returns trigger language plpgsql security definer set search_path = ''
-as $
+as $$
 declare v_loser uuid; v_format text;
 begin
   select t.format into v_format from public.tournaments t where t.id=new.tournament_id;
@@ -250,7 +250,7 @@ begin
   end if;
   return new;
 end;
-$;
+$$;
 revoke all on function private.route_punix_double_elimination_result() from public,anon,authenticated;
 drop trigger if exists punix_route_double_elimination_result on public.tournament_matches;
 create trigger punix_route_double_elimination_result
