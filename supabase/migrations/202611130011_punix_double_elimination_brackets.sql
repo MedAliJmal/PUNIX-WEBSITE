@@ -211,7 +211,7 @@ begin
 
   return (select count(*)::integer from public.tournament_matches where tournament_id=p_tournament_id);
 end;
-$;
+$$;
 revoke all on function private.sync_punix_double_elimination_bracket(uuid) from public,anon,authenticated;
 
 create or replace function private.route_punix_double_elimination_result()
