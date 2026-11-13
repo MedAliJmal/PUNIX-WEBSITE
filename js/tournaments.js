@@ -43,19 +43,20 @@
    if(!laneRows.length)return '';
    const rounds=roundsFor(section);
    const firstCount=Math.max(1,laneRows.filter(m=>roundOf(m)===rounds[0]).length);
-   const unit=104, laneHeight=Math.max(150,firstCount*unit);
+   // A later match is centered between the two feeder matches above it.
+   const unit=132, laneHeight=Math.max(180,firstCount*unit);
+   const centerY=(round,index,count)=>{
+    const idx=Math.max(1,Number(index)||1);
+    if(section==='winners')return (idx-.5)*Math.pow(2,round-1)*unit;
+    return (idx-.5)*laneHeight/Math.max(1,count);
+   };
    const columns=rounds.map((round,ri)=>{
     const matches=laneRows.filter(m=>roundOf(m)===round).sort((a,b)=>Number(a.match_number)-Number(b.match_number));
-    const roundTitle=section==='winners'&&ri===rounds.length-1?'UPPER FINAL':section==='losers'&&ri===rounds.length-1?'LOWER FINAL':(matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\s*/,'');
+    const roundTitle=section==='winners'&&ri===rounds.length-1?'UPPER FINAL':section==='losers'&&ri===rounds.length-1?'LOWER FINAL':(matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\\s*/,'');
     const col='<div class="punix-tree-round"><h4>'+esc(roundTitle)+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
     const cards=matches.map(m=>{
-     const count=Math.max(1,matches.length),idx=Math.max(1,Number(m.match_number)||1);
-     let center;
-     if(section==='winners')center=((idx-.5)*Math.pow(2,round-1))/(firstCount);
-     else if(section==='losers'){
-       center=(idx-.5)/count;
-     }else center=.5;
-     const top=Math.max(0,center*laneHeight-39);
+     const idx=Math.max(1,Number(m.match_number)||1);
+     const top=Math.max(0,centerY(round,idx,matches.length)-39);
      return '<div class="punix-tree-positioned" style="top:'+top+'px">'+matchCard(m)+'</div>';
     }).join('');
     return col+cards+'</div></div>';
@@ -65,9 +66,7 @@
     const paths=from.map(m=>{
      const idx=Number(m.match_number)||1;
      const targetIndex=section==='winners'?Math.ceil(idx/2):(round%2===1?idx:Math.ceil(idx/2));
-     const sourceCenter=section==='winners'?((idx-.5)*Math.pow(2,round-1)/firstCount)*laneHeight:((idx-.5)/Math.max(1,from.length))*laneHeight;
-     const targetCenter=section==='winners'?((targetIndex-.5)*Math.pow(2,next-1)/firstCount)*laneHeight:((targetIndex-.5)/Math.max(1,to.length))*laneHeight;
-     return {sourceCenter,targetCenter};
+     return {sourceCenter:centerY(round,idx,from.length),targetCenter:centerY(next,targetIndex,to.length)};
     });
     const d=paths.map(p=>'M0 '+p.sourceCenter+' H27 V'+p.targetCenter+' H54').join(' ');
     return '<svg class="punix-tree-connectors" width="54" height="'+laneHeight+'" viewBox="0 0 54 '+laneHeight+'" aria-hidden="true"><path d="'+d+'"/></svg>';
