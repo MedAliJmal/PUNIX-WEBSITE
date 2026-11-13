@@ -319,7 +319,6 @@
       const payload={title:$('update-title').value.trim(),category:$('update-category').value.trim(),summary:$('update-summary').value.trim(),published_at:$('update-date').value,display_order:Number($('update-order').value||0),image_url:image,link_url:link,link_label:$('update-link-label').value.trim(),is_published:$('update-published').checked};
       const result=id?await db.from('latest_updates').update(payload).eq('id',id):await db.from('latest_updates').insert(payload);
       if(result.error) throw result.error;
-      setInterval(loadSupportConversations, 5000);
       clearUpdateForm(); $('update-form-message').textContent='Update saved successfully.'; loadUpdates();
     } catch(error) {
       $('update-form-message').textContent='Save failed: '+(error.message||'Unknown error');
