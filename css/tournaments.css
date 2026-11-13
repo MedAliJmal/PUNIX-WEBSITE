@@ -154,3 +154,8 @@
 .punix-tree-final-cards .punix-tree-match{height:auto;min-height:78px}
 .punix-tree-final-note{max-width:850px;margin:16px auto 0;color:#899697;text-align:center;font:600 9px/1.7 Inter,Arial,sans-serif}
 @media(max-width:680px){.punix-tree-lane,.punix-tree-finals{padding:13px}.punix-tree-round{flex-basis:200px;width:200px}.punix-tree-connectors{flex-basis:38px;width:38px}.punix-tree-final-flow{grid-template-columns:1fr;gap:10px}.punix-tree-source{padding:11px}}
+
+.punix-tree-source{position:relative}
+.punix-tree-source:first-child:after{content:"→";position:absolute;right:-17px;top:50%;transform:translateY(-50%);color:#35c4bd;font:900 17px Inter,Arial,sans-serif}
+.punix-tree-source:last-child:before{content:"←";position:absolute;left:-17px;top:50%;transform:translateY(-50%);color:#d7b66f;font:900 17px Inter,Arial,sans-serif}
+@media(max-width:680px){.punix-tree-source:first-child:after{content:"↓";right:50%;top:auto;bottom:-18px;transform:translateX(50%)}.punix-tree-source:last-child:before{content:"↑";left:50%;top:-18px;transform:translateX(-50%)}}
