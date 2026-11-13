@@ -10,7 +10,8 @@
     return;
   }
 
-  const db = window.supabase.createClient(config.url, config.publishableKey);
+  const db = window.PUNIX_SUPABASE_CLIENT || window.supabase.createClient(config.url, config.publishableKey);
+  window.PUNIX_SUPABASE_CLIENT = db;
   let currentSection = 'overview';
 
   function showGate(message, isError = false) {
