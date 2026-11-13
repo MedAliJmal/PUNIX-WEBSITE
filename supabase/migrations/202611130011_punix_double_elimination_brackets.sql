@@ -56,7 +56,7 @@ begin
     raise exception 'This tournament already has played matches. The bracket cannot be converted automatically.';
   end if;
   if v_existing=0 then
-    n := greatest(2,coalesce(t.max_participants,0),v_confirmed);
+    n := greatest(4,coalesce(t.max_participants,0),v_confirmed);
     n := least(512,n);
     while (1 << k) < n loop k:=k+1; end loop;
     n := 1 << k;
