@@ -38,7 +38,7 @@
    return '<article class="punix-tree-match" data-match-id="'+esc(m.id)+'"><div class="punix-tree-match-head"><span>MATCH '+esc(m.match_number||1)+'</span><small>'+status+'</small></div>'+side('a')+side('b')+'</article>';
   };
   const roundsFor=section=>[...new Set(rows.filter(m=>sectionOf(m)===section).map(roundOf))].sort((a,b)=>a-b);
-  const laneHtml=(section,title,subtitle,connectionMode)=>{
+  const laneHtml=(section,title,subtitle)=>{
    const laneRows=rows.filter(m=>sectionOf(m)===section);
    if(!laneRows.length)return '';
    const rounds=roundsFor(section);
@@ -52,8 +52,7 @@
      let center;
      if(section==='winners')center=((idx-.5)*Math.pow(2,round-1))/(firstCount);
      else if(section==='losers'){
-      const localRound=round;
-      center=(idx-.5)/count;
+       center=(idx-.5)/count;
      }else center=.5;
      const top=Math.max(0,center*laneHeight-39);
      return '<div class="punix-tree-positioned" style="top:'+top+'px">'+matchCard(m)+'</div>';
@@ -74,8 +73,8 @@
    }).join('');
    return '<section class="punix-tree-lane '+(section==='losers'?'is-lower':'is-upper')+'"><header class="punix-tree-lane-heading"><div><span>'+esc(title)+'</span><small>'+esc(subtitle)+'</small></div><b>'+laneRows.length+' MATCHES</b></header><div class="punix-tree-scroll"><div class="punix-tree-rounds">'+columns.map((c,i)=>c+(i<rounds.length-1?connectorHtml.split('</svg>')[i]+'</svg>':'')).join('')+'</div></div></section>';
   };
-  const upper=laneHtml('winners',isDouble?'WINNERS BRACKET':'TOURNAMENT BRACKET',isDouble?'Stay in the upper bracket with every win':'Follow the tournament path','winner');
-  const lower=isDouble?laneHtml('losers','LOSERS BRACKET','One loss drops a team into the lower bracket','loser'):'';
+  const upper=laneHtml('winners',isDouble?'WINNERS BRACKET':'TOURNAMENT BRACKET',isDouble?'Stay in the upper bracket with every win':'Follow the tournament path');
+  const lower=isDouble?laneHtml('losers','LOSERS BRACKET','One loss drops a team into the lower bracket'):'';
   const finals=rows.filter(m=>sectionOf(m)==='grand_final'||sectionOf(m)==='grand_final_reset').sort((a,b)=>roundOf(a)-roundOf(b));
   const finalHtml=isDouble?'<section class="punix-tree-finals"><header class="punix-tree-lane-heading"><div><span>GRAND FINAL</span><small>Upper champion vs lower champion</small></div><b>CHAMPIONSHIP</b></header><div class="punix-tree-final-flow"><div class="punix-tree-source"><b>UPPER FINAL WINNER</b><span>Advances from Winners Bracket</span></div><div class="punix-tree-final-cards">'+(finals.length?finals.map(matchCard).join(''):'<p class="tournament-status">The Grand Final will appear here.</p>')+'</div><div class="punix-tree-source"><b>LOWER FINAL WINNER</b><span>Advances from Losers Bracket</span></div></div><p class="punix-tree-final-note">The Winners Bracket champion enters the Grand Final in slot A. The Losers Bracket champion enters slot B. A reset match is played only if the lower-bracket champion wins the first Grand Final.</p></section>':'';
   host.innerHTML=upper+lower+finalHtml;
