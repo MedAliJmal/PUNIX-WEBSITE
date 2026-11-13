@@ -207,15 +207,8 @@ begin
       participant_a_id, participant_b_id, status
     ) values (
       p_tournament_id, 1, v_match_number,
-      v_a, v_b, case when v_b is null then 'completed' else 'scheduled' end
+      v_a, v_b, 'scheduled'
     );
-    if v_b is null then
-      update public.tournament_matches
-         set winner_registration_id = v_a
-       where tournament_id = p_tournament_id
-         and round_number = 1
-         and match_number = v_match_number;
-    end if;
   end loop;
 
   v_round_matches := v_match_number;
@@ -231,12 +224,8 @@ begin
     v_round_matches := v_next_matches;
   end loop;
 
-  -- Bye updates above can run before the next-round rows exist. Re-run the
-  -- feeder updates now that the complete bracket tree has been created.
-  update public.tournament_matches
-     set status = 'scheduled', winner_registration_id = null
-   where tournament_id = p_tournament_id and round_number = 1
-     and participant_a_id is not null and participant_b_id is null;
+  -- Auto-advance the single participant in any first-round bye after all
+  -- later-round rows exist, allowing the trigger to fill the bracket tree.
   update public.tournament_matches
      set status = 'completed', winner_registration_id = participant_a_id
    where tournament_id = p_tournament_id and round_number = 1
