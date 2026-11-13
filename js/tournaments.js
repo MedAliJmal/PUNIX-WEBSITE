@@ -25,7 +25,7 @@
    const roundMarkup=roundKeys.map((round,roundIndex)=>{
     const roundMatches=rounds[round];
     const label=roundMatches[0]?.bracket_label||'';
-    const labelRound=label.match(/Round\\s+(\\d+)/i);
+    const labelRound=label.match(/Round\s+(\d+)/i);
     const roundTitle=key==='grand_final'||key==='grand_final_reset'?'FINAL':(labelRound?'ROUND '+labelRound[1]:'ROUND '+(roundIndex+1));
     return '<div class="bracket-round"><h4>'+roundTitle+'</h4><div class="bracket-round-matches" style="--bracket-rows:'+gridRows+'">'+roundMatches.map((m,i)=>{
      const rowPosition=Math.max(1,Math.min(gridRows,Math.round((i+.5)*(2*maxMatches/roundMatches.length)-.5)));
