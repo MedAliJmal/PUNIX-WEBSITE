@@ -49,3 +49,13 @@
 .bracket-structure-divider:before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(215,182,111,.75) 12%,rgba(53,196,189,.55) 50%,rgba(215,182,111,.75) 88%,transparent)}
 .bracket-structure-divider span{position:relative;z-index:1;padding:7px 11px;background:#090b0e;border:1px solid rgba(215,182,111,.25)}
 .bracket-structure-divider i{position:relative;z-index:1;width:7px;height:7px;transform:rotate(45deg);background:var(--t-teal);box-shadow:0 0 12px rgba(53,196,189,.45)}
+
+
+/* Tournament-tree layout: matches are vertically seeded into their bracket positions */
+.bracket-lane-rounds{align-items:stretch;gap:22px;padding:10px 4px 18px}
+.bracket-round{flex:0 0 250px;display:grid;grid-template-rows:repeat(var(--bracket-rows,1),minmax(82px,auto));align-content:stretch;align-items:center;gap:0;position:relative}
+.bracket-round h4{grid-row:1;align-self:start;min-height:28px;margin:0;padding:0 0 8px}
+.bracket-match{position:relative;align-self:center;box-sizing:border-box;width:100%;min-height:72px;z-index:1}
+.bracket-round:not(:last-child) .bracket-match:after{content:"";position:absolute;left:100%;top:50%;width:22px;border-top:1px solid rgba(53,196,189,.45)}
+.bracket-lane-rounds{overflow-x:auto;overflow-y:hidden}
+@media(max-width:620px){.bracket-round{flex-basis:225px}.bracket-round:not(:last-child) .bracket-match:after{width:22px}}
