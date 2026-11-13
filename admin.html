@@ -57,7 +57,13 @@
     </div>
     <a href="admin.html" data-nav="admin" aria-hidden="true">Admin Dashboard</a>
   </nav>
-  <div class="pnx-nav-actions"><a class="pnx-nav-cta" href="auth.html">LOG IN <span>↗</span></a></div>
+  <div class="pnx-nav-actions">
+    <button class="pnx-support-nav-notification" id="support-nav-notification" type="button" aria-label="New support messages — open support inbox" title="New support messages" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.5h16v11H8l-4 3v-14Z"></path><path d="m5 7 7 6 7-6"></path></svg>
+      <span class="pnx-support-nav-count" id="support-nav-unread" aria-live="polite" hidden></span>
+    </button>
+    <a class="pnx-nav-cta" href="auth.html">LOG IN <span>↗</span></a>
+  </div>
 </header>
 
 
@@ -82,7 +88,7 @@
         <button class="pnx-admin-nav-item" type="button" data-section="tournaments"><span>04</span> Tournament Hub</button>
         <button class="pnx-admin-nav-item" type="button" data-section="updates"><span>05</span> Latest Updates</button>
         <button class="pnx-admin-nav-item" type="button" data-section="sponsors"><span>06</span> Sponsors</button>
-        <button class="pnx-admin-nav-item" type="button" data-section="support"><span>07</span> Support Inbox <b class="pnx-admin-unread" id="support-nav-unread" hidden></b></button>
+        <button class="pnx-admin-nav-item" type="button" data-section="support"><span>07</span> Support Inbox <b class="pnx-admin-unread" id="support-sidebar-unread" hidden></b></button>
         <div class="pnx-sidebar-foot"><span class="pnx-sidebar-mark">P</span><small>CREATE. BUILD.<br>COMPETE. CONQUER.</small></div>
       </aside>
 
