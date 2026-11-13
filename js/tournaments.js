@@ -17,7 +17,7 @@
   const roundOf=m=>{
    if(sectionOf(m)==='grand_final')return 1;
    if(sectionOf(m)==='grand_final_reset')return 2;
-   const label=(m.bracket_label||'').match(/Round\\s+(\\d+)/i);
+   const label=(m.bracket_label||'').match(/Round\s+(\d+)/i);
    return label?Number(label[1]):Number(m.round_number)||1;
   };
   const nameOf=(m,slot)=>{
@@ -46,7 +46,7 @@
    const unit=104, laneHeight=Math.max(150,firstCount*unit);
    const columns=rounds.map((round,ri)=>{
     const matches=laneRows.filter(m=>roundOf(m)===round).sort((a,b)=>Number(a.match_number)-Number(b.match_number));
-    const col='<div class="punix-tree-round"><h4>'+esc((matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\\s*/,''))+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
+    const col='<div class="punix-tree-round"><h4>'+esc((matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\s*/,''))+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
     const cards=matches.map(m=>{
      const count=Math.max(1,matches.length),idx=Math.max(1,Number(m.match_number)||1);
      let center;
