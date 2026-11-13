@@ -27,10 +27,10 @@
     const label=roundMatches[0]?.bracket_label||'';
     const labelRound=label.match(/Round\\s+(\\d+)/i);
     const roundTitle=key==='grand_final'||key==='grand_final_reset'?'FINAL':(labelRound?'ROUND '+labelRound[1]:'ROUND '+(roundIndex+1));
-    return '<div class="bracket-round" style="--bracket-rows:'+gridRows+'"><h4>'+roundTitle+'</h4>'+roundMatches.map((m,i)=>{
+    return '<div class="bracket-round"><h4>'+roundTitle+'</h4><div class="bracket-round-matches" style="--bracket-rows:'+gridRows+'">'+roundMatches.map((m,i)=>{
      const rowPosition=Math.max(1,Math.min(gridRows,Math.round((i+.5)*(2*maxMatches/roundMatches.length)-.5)));
      return '<article class="bracket-match" style="grid-row:'+rowPosition+'"><small>MATCH '+m.match_number+' · '+esc(m.status.toUpperCase())+'</small><div class="bracket-side '+(m.winner_registration_id===m.participant_a_id?'winner':'')+'"><span>'+esc(m.participant_a_name||(m.status==='completed'&&m.participant_b_id?'BYE':'TBD'))+'</span><b>'+(m.score_a??'—')+'</b></div><div class="bracket-side '+(m.winner_registration_id===m.participant_b_id?'winner':'')+'"><span>'+esc(m.participant_b_name||(m.status==='completed'&&m.participant_a_id?'BYE':'TBD'))+'</span><b>'+(m.score_b??'—')+'</b></div></article>';
-    }).join('')+'</div>';
+    }).join('')+'</div></div>';
    }).join('');
    return divider+'<section class="bracket-lane bracket-lane-'+key+'"><h3>'+heading+'</h3><div class="bracket-lane-rounds">'+roundMarkup+'</div></section>';
   }).join(''):'<p class="tournament-status">The tournament bracket has not been published yet.</p>';
