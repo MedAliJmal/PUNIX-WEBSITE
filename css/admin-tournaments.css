@@ -5,3 +5,24 @@
 .pnx-admin-entry>div:first-child small+small{margin-top:1px;color:#9da9a9}
 
 .pnx-admin-entry-logo{flex:0 0 58px;width:58px;height:58px;display:grid;place-items:center;border:1px solid rgba(201,164,91,.3);background:#090e11;padding:4px}.pnx-admin-entry-logo img{display:block;width:100%;height:100%;object-fit:contain}.pnx-admin-entry-logo.is-empty{color:#748083;text-align:center;font:800 7px/1.4 Inter,Arial,sans-serif;letter-spacing:.5px}.pnx-admin-entry{align-items:flex-start}
+
+/* Tournament Hub event cards and create-form toggle */
+.pnx-tournament-heading-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.pnx-tournament-create-panel{margin:0 0 16px}
+.pnx-tournament-create-panel[hidden]{display:none!important}
+.pnx-tournament-events-panel{margin-top:0}
+.pnx-admin-tournament-list{gap:12px}
+.pnx-admin-tournament-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px;padding:17px;background:linear-gradient(145deg,#12191c,#0c1013);border:1px solid rgba(255,255,255,.1)}
+.pnx-admin-tournament-main{min-width:0}
+.pnx-admin-tournament-card h3{font-size:24px;margin:6px 0}
+.pnx-tournament-card-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.pnx-tournament-card-stats span{padding:8px 10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);color:#879597;font:800 7px/1.4 Inter,Arial,sans-serif;letter-spacing:.6px}
+.pnx-tournament-card-stats strong{color:#e3c27e;font-size:14px;margin-right:4px}
+.pnx-admin-tournament-card .pnx-admin-tournament-actions{max-width:430px;justify-content:flex-end}
+.pnx-admin-tournament-card .pnx-admin-tournament-actions button{font-size:7px}
+.pnx-tournament-details-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.pnx-tournament-details-grid article{min-width:0;padding:12px;background:#0a1013;border:1px solid rgba(255,255,255,.08)}
+.pnx-tournament-details-grid small{display:block;color:#35c4bd;font:800 8px/1.4 Inter,Arial,sans-serif;letter-spacing:.9px}
+.pnx-tournament-details-grid p{margin:7px 0 0;color:#e1e5df;font:500 10px/1.6 Inter,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:850px){.pnx-admin-tournament-card{grid-template-columns:1fr}.pnx-admin-tournament-card .pnx-admin-tournament-actions{max-width:none;justify-content:flex-start}}
+@media(max-width:600px){.pnx-tournament-heading-actions{align-items:stretch;width:100%;flex-direction:column}.pnx-tournament-heading-actions>*{align-self:flex-start}.pnx-tournament-details-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
