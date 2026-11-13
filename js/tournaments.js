@@ -52,7 +52,7 @@
    };
    const columns=rounds.map((round,ri)=>{
     const matches=laneRows.filter(m=>roundOf(m)===round).sort((a,b)=>Number(a.match_number)-Number(b.match_number));
-    const roundTitle=section==='winners'&&ri===rounds.length-1?'UPPER FINAL':section==='losers'&&ri===rounds.length-1?'LOWER FINAL':(matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\\s*/,'');
+    const roundTitle=section==='winners'&&ri===rounds.length-1?'UPPER FINAL':section==='losers'&&ri===rounds.length-1?'LOWER FINAL':(matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\s*/,'');
     const col='<div class="punix-tree-round"><h4>'+esc(roundTitle)+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
     const cards=matches.map(m=>{
      const idx=Math.max(1,Number(m.match_number)||1);
