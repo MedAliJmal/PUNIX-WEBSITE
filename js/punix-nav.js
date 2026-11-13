@@ -73,6 +73,78 @@ document.addEventListener('DOMContentLoaded', () => {
     else link.setAttribute('aria-hidden', 'true');
   });
 
+  let supportAlertRoot = null, supportAlertBadge = null, supportAlertChannel = null, supportAlertTimer = null;
+  const supportSeenKey = 'punix-support-admin-seen-v1:';
+  function ensureAdminSupportIndicator() {
+    if (supportAlertRoot) return;
+    const actions = header.querySelector('.pnx-nav-actions');
+    if (!actions) return;
+    supportAlertRoot = document.createElement('button');
+    supportAlertRoot.type = 'button';
+    supportAlertRoot.id = 'support-nav-notification';
+    supportAlertRoot.className = 'pnx-support-nav-notification';
+    supportAlertRoot.hidden = true;
+    supportAlertRoot.setAttribute('aria-label', 'New support messages — open support inbox');
+    supportAlertRoot.title = 'New support messages';
+    supportAlertRoot.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 5.5h16v11H8l-4 3v-14Z"></path><path d="m5 7 7 6 7-6"></path></svg><span class="pnx-support-nav-count" id="support-nav-unread" aria-live="polite" hidden></span>';
+    supportAlertBadge = supportAlertRoot.querySelector('.pnx-support-nav-count');
+    const cta = actions.querySelector('.pnx-nav-cta');
+    actions.insertBefore(supportAlertRoot, cta || null);
+    supportAlertRoot.addEventListener('click', () => {
+      if ((window.location.pathname.split('/').pop() || '') === 'admin.html' && typeof window.PUNIX_OPEN_SUPPORT_INBOX === 'function') {
+        window.PUNIX_OPEN_SUPPORT_INBOX();
+      } else {
+        window.location.href = 'admin.html#support';
+      }
+    });
+  }
+  function hideAdminSupportIndicator() {
+    if (supportAlertRoot) supportAlertRoot.remove();
+    supportAlertRoot = null;
+    supportAlertBadge = null;
+    if (supportAlertChannel) { client.removeChannel(supportAlertChannel); supportAlertChannel = null; }
+    if (supportAlertTimer) { clearInterval(supportAlertTimer); supportAlertTimer = null; }
+  }
+  async function refreshAdminSupportIndicator() {
+    if (!supportAlertRoot || !window.PUNIX_AUTH_SESSION?.user?.id) return;
+    const { data: conversations, error } = await client.from('support_conversations')
+      .select('id').order('last_message_at', {ascending:false}).limit(100);
+    if (error) return;
+    const { data: messages, error: messageError } = await client.from('support_messages')
+      .select('id,conversation_id,sender_type').order('created_at', {ascending:false}).limit(1000);
+    if (messageError) return;
+    const latestByConversation = new Map();
+    (messages || []).forEach(message => {
+      if (!latestByConversation.has(message.conversation_id)) latestByConversation.set(message.conversation_id, message);
+    });
+    let unread = 0;
+    (conversations || []).forEach(conversation => {
+      const latest = latestByConversation.get(conversation.id);
+      let seen = '';
+      try { seen = localStorage.getItem(supportSeenKey + conversation.id) || ''; } catch (_) {}
+      if (latest?.sender_type === 'visitor' && latest.id !== seen) unread++;
+    });
+    if (!supportAlertRoot) return;
+    const label = unread > 9 ? '9+' : String(unread);
+    supportAlertBadge.textContent = label;
+    supportAlertBadge.hidden = unread === 0;
+    supportAlertRoot.hidden = unread === 0;
+    supportAlertRoot.setAttribute('aria-label', unread === 1 ? '1 new support message — open support inbox' : `${unread} new support messages — open support inbox`);
+    supportAlertRoot.title = unread === 1 ? '1 new support message' : `${unread} new support messages`;
+  }
+  function enableAdminSupportIndicator() {
+    ensureAdminSupportIndicator();
+    refreshAdminSupportIndicator();
+    if (supportAlertChannel) client.removeChannel(supportAlertChannel);
+    supportAlertChannel = client.channel('punix-admin-support-navbar')
+      .on('postgres_changes', {event:'*', schema:'public', table:'support_conversations'}, refreshAdminSupportIndicator)
+      .on('postgres_changes', {event:'INSERT', schema:'public', table:'support_messages'}, refreshAdminSupportIndicator)
+      .subscribe();
+    if (supportAlertTimer) clearInterval(supportAlertTimer);
+    supportAlertTimer = setInterval(refreshAdminSupportIndicator, 60000);
+    window.PUNIX_REFRESH_SUPPORT_ALERT = refreshAdminSupportIndicator;
+  }
+
   // Keep registration hidden until Supabase confirms the visitor is signed out.
   updateCommunityCta(false);
   showAdminLinks(false);
@@ -170,15 +242,21 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMemberLink(signedIn);
     updateCommunityCta(signedIn);
     showAdminLinks(false);
+    hideAdminSupportIndicator();
     if (!signedIn) return;
 
     try {
       const { data, error } = await client.from('user_roles')
         .select('role').eq('user_id', session.user.id).maybeSingle();
       if (currentCheck !== roleCheckId) return;
-      showAdminLinks(!error && ['admin', 'super_admin'].includes(data?.role));
+      const isAdmin = !error && ['admin', 'super_admin'].includes(data?.role);
+      showAdminLinks(isAdmin);
+      if (isAdmin) enableAdminSupportIndicator();
     } catch (_) {
-      if (currentCheck === roleCheckId) showAdminLinks(false);
+      if (currentCheck === roleCheckId) {
+        showAdminLinks(false);
+        hideAdminSupportIndicator();
+      }
     }
   };
 
