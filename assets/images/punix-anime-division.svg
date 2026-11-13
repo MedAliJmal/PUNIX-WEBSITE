@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+<title id="title">PUNIX Anime Division</title><desc id="desc">Original pink and black manga-inspired artwork for the PUNIX Anime Division.</desc>
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#32121f"/><stop offset=".52" stop-color="#100b11"/><stop offset="1" stop-color="#07090d"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#ffd1dc"/><stop offset=".62" stop-color="#f35c88"/><stop offset="1" stop-color="#a51f4c"/></radialGradient>
+ <linearGradient id="coat" x2="1" y2="1"><stop stop-color="#303039"/><stop offset=".55" stop-color="#090a10"/><stop offset="1" stop-color="#50142b"/></linearGradient>
+ <pattern id="dots" width="13" height="13" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="#ff9eb8" opacity=".35"/></pattern>
+ <clipPath id="panelL"><path d="M0 0H330L245 520H0Z"/></clipPath><clipPath id="panelR"><path d="M930 0H1200V520H855Z"/></clipPath>
+ <filter id="glow"><feGaussianBlur stdDeviation="15"/></filter>
+</defs>
+<rect width="1200" height="900" fill="url(#bg)"/>
+<circle cx="600" cy="365" r="255" fill="url(#sun)" opacity=".75"/>
+<circle cx="600" cy="365" r="285" fill="none" stroke="#ff9db8" stroke-width="2" opacity=".45"/>
+<path d="M0 0H330L245 520H0Z" fill="#160b12" stroke="#ffd1dc" stroke-width="8"/>
+<path d="M930 0H1200V520H855Z" fill="#160b12" stroke="#ffd1dc" stroke-width="8"/>
+<g clip-path="url(#panelL)">
+ <rect width="350" height="530" fill="#681a38"/><rect width="350" height="530" fill="url(#dots)"/>
+ <path d="M-30 150L60 20 190 5 280 100 250 300 120 390 0 320Z" fill="#f3a0b8"/>
+ <path d="M28 150L80 85 155 75 225 125 208 235 160 300 65 275Z" fill="#17121a" stroke="#ffd1dc" stroke-width="8"/>
+ <path d="M45 160L95 120 140 128 180 168 135 190 95 185Z" fill="#fff0f4"/>
+ <path d="M85 170l35 -8 25 10 -30 12Z" fill="#0c0b10"/>
+ <path d="M55 215Q130 260 205 215L175 330 80 325Z" fill="#17121a"/>
+ <path d="M0 390L300 280 320 550H0Z" fill="#25101b"/>
+ <text x="25" y="465" fill="#ffb2c8" font-family="sans-serif" font-size="34" font-weight="900" letter-spacing="6">MANGA</text>
+</g>
+<g clip-path="url(#panelR)">
+ <rect x="850" width="350" height="530" fill="#29101d"/><rect x="850" width="350" height="530" fill="url(#dots)"/>
+ <path d="M880 170L930 50 1050 5 1170 75 1205 260 1110 350 930 310Z" fill="#f6b4c6"/>
+ <path d="M920 150L980 85 1080 80 1155 145 1125 270 1030 310 940 255Z" fill="#14121a" stroke="#ffe0e8" stroke-width="8"/>
+ <path d="M940 165L1010 140 1060 165 1020 190 970 190Z" fill="#fff"/>
+ <path d="M1060 165L1120 145 1150 175 1100 195Z" fill="#fff"/>
+ <path d="M960 225Q1040 270 1140 210L1120 350 980 345Z" fill="#111018"/>
+ <path d="M855 420L1190 320V550H850Z" fill="#51162f"/>
+ <text x="900" y="465" fill="#ffb2c8" font-family="sans-serif" font-size="31" font-weight="900" letter-spacing="4">ANIME</text>
+</g>
+<g opacity=".75" stroke="#ff9db8" stroke-width="3" fill="none"><path d="M0 555L1200 260M0 620L1200 325M0 690L1200 395"/><path d="M410 0L250 900M790 0L950 900"/></g>
+<!-- original central anime hero -->
+<path d="M260 900Q300 650 420 565L490 510 710 510 790 570Q910 650 940 900Z" fill="url(#coat)" stroke="#ffb4c8" stroke-width="5"/>
+<path d="M405 570Q360 470 385 300Q420 130 600 105Q780 130 815 300Q840 475 795 570L730 650H470Z" fill="#101018" stroke="#ffb8cb" stroke-width="7"/>
+<path d="M380 310Q400 95 600 75Q800 95 820 310L760 260 700 190 600 240 490 185 430 275Z" fill="#0a0a10" stroke="#ffb8cb" stroke-width="8"/>
+<path d="M430 310Q490 260 565 305L540 350 455 360Z" fill="#fff0f5"/><path d="M635 305Q710 260 770 310L745 360 660 350Z" fill="#fff0f5"/>
+<path d="M465 330L535 320 510 350Z" fill="#17121a"/><path d="M660 320L735 330 690 350Z" fill="#17121a"/>
+<path d="M530 420Q600 470 675 420Q650 500 600 495Q550 490 530 420Z" fill="#f6a1ba" stroke="#0b0a0e" stroke-width="8"/>
+<path d="M548 431Q600 450 656 431" fill="none" stroke="#fff" stroke-width="10"/>
+<path d="M385 300Q600 210 815 300L790 350Q600 285 410 350Z" fill="#17131b" stroke="#ffb8cb" stroke-width="7"/>
+<path d="M465 300L735 300" stroke="#f3a0b8" stroke-width="6"/>
+<path d="M520 510L600 590 680 510 720 900H480Z" fill="#080a10" stroke="#ff9db8" stroke-width="5"/>
+<path d="M485 600L600 690 715 600" fill="none" stroke="#f35c88" stroke-width="9"/>
+<path d="M520 740L680 740" stroke="#ffb8cb" stroke-width="4"/>
+<path d="M540 760L660 760" stroke="#ffb8cb" stroke-width="2"/>
+<text x="600" y="790" fill="#fff" font-family="sans-serif" font-size="82" font-weight="1000" text-anchor="middle" letter-spacing="-4">PUNIX</text>
+<text x="600" y="850" fill="#ff4f83" font-family="sans-serif" font-size="39" font-weight="900" text-anchor="middle" letter-spacing="5">ANIME DIVISION</text>
+<path d="M355 880H845" stroke="#ffb4c8" stroke-width="3"/>
+<text x="600" y="895" fill="#ffe2e9" font-family="sans-serif" font-size="15" text-anchor="middle" letter-spacing="6">WATCH  •  DISCUSS  •  SHARE</text>
+<g fill="#ffb8cb"><path d="M310 80l18 35 35 18-35 18-18 35-18-35-35-18 35-18Z"/><path d="M880 530l13 26 26 13-26 13-13 26-13-26-26-13 26-13Z"/><circle cx="103" cy="700" r="8"/><circle cx="1090" cy="75" r="7"/></g>
+</svg>
