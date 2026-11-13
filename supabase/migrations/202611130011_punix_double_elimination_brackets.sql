@@ -214,43 +214,6 @@ end;
 $$;
 revoke all on function private.sync_punix_double_elimination_bracket(uuid) from public,anon,authenticated;
 
-create or replace function private.route_punix_double_elimination_result()
-returns trigger language plpgsql security definer set search_path = ''
-as $$
-declare
-  v_loser uuid;
-begin
-  if new.status <> 'completed' or new.winner_registration_id is null then return new; end if;
-  if old.winner_registration_id is not distinct from new.winner_registration_id and old.status='completed' then return new; end if;
-  v_loser:=case when new.winner_registration_id=new.participant_a_id then new.participant_b_id else new.participant_a_id end;
-
-  if new.bracket_section='grand_final' then
-    if new.winner_registration_id=new.participant_b_id then
-      update public.tournament_matches set participant_a_id=new.participant_a_id,participant_b_id=new.participant_b_id,status='scheduled',winner_registration_id=null,score_a=null,score_b=null
-      where id=new.winner_to_match_id;
-    else
-      update public.tournament_matches set status='completed',winner_registration_id=null
-      where id=new.winner_to_match_id;
-    end if;
-    return new;
-  end if;
-
-  if new.winner_to_match_id is not null then
-    update public.tournament_matches set
-      participant_a_id=case when new.winner_to_slot='a' then new.winner_registration_id else participant_a_id end,
-      participant_b_id=case when new.winner_to_slot='b' then new.winner_registration_id else participant_b_id end
-    where id=new.winner_to_match_id;
-  end if;
-  if v_loser is not null and new.loser_to_match_id is not null then
-    update public.tournament_matches set
-      participant_a_id=case when new.loser_to_slot='a' then v_loser else participant_a_id end,
-      participant_b_id=case when new.loser_to_slot='b' then v_loser else participant_b_id end
-    where id=new.loser_to_match_id;
-  end if;
-  return new;
-end;
-$$;
-revoke all on function private.route_punix_double_elimination_result() from public,anon,authenticated;
 -- Keep the existing single-elimination tree advancement trigger. The new router
 -- handles only double-elimination matches.
 create or replace function private.route_punix_double_elimination_result()
