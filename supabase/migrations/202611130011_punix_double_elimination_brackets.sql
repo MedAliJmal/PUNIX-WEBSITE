@@ -25,6 +25,7 @@ declare
   v_existing integer;
   v_confirmed integer;
   v_pending integer;
+  v_round integer;
   v_entry uuid;
   v_match uuid;
   v_map jsonb := '{}'::jsonb;
