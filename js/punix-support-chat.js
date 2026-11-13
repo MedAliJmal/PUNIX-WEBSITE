@@ -37,7 +37,7 @@
           <form class="pnx-support-form" id="pnx-support-start">
             <label>YOUR NAME<input name="name" maxlength="80" autocomplete="name" required placeholder="Name"></label>
             <label>ACCOUNT EMAIL<input name="email" type="email" maxlength="254" readonly></label>
-            <label>HOW CAN WE HELP?<textarea name="message" maxlength="2000" required placeholder="Write your message…"></textarea></label>
+            <label>HOW CAN WE HELP?<textarea name="message" maxlength="1000" required placeholder="Write your message…"></textarea></label>
             <button class="pnx-support-submit" type="submit">START CONVERSATION ↗</button>
           </form>
           <p class="pnx-support-note">Only your signed-in PUNIX account and the support team can access this conversation.</p>
@@ -136,7 +136,7 @@
         if (!composer) {
           composer = document.createElement('form');
           composer.className='pnx-support-compose';
-          composer.innerHTML='<textarea name="message" maxlength="2000" required aria-label="Your message" placeholder="Type a message…"></textarea><button type="submit" aria-label="Send message">➤</button>';
+          composer.innerHTML='<textarea name="message" maxlength="1000" required aria-label="Your message" placeholder="Type a message…"></textarea><button type="submit" aria-label="Send message">➤</button>';
           panel.appendChild(composer);
           composer.addEventListener('submit',sendMessage);
         }
