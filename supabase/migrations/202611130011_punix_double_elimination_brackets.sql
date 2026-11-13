@@ -284,13 +284,7 @@ create trigger punix_auto_bracket_after_application_review
 after update of status on public.tournament_registrations
 for each row execute function private.try_auto_generate_punix_bracket();
 
--- Backfill testing tournaments already configured as Double Elimination.
-do $$
-declare x uuid;
-begin
-  for x in select id from public.tournaments where format='double_elimination' and status in ('draft','upcoming','live')
-  loop perform private.sync_punix_double_elimination_bracket(x); end loop;
-end $$;
+-- Existing Double Elimination tournaments are backfilled separately after this migration commits.
 notify pgrst,'reload schema';
 
 -- Ensure the legacy advancement trigger only handles single-elimination trees.
