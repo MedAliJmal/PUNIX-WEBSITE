@@ -90,7 +90,7 @@
         thread = document.createElement('div');
         thread.className = 'pnx-support-thread';
         const startForm = body.querySelector('#pnx-support-start');
-        if (startForm) startForm.remove();
+        if (startForm) startForm.hidden = true;
         const intro = body.querySelector('.pnx-support-intro');
         if (intro) intro.remove();
         body.insertBefore(thread, body.querySelector('.pnx-support-note'));
@@ -120,7 +120,8 @@
         if (error) {
           supportSession = null;
           try { localStorage.removeItem(storageKey); } catch {}
-          showError('Your previous chat could not be loaded. Start a new conversation below.');
+          showError('Your previous conversation was closed. You can start a new one below.');
+          body.querySelector('.pnx-support-thread')?.remove();
           const startForm = body.querySelector('#pnx-support-start');
           if (startForm) startForm.hidden = false;
           body.querySelectorAll('.pnx-support-compose').forEach(node => node.remove());
