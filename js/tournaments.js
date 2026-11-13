@@ -22,15 +22,34 @@
    const roundKeys=Object.keys(rounds).sort((a,b)=>Number(a)-Number(b));
    const maxMatches=Math.max(1,...roundKeys.map(round=>rounds[round].length));
    const gridRows=maxMatches*2-1;
+   const rowFor=(i,count)=>Math.max(1,Math.min(gridRows,Math.round((i+.5)*(2*maxMatches/count)-.5)));
    const roundMarkup=roundKeys.map((round,roundIndex)=>{
     const roundMatches=rounds[round];
     const label=roundMatches[0]?.bracket_label||'';
     const labelRound=label.match(/Round\s+(\d+)/i);
     const roundTitle=key==='grand_final'||key==='grand_final_reset'?'FINAL':(labelRound?'ROUND '+labelRound[1]:'ROUND '+(roundIndex+1));
-    return '<div class="bracket-round"><h4>'+roundTitle+'</h4><div class="bracket-round-matches" style="--bracket-rows:'+gridRows+'">'+roundMatches.map((m,i)=>{
-     const rowPosition=Math.max(1,Math.min(gridRows,Math.round((i+.5)*(2*maxMatches/roundMatches.length)-.5)));
+    const cards=roundMatches.map((m,i)=>{
+     const rowPosition=rowFor(i,roundMatches.length);
      return '<article class="bracket-match" style="grid-row:'+rowPosition+'"><small>MATCH '+m.match_number+' · '+esc(m.status.toUpperCase())+'</small><div class="bracket-side '+(m.winner_registration_id===m.participant_a_id?'winner':'')+'"><span>'+esc(m.participant_a_name||(m.status==='completed'&&m.participant_b_id?'BYE':'TBD'))+'</span><b>'+(m.score_a??'—')+'</b></div><div class="bracket-side '+(m.winner_registration_id===m.participant_b_id?'winner':'')+'"><span>'+esc(m.participant_b_name||(m.status==='completed'&&m.participant_a_id?'BYE':'TBD'))+'</span><b>'+(m.score_b??'—')+'</b></div></article>';
-    }).join('')+'</div></div>';
+    }).join('');
+    const nextRound=roundKeys[roundIndex+1];
+    let connectors='';
+    if(nextRound){
+     const nextCount=rounds[nextRound].length;
+     const paths=[];
+     roundMatches.forEach((m,i)=>{
+      const targetIndex=roundMatches.length>nextCount?Math.floor(i*nextCount/roundMatches.length):Math.min(i,nextCount-1);
+      const sourceY=(rowFor(i,roundMatches.length)-.5)*82;
+      const targetY=(rowFor(targetIndex,nextCount)-.5)*82;
+      if(roundMatches.length>nextCount && i%Math.max(1,Math.ceil(roundMatches.length/nextCount))!==0)return;
+      if(roundMatches.length>nextCount){
+       const partnerY=(rowFor(Math.min(i+1,roundMatches.length-1),roundMatches.length)-.5)*82;
+       paths.push('M0 '+sourceY+' H10 V'+partnerY+' H16 V'+targetY+' H24');
+      }else paths.push('M0 '+sourceY+' H24');
+     });
+     connectors='<svg class="bracket-connectors" viewBox="0 0 24 '+(gridRows*82)+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+paths.join(' ')+'"/></svg>';
+    }
+    return '<div class="bracket-round-group"><div class="bracket-round"><h4>'+roundTitle+'</h4><div class="bracket-round-matches" style="--bracket-rows:'+gridRows+'">'+cards+'</div></div>'+connectors+'</div>';
    }).join('');
    return divider+'<section class="bracket-lane bracket-lane-'+key+'"><h3>'+heading+'</h3><div class="bracket-lane-rounds">'+roundMarkup+'</div></section>';
   }).join(''):'<p class="tournament-status">The tournament bracket has not been published yet.</p>';
