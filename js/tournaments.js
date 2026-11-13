@@ -53,8 +53,7 @@
      if(section==='winners')center=((idx-.5)*Math.pow(2,round-1))/(firstCount);
      else if(section==='losers'){
       const localRound=round;
-      center=localRound===1?((idx-.5)*2/firstCount):((idx-.5)*Math.min(2,Math.pow(2,localRound%2===0?1:0))/Math.max(1,count));
-      center=Math.max(.04,Math.min(.96,center));
+      center=(idx-.5)/count;
      }else center=.5;
      const top=Math.max(0,center*laneHeight-39);
      return '<div class="punix-tree-positioned" style="top:'+top+'px">'+matchCard(m)+'</div>';
