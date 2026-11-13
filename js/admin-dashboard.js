@@ -485,8 +485,7 @@
     target.querySelectorAll('[data-support-open]').forEach(button => button.addEventListener('click', () => openSupportConversation(button.dataset.supportOpen)));
     if (selectedSupportConversation && rows.some(row => row.id === selectedSupportConversation)) {
       const selected = rows.find(row => row.id === selectedSupportConversation);
-      $('support-toggle-status').textContent = selected.status === 'open' ? 'CLOSE CONVERSATION' : 'REOPEN CONVERSATION';
-      $('support-toggle-status').dataset.status = selected.status;
+      $('support-toggle-status').textContent = selected.status === 'open' ? 'CLOSE & DELETE' : 'DELETE CONVERSATION';
     }
   }
 
@@ -514,8 +513,7 @@
     $('support-admin-reply').hidden = conversation.status !== 'open';
     $('support-admin-reply-text').value = '';
     $('support-toggle-status').hidden = false;
-    $('support-toggle-status').textContent = conversation.status === 'open' ? 'CLOSE CONVERSATION' : 'REOPEN CONVERSATION';
-    $('support-toggle-status').dataset.status = conversation.status;
+    $('support-toggle-status').textContent = conversation.status === 'open' ? 'CLOSE & DELETE' : 'DELETE CONVERSATION';
     await loadSupportConversations();
   }
 
@@ -544,11 +542,24 @@
 
   async function toggleSupportStatus() {
     if (!selectedSupportConversation) return;
-    const nextStatus = $('support-toggle-status').dataset.status === 'open' ? 'closed' : 'open';
-    const { error } = await db.from('support_conversations').update({ status: nextStatus, updated_at: new Date().toISOString() }).eq('id', selectedSupportConversation);
-    if (error) { $('support-admin-message').textContent = 'Could not update conversation: ' + error.message; return; }
-    await openSupportConversation(selectedSupportConversation);
-    $('support-admin-message').textContent = nextStatus === 'closed' ? 'Conversation closed.' : 'Conversation reopened.';
+    const conversationId = selectedSupportConversation;
+    const button = $('support-toggle-status');
+    button.disabled = true;
+    const { error } = await db.rpc('punix_support_close_and_delete', { p_conversation_id: conversationId });
+    button.disabled = false;
+    if (error) {
+      $('support-admin-message').textContent = 'Could not close and delete conversation: ' + error.message;
+      return;
+    }
+    try { localStorage.removeItem(supportAdminSeenKey + conversationId); } catch {}
+    selectedSupportConversation = null;
+    $('support-thread-title').textContent = 'SELECT A CONVERSATION';
+    $('support-thread-meta').textContent = 'Closed conversations are permanently deleted.';
+    $('support-admin-messages').innerHTML = '<p class="pnx-recent-empty">This conversation and its messages were deleted.</p>';
+    $('support-admin-reply').hidden = true;
+    $('support-toggle-status').hidden = true;
+    await loadSupportConversations();
+    $('support-admin-message').textContent = 'Conversation permanently deleted. The user can start a new chat.';
   }
 
   async function boot() {
