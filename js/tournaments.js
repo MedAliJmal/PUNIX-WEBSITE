@@ -85,7 +85,7 @@
   try{
    const r=await db.from('tournament_registrations').insert(payload);if(r.error)throw r.error;form.reset();form.hidden=true;note.textContent='Entry submitted with your roster'+(logoUrl?' and team logo URL':'')+'. Your registration is now pending PUNIX admin confirmation.';
   }
-  catch(err){note.textContent='Entry not submitted: '+(err?.message||'Unexpected connection error. Please try again.');}
+  catch(err){const message=err?.message||'Unexpected connection error. Please try again.';note.textContent='Entry not submitted: '+message;if(/already registered|duplicate|appears more than once/i.test(message)){window.alert('Registration blocked: '+message);}}
   finally{submit.disabled=false;}
  });
  $('registration-team-logo').addEventListener('input',()=>{const value=$('registration-team-logo').value.trim(),wrap=$('registration-logo-preview'),img=$('registration-logo-preview-img');if(!value){wrap.hidden=true;img.removeAttribute('src');return;}try{const u=new URL(value);if(u.protocol!=='https:'||value.length>500)throw new Error();img.src=u.href;wrap.hidden=false;}catch{wrap.hidden=true;img.removeAttribute('src');}});
