@@ -63,3 +63,15 @@
 .bracket-round{display:flex;flex-direction:column;align-items:stretch;gap:0}
 .bracket-round-matches{display:grid;grid-template-rows:repeat(var(--bracket-rows,1),minmax(82px,auto));align-items:center;position:relative}
 .bracket-round-matches .bracket-match{grid-column:1;align-self:center}
+
+
+/* Clear, connected tournament-tree columns */
+.bracket-lane-rounds{display:flex;align-items:flex-start;gap:0;overflow-x:auto;overflow-y:hidden;padding:10px 4px 20px}
+.bracket-round-group{display:flex;flex:0 0 auto;align-items:flex-start;gap:0}
+.bracket-round{display:flex;flex:0 0 250px;flex-direction:column;align-items:stretch;gap:0}
+.bracket-round h4{height:28px;min-height:28px;margin:0;padding:0 0 8px;box-sizing:border-box}
+.bracket-round-matches{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(var(--bracket-rows,1),82px);align-items:center;position:relative}
+.bracket-round-matches .bracket-match{grid-column:1;align-self:center;width:100%;min-height:72px;box-sizing:border-box;z-index:1}
+.bracket-connectors{flex:0 0 24px;width:24px;height:calc(var(--bracket-rows,1) * 82px);margin-top:28px;overflow:visible}
+.bracket-connectors path{fill:none;stroke:rgba(53,196,189,.65);stroke-width:1.2;vector-effect:non-scaling-stroke}
+@media(max-width:620px){.bracket-round{flex-basis:225px}.bracket-connectors{flex-basis:20px;width:20px}}
