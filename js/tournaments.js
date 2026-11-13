@@ -47,7 +47,7 @@
        paths.push('M0 '+sourceY+' H10 V'+partnerY+' H16 V'+targetY+' H24');
       }else paths.push('M0 '+sourceY+' H24');
      });
-     connectors='<svg class="bracket-connectors" viewBox="0 0 24 '+(gridRows*82)+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+paths.join(' ')+'"/></svg>';
+     connectors='<svg class="bracket-connectors" style="height:'+(gridRows*82)+'px" viewBox="0 0 24 '+(gridRows*82)+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+paths.join(' ')+'"/></svg>';
     }
     return '<div class="bracket-round-group"><div class="bracket-round"><h4>'+roundTitle+'</h4><div class="bracket-round-matches" style="--bracket-rows:'+gridRows+'">'+cards+'</div></div>'+connectors+'</div>';
    }).join('');
