@@ -433,8 +433,17 @@
   const supportAdminSeenKey = 'punix-support-admin-seen-v1:';
   let supportAdminUnread = new Map();
   function updateSupportAdminBadge(count) {
-    const badge = $('support-nav-unread');
-    if (badge) { badge.textContent = count > 9 ? '9+' : String(count); badge.hidden = count < 1; }
+    const label = count > 9 ? '9+' : String(count);
+    const navbarButton = $('support-nav-notification');
+    const navbarBadge = $('support-nav-unread');
+    const sidebarBadge = $('support-sidebar-unread');
+    if (navbarBadge) { navbarBadge.textContent = label; navbarBadge.hidden = count < 1; }
+    if (sidebarBadge) { sidebarBadge.textContent = label; sidebarBadge.hidden = count < 1; }
+    if (navbarButton) {
+      navbarButton.hidden = count < 1;
+      navbarButton.setAttribute('aria-label', count === 1 ? '1 new support message — open support inbox' : `${count} new support messages — open support inbox`);
+      navbarButton.title = count === 1 ? '1 new support message' : `${count} new support messages`;
+    }
     const title = $('support-admin-count');
     if (title && count > 0) title.dataset.unread = `${count} UNREAD`;
     else if (title) delete title.dataset.unread;
@@ -575,9 +584,14 @@
       $('refresh-support').addEventListener('click', loadSupportConversations);
       $('support-admin-reply').addEventListener('submit', sendSupportReply);
       $('support-toggle-status').addEventListener('click', toggleSupportStatus);
+      const supportNavNotification = $('support-nav-notification');
+      supportNavNotification?.addEventListener('click', () => openSection('support'));
       supportRealtimeChannel = db.channel('punix-support-admin-inbox')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'support_conversations' }, () => { if (currentSection === 'support') loadSupportConversations(); })
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages' }, payload => { if (currentSection === 'support' && selectedSupportConversation === payload.new.conversation_id) openSupportConversation(selectedSupportConversation); })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'support_conversations' }, () => { loadSupportConversations(); })
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'support_messages' }, payload => {
+          loadSupportConversations();
+          if (currentSection === 'support' && selectedSupportConversation === payload.new.conversation_id) openSupportConversation(selectedSupportConversation);
+        })
         .subscribe();
       clearUpdateForm();
       $('refresh-stats').addEventListener('click', loadStats);
@@ -591,6 +605,7 @@
       });
       const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : location.hash === '#sponsors' ? 'sponsors' : location.hash === '#support' ? 'support' : 'overview';
       openSection(initial);
+      await loadSupportConversations();
       await loadStats();
     } catch (error) {
       showGate('Could not verify administrator access. Refresh the page or sign in again.', true);
