@@ -112,3 +112,45 @@
 #punix-brackets-viewer .round>h3{color:#d7b66f;background:#141b1e;border:1px solid rgba(215,182,111,.18);font:800 9px Inter,Arial,sans-serif;letter-spacing:.7px}
 #punix-brackets-viewer .opponents{border-color:rgba(255,255,255,.15)}
 #punix-brackets-viewer .participant{min-height:27px}
+
+
+/* PUNIX split-tree bracket layout */
+.punix-tree-lane,.punix-tree-finals{margin:18px 0 28px;padding:20px;border:1px solid rgba(53,196,189,.2);background:linear-gradient(135deg,rgba(13,22,25,.96),rgba(8,12,15,.96));}
+.punix-tree-lane.is-lower{border-color:rgba(215,182,111,.28)}
+.punix-tree-lane-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px;padding-bottom:13px;border-bottom:1px solid rgba(255,255,255,.1)}
+.punix-tree-lane-heading>div{display:grid;gap:5px}
+.punix-tree-lane-heading>div>span{color:#d7b66f;font:900 15px Inter,Arial,sans-serif;letter-spacing:1.4px}
+.punix-tree-lane.is-lower .punix-tree-lane-heading>div>span{color:#35c4bd}
+.punix-tree-lane-heading small{color:#899697;font:600 9px Inter,Arial,sans-serif;letter-spacing:.5px}
+.punix-tree-lane-heading>b{color:#a9b5b3;font:800 8px Inter,Arial,sans-serif;letter-spacing:1px;white-space:nowrap}
+.punix-tree-scroll{width:100%;overflow-x:auto;overflow-y:hidden;padding:4px 0 12px}
+.punix-tree-rounds{display:flex;align-items:flex-start;min-width:max-content}
+.punix-tree-round{flex:0 0 224px;width:224px}
+.punix-tree-round>h4{height:28px;margin:0;padding:0 10px;color:#35c4bd;font:900 9px Inter,Arial,sans-serif;letter-spacing:1.2px;text-transform:uppercase}
+.punix-tree-lane.is-lower .punix-tree-round>h4{color:#d7b66f}
+.punix-tree-round-track{position:relative;width:100%;min-height:150px}
+.punix-tree-positioned{position:absolute;left:8px;right:8px;height:78px}
+.punix-tree-match{width:100%;height:78px;box-sizing:border-box;padding:8px 10px;border:1px solid rgba(255,255,255,.14);background:#10171a;box-shadow:0 8px 18px rgba(0,0,0,.22)}
+.punix-tree-match-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px;color:#849291;font:800 7px Inter,Arial,sans-serif;letter-spacing:.8px}
+.punix-tree-match-head small{color:#35c4bd;font:800 7px Inter,Arial,sans-serif}
+.punix-tree-side{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;padding:4px 0;color:#c7d0cd;font:700 9px Inter,Arial,sans-serif}
+.punix-tree-side+ .punix-tree-side{border-top:1px solid rgba(255,255,255,.07)}
+.punix-tree-side span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.punix-tree-side b{flex:0 0 auto;color:#8b9896;font:800 9px Inter,Arial,sans-serif}
+.punix-tree-side.is-winner,.punix-tree-side.is-winner b{color:#d7b66f}
+.punix-tree-side.is-loser{color:#7d8988}
+.punix-tree-connectors{flex:0 0 54px;width:54px;margin-top:28px;overflow:visible}
+.punix-tree-connectors path{fill:none;stroke:rgba(53,196,189,.55);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.punix-tree-lane.is-lower .punix-tree-connectors path{stroke:rgba(215,182,111,.55)}
+.punix-tree-finals{border-color:rgba(215,182,111,.38);background:linear-gradient(135deg,rgba(31,27,18,.6),rgba(9,13,15,.96))}
+.punix-tree-finals .punix-tree-lane-heading>div>span{color:#d7b66f}
+.punix-tree-final-flow{display:grid;grid-template-columns:minmax(150px,1fr) minmax(240px,1.3fr) minmax(150px,1fr);align-items:center;gap:18px}
+.punix-tree-source{display:grid;gap:7px;padding:16px;border:1px solid rgba(53,196,189,.25);background:rgba(53,196,189,.05);text-align:center}
+.punix-tree-source:last-child{border-color:rgba(215,182,111,.3);background:rgba(215,182,111,.05)}
+.punix-tree-source b{color:#35c4bd;font:900 9px Inter,Arial,sans-serif;letter-spacing:1px}
+.punix-tree-source:last-child b{color:#d7b66f}
+.punix-tree-source span{color:#899697;font:600 8px/1.5 Inter,Arial,sans-serif}
+.punix-tree-final-cards{display:grid;gap:12px;min-width:0}
+.punix-tree-final-cards .punix-tree-match{height:auto;min-height:78px}
+.punix-tree-final-note{max-width:850px;margin:16px auto 0;color:#899697;text-align:center;font:600 9px/1.7 Inter,Arial,sans-serif}
+@media(max-width:680px){.punix-tree-lane,.punix-tree-finals{padding:13px}.punix-tree-round{flex-basis:200px;width:200px}.punix-tree-connectors{flex-basis:38px;width:38px}.punix-tree-final-flow{grid-template-columns:1fr;gap:10px}.punix-tree-source{padding:11px}}
