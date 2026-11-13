@@ -434,16 +434,9 @@
   let supportAdminUnread = new Map();
   function updateSupportAdminBadge(count) {
     const label = count > 9 ? '9+' : String(count);
-    const navbarButton = $('support-nav-notification');
-    const navbarBadge = $('support-nav-unread');
     const sidebarBadge = $('support-sidebar-unread');
-    if (navbarBadge) { navbarBadge.textContent = label; navbarBadge.hidden = count < 1; }
     if (sidebarBadge) { sidebarBadge.textContent = label; sidebarBadge.hidden = count < 1; }
-    if (navbarButton) {
-      navbarButton.hidden = count < 1;
-      navbarButton.setAttribute('aria-label', count === 1 ? '1 new support message — open support inbox' : `${count} new support messages — open support inbox`);
-      navbarButton.title = count === 1 ? '1 new support message' : `${count} new support messages`;
-    }
+    window.PUNIX_REFRESH_SUPPORT_ALERT?.();
     const title = $('support-admin-count');
     if (title && count > 0) title.dataset.unread = `${count} UNREAD`;
     else if (title) delete title.dataset.unread;
@@ -603,6 +596,7 @@
           renderMemberAccounts();
         });
       });
+      window.PUNIX_OPEN_SUPPORT_INBOX = () => openSection('support');
       const initial = location.hash === '#members' ? 'members' : location.hash === '#teams' ? 'teams' : location.hash === '#updates' ? 'updates' : location.hash === '#tournaments' ? 'tournaments' : location.hash === '#sponsors' ? 'sponsors' : location.hash === '#support' ? 'support' : 'overview';
       openSection(initial);
       await loadSupportConversations();
