@@ -59,3 +59,7 @@
 .bracket-round:not(:last-child) .bracket-match:after{content:"";position:absolute;left:100%;top:50%;width:22px;border-top:1px solid rgba(53,196,189,.45)}
 .bracket-lane-rounds{overflow-x:auto;overflow-y:hidden}
 @media(max-width:620px){.bracket-round{flex-basis:225px}.bracket-round:not(:last-child) .bracket-match:after{width:22px}}
+
+.bracket-round{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.bracket-round-matches{display:grid;grid-template-rows:repeat(var(--bracket-rows,1),minmax(82px,auto));align-items:center;position:relative}
+.bracket-round-matches .bracket-match{grid-column:1;align-self:center}
