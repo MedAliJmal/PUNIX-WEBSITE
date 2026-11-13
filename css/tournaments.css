@@ -159,3 +159,64 @@
 .punix-tree-source:first-child:after{content:"→";position:absolute;right:-17px;top:50%;transform:translateY(-50%);color:#35c4bd;font:900 17px Inter,Arial,sans-serif}
 .punix-tree-source:last-child:before{content:"←";position:absolute;left:-17px;top:50%;transform:translateY(-50%);color:#d7b66f;font:900 17px Inter,Arial,sans-serif}
 @media(max-width:680px){.punix-tree-source:first-child:after{content:"↓";right:50%;top:auto;bottom:-18px;transform:translateX(50%)}.punix-tree-source:last-child:before{content:"↑";left:50%;top:-18px;transform:translateX(-50%)}}
+
+
+/* Bracket layout correction: keep the two brackets stacked and let each tree
+   own its horizontal scrolling instead of making the whole bracket a flex row. */
+#tournament-bracket {
+  height: auto;
+  min-height: 0;
+}
+#tournament-bracket-grid {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  overflow: visible;
+  padding: 18px 0;
+  box-sizing: border-box;
+}
+#tournament-bracket-grid > .punix-tree-lane,
+#tournament-bracket-grid > .punix-tree-finals {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  box-sizing: border-box;
+  margin: 0 0 24px;
+}
+.punix-tree-scroll {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+.punix-tree-scroll::-webkit-scrollbar {
+  display: none;
+}
+.punix-tree-rounds {
+  display: flex;
+  align-items: flex-start;
+  width: max-content;
+  min-width: 100%;
+}
+.punix-tree-round-track {
+  box-sizing: border-box;
+}
+.punix-tree-connectors {
+  display: block;
+  flex: 0 0 54px;
+  align-self: flex-start;
+  margin-top: 28px;
+}
+@media (max-width: 680px) {
+  .punix-tree-connectors {
+    flex-basis: 38px;
+    margin-top: 28px;
+  }
+}
