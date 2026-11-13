@@ -25,6 +25,12 @@ declare
   v_next_status text;
   v_next_winner uuid;
 begin
+  if tg_op = 'UPDATE'
+     and old.winner_registration_id is not distinct from new.winner_registration_id
+     and old.status is not distinct from new.status then
+    return new;
+  end if;
+
   if tg_op = 'UPDATE' and old.winner_registration_id is distinct from new.winner_registration_id then
     -- A changed result invalidates every later match on this branch.
     with recursive descendants(round_number, match_number) as (
@@ -64,7 +70,7 @@ begin
     return new;
   end if;
 
-  v_current_done := new.status = 'completed';
+  v_current_done := new.status = 'completed' and (new.winner_registration_id is not null or (new.participant_a_id is null and new.participant_b_id is null));
   v_current_winner := case when v_current_done then new.winner_registration_id else null end;
 
   if mod(new.match_number, 2) = 1 then
@@ -81,7 +87,7 @@ begin
   v_sibling_exists := found;
 
   if v_sibling_exists then
-    v_sibling_done := v_sibling.status = 'completed';
+    v_sibling_done := v_sibling.status = 'completed' and (v_sibling.winner_registration_id is not null or (v_sibling.participant_a_id is null and v_sibling.participant_b_id is null));
     v_sibling_winner := case when v_sibling_done then v_sibling.winner_registration_id else null end;
   else
     -- An unmatched final feeder advances as a bye once its own match is complete.
