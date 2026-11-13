@@ -162,9 +162,31 @@ begin
     where id=v_match;
   end loop;
 
+  -- Once registration is closed and every application is reviewed, resolve
+  -- genuine byes only after every feeder match for that slot has finished.
+  if not t.registration_open and coalesce(v_pending,0)=0 then
+    loop
+      update public.tournament_matches m
+         set status='completed',
+             winner_registration_id=coalesce(m.participant_a_id,m.participant_b_id)
+       where m.tournament_id=p_tournament_id
+         and m.bracket_section in ('winners','losers')
+         and m.status='scheduled'
+         and ((m.participant_a_id is null) <> (m.participant_b_id is null))
+         and not exists (
+           select 1 from public.tournament_matches feeder
+           where feeder.tournament_id=p_tournament_id
+             and (feeder.winner_to_match_id=m.id or feeder.loser_to_match_id=m.id)
+             and feeder.status<>'completed'
+         );
+      get diagnostics v_existing = row_count;
+      exit when v_existing=0;
+    end loop;
+  end if;
+
   return (select count(*)::integer from public.tournament_matches where tournament_id=p_tournament_id);
 end;
-$$;
+$;
 revoke all on function private.sync_punix_double_elimination_bracket(uuid) from public,anon,authenticated;
 
 create or replace function private.route_punix_double_elimination_result()
