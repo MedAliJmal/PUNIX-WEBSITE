@@ -22,7 +22,6 @@ declare
   v_match_id uuid;
   v_slot_a boolean;
   v_entry uuid;
-  v_finalized boolean := false;
 begin
   select * into v_tournament
   from public.tournaments
@@ -59,11 +58,6 @@ begin
     coalesce(v_tournament.max_participants, 0),
     v_confirmed
   );
-
-  while v_target_capacity > 0
-    and (v_target_capacity & (v_target_capacity - 1)) <> 0 loop
-    v_target_capacity := v_target_capacity + 1;
-  end loop;
 
   -- Round up to a power of two without changing any existing match positions.
   v_target_capacity := greatest(2, v_current_capacity, coalesce(v_tournament.max_participants, 0), v_confirmed);
@@ -205,7 +199,6 @@ begin
        and participant_a_id is null
        and participant_b_id is null;
 
-    v_finalized := true;
   end if;
 
   return (select count(*)::integer
