@@ -80,18 +80,18 @@ begin
       l_size:=n / (1 << ((r+3)/2));
       for i in 1..l_size loop
         insert into public.tournament_matches(tournament_id,round_number,match_number,status,bracket_section,bracket_label)
-        values(p_tournament_id,r,i,'scheduled','losers','Losers · Round '||r)
+        values(p_tournament_id,w_rounds+r,i,'scheduled','losers','Losers · Round '||r)
         returning id into v_match;
         v_map:=v_map||jsonb_build_object('l:'||r||':'||i,v_match);
       end loop;
     end loop;
 
     insert into public.tournament_matches(tournament_id,round_number,match_number,status,bracket_section,bracket_label)
-    values(p_tournament_id,1,1,'scheduled','grand_final','Grand Final')
+    values(p_tournament_id,w_rounds+l_rounds+1,1,'scheduled','grand_final','Grand Final')
     returning id into v_gf;
     v_map:=v_map||jsonb_build_object('gf',v_gf);
     insert into public.tournament_matches(tournament_id,round_number,match_number,status,bracket_section,bracket_label)
-    values(p_tournament_id,1,1,'scheduled','grand_final_reset','Grand Final Reset (if necessary)')
+    values(p_tournament_id,w_rounds+l_rounds+2,1,'scheduled','grand_final_reset','Grand Final Reset (if necessary)')
     returning id into v_reset;
     v_map:=v_map||jsonb_build_object('gfr',v_reset);
 
