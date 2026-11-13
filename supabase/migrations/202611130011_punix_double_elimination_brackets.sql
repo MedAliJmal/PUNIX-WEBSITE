@@ -180,7 +180,20 @@ begin
              and feeder.status<>'completed'
          );
       get diagnostics v_existing = row_count;
-      exit when v_existing=0;
+      update public.tournament_matches m
+         set status='completed',winner_registration_id=null
+       where m.tournament_id=p_tournament_id
+         and m.bracket_section in ('winners','losers')
+         and m.status='scheduled'
+         and m.participant_a_id is null and m.participant_b_id is null
+         and not exists (
+           select 1 from public.tournament_matches feeder
+           where feeder.tournament_id=p_tournament_id
+             and (feeder.winner_to_match_id=m.id or feeder.loser_to_match_id=m.id)
+             and feeder.status<>'completed'
+         );
+      get diagnostics v_round = row_count;
+      exit when v_existing=0 and v_round=0;
     end loop;
   end if;
 
