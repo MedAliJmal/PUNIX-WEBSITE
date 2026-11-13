@@ -25,7 +25,6 @@ declare
   v_existing integer;
   v_confirmed integer;
   v_pending integer;
-  v_round integer;
   v_entry uuid;
   v_match uuid;
   v_map jsonb := '{}'::jsonb;
@@ -205,8 +204,8 @@ begin
              and (feeder.winner_to_match_id=m.id or feeder.loser_to_match_id=m.id)
              and feeder.status<>'completed'
          );
-      get diagnostics v_round = row_count;
-      exit when v_existing=0 and v_round=0;
+      get diagnostics v_confirmed = row_count;
+      exit when v_existing=0 and v_confirmed=0;
     end loop;
   end if;
 
