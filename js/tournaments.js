@@ -25,7 +25,6 @@
    return Number(m.round_number)||1;
   };
   const groupFor=section=>!doubleElim?1:({winners:1,losers:2,grand_final:3,grand_final_reset:3}[section]||1);
-  const groupNumbers=[...new Set(rows.map(m=>groupFor(sectionKey(m))))].sort((a,b)=>a-b);
   const stageId=1,stageTournamentId=1;
   const roundIds=new Map();let nextRoundId=1;
   const ordered=rows.slice().sort((a,b)=>groupFor(sectionKey(a))-groupFor(sectionKey(b))||roundNumber(a)-roundNumber(b)||a.match_number-b.match_number);
