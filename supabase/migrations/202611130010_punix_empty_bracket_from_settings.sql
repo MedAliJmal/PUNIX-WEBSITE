@@ -30,7 +30,7 @@ begin
 
   if not found
      or v_tournament.format <> 'single_elimination'
-     or v_tournament.status not in ('upcoming', 'live') then
+     or v_tournament.status not in ('draft', 'upcoming', 'live') then
     return 0;
   end if;
 
