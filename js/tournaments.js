@@ -61,8 +61,8 @@
   const teamName=active.entry_type==='team'?$('registration-team-name').value.trim():'';
   const discord=$('registration-discord').value.trim(),ign=$('registration-ign').value.trim();
   if((active.entry_type==='team'&&teamName.length<2)||discord.length<2||ign.length<2){note.textContent='Please enter the team name (for team events), captain Discord username and captain in-game name.';return;}
-  const logoFile=active.entry_type==='team'?logoInput.files?.[0]:null;
-  if(logoFile&&(!['image/png','image/jpeg','image/webp','image/gif'].includes(logoFile.type)||logoFile.size>3*1024*1024)){note.textContent='Choose a PNG, JPG, WEBP or GIF logo no larger than 3 MB.';return;}
+  const logoUrl=active.entry_type==='team'?logoInput.value.trim():'';
+  if(logoUrl){try{const parsed=new URL(logoUrl);if(parsed.protocol!=='https:'||logoUrl.length>500){throw new Error();}}catch{note.textContent='Enter a valid HTTPS image URL (maximum 500 characters).';return;}}
   const roster=[];
   if(active.entry_type==='team'){
    const min=Math.max(1,Number(active.min_team_size)||5),max=Math.max(min,Number(active.max_team_size)||min),subMax=Math.max(0,Number(active.max_substitutes)||0);
@@ -80,16 +80,15 @@
    if(starters<min||starters>max){note.textContent='This event requires between '+min+' and '+max+' starting players, including you as captain.';return;}
    if(subs>subMax){note.textContent='This event allows up to '+subMax+' substitutes.';return;}
   }
-  const payload={tournament_id:active.id,user_id:session.user.id,team_id:null,team_name:teamName,in_game_name:ign,discord_handle:discord,roster,team_logo_url:''};
-  submit.disabled=true;note.textContent=logoFile?'Uploading team logo and submitting entry…':'Submitting your entry…';let uploadedPath=null;
+  const payload={tournament_id:active.id,user_id:session.user.id,team_id:null,team_name:teamName,in_game_name:ign,discord_handle:discord,roster,team_logo_url:logoUrl};
+  submit.disabled=true;note.textContent='Submitting your entry…';
   try{
-   if(logoFile){const ext=({'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'})[logoFile.type];const token=window.crypto?.randomUUID?window.crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2);uploadedPath=active.id+'/'+session.user.id+'/'+token+'.'+ext;const up=await db.storage.from('tournament-team-logos').upload(uploadedPath,logoFile,{contentType:logoFile.type,cacheControl:'3600',upsert:false});if(up.error)throw up.error;payload.team_logo_url=db.storage.from('tournament-team-logos').getPublicUrl(uploadedPath).data.publicUrl;}
-   const r=await db.from('tournament_registrations').insert(payload);if(r.error){if(uploadedPath)await db.storage.from('tournament-team-logos').remove([uploadedPath]);throw r.error;}form.reset();form.hidden=true;note.textContent='Entry submitted with your roster'+(uploadedPath?' and team logo':'')+'. Your registration is now pending PUNIX admin confirmation.';
+   const r=await db.from('tournament_registrations').insert(payload);if(r.error)throw r.error;form.reset();form.hidden=true;note.textContent='Entry submitted with your roster'+(logoUrl?' and team logo URL':'')+'. Your registration is now pending PUNIX admin confirmation.';
   }
   catch(err){note.textContent='Entry not submitted: '+(err?.message||'Unexpected connection error. Please try again.');}
   finally{submit.disabled=false;}
  });
- $('registration-team-logo').addEventListener('change',()=>{const f=$('registration-team-logo').files?.[0],wrap=$('registration-logo-preview'),img=$('registration-logo-preview-img');if(!f){wrap.hidden=true;return;}if(!['image/png','image/jpeg','image/webp','image/gif'].includes(f.type)||f.size>3*1024*1024){$('registration-team-logo').value='';wrap.hidden=true;$('registration-note').textContent='Choose a PNG, JPG, WEBP or GIF logo no larger than 3 MB.';return;}img.src=URL.createObjectURL(f);wrap.hidden=false;});
+ $('registration-team-logo').addEventListener('input',()=>{const value=$('registration-team-logo').value.trim(),wrap=$('registration-logo-preview'),img=$('registration-logo-preview-img');if(!value){wrap.hidden=true;img.removeAttribute('src');return;}try{const u=new URL(value);if(u.protocol!=='https:'||value.length>500)throw new Error();img.src=u.href;wrap.hidden=false;}catch{wrap.hidden=true;img.removeAttribute('src');}});
  $('detail-back-link').addEventListener('click',()=>{$('back-to-tournaments').click();});
  $('back-to-tournaments').addEventListener('click',()=>{history.replaceState(null,'','tournaments.html');$('tournament-detail').hidden=true;$('tournament-grid').hidden=false;$('tournament-toolbar').hidden=false;$('tournament-search').closest('.tournament-search-row').hidden=false;window.scrollTo({top:0,behavior:'smooth'});});
  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>{x.classList.toggle('is-active',x===b);x.setAttribute('aria-pressed',String(x===b));});renderList();}));$('tournament-search').addEventListener('input',renderList);
