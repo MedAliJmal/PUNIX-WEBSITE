@@ -12,95 +12,75 @@
   if(mr.error){host.innerHTML='<p class="tournament-status">The live bracket is temporarily unavailable.</p>';return;}
   const rows=mr.data||[];$('match-count').textContent=rows.length+' MATCHES';
   if(!rows.length){host.innerHTML='<p class="tournament-status">The tournament bracket has not been published yet.</p>';return;}
-  if(!window.bracketsViewer||typeof window.bracketsViewer.render!=='function'){
-   host.innerHTML='<p class="tournament-status">The bracket display could not load. Please refresh the page.</p>';return;
-  }
-  const doubleElim=(active?.format||'single_elimination')==='double_elimination';
-  const sectionKey=m=>m.bracket_section||'winners';
-  const roundNumber=m=>{
-   if(sectionKey(m)==='grand_final')return 1;
-   if(sectionKey(m)==='grand_final_reset')return 2;
-   const label=(m.bracket_label||'').match(/Round\s+(\d+)/i);
-   if(label)return Number(label[1]);
-   return Number(m.round_number)||1;
+  const isDouble=(active?.format||'single_elimination')==='double_elimination';
+  const sectionOf=m=>m.bracket_section||'winners';
+  const roundOf=m=>{
+   if(sectionOf(m)==='grand_final')return 1;
+   if(sectionOf(m)==='grand_final_reset')return 2;
+   const label=(m.bracket_label||'').match(/Round\\s+(\\d+)/i);
+   return label?Number(label[1]):Number(m.round_number)||1;
   };
-  const groupFor=section=>!doubleElim?1:({winners:1,losers:2,grand_final:3,grand_final_reset:3}[section]||1);
-  const stageId=1,stageTournamentId=1;
-  const roundIds=new Map();let nextRoundId=1;
-  const ordered=rows.slice().sort((a,b)=>groupFor(sectionKey(a))-groupFor(sectionKey(b))||roundNumber(a)-roundNumber(b)||a.match_number-b.match_number);
-  ordered.forEach(m=>{
-   const key=groupFor(sectionKey(m))+':'+roundNumber(m);
-   if(!roundIds.has(key))roundIds.set(key,nextRoundId++);
-  });
-  const participants=new Map();
-  ordered.forEach(m=>{
-   if(m.participant_a_id)participants.set(String(m.participant_a_id),{id:String(m.participant_a_id),tournament_id:stageTournamentId,name:m.participant_a_name||'Participant'});
-   if(m.participant_b_id)participants.set(String(m.participant_b_id),{id:String(m.participant_b_id),tournament_id:stageTournamentId,name:m.participant_b_name||'Participant'});
-  });
-  const sourcePosition=(section,round,matchNo,slot)=>{
-   if(section==='winners')return (matchNo-1)*2+(slot==='a'?1:2);
-   if(section==='losers'){
-    if(round===1)return (matchNo-1)*2+(slot==='a'?1:2);
-    if(round%2===0)return matchNo;
-    return (matchNo-1)*2+(slot==='a'?1:2);
-   }
-   return 1;
+  const nameOf=(m,slot)=>{
+   const name=m[slot==='a'?'participant_a_name':'participant_b_name'];
+   const idValue=m[slot==='a'?'participant_a_id':'participant_b_id'];
+   return name|| (idValue?'Participant':'TBD');
   };
-  const matches=ordered.map((m,i)=>{
-   const section=sectionKey(m),round=roundNumber(m),groupId=groupFor(section),roundId=roundIds.get(groupId+':'+round);
-   const a=m.participant_a_id?String(m.participant_a_id):null,b=m.participant_b_id?String(m.participant_b_id):null;
+  const matchCard=(m)=>{
    const winner=m.winner_registration_id?String(m.winner_registration_id):null;
-   const status=m.status==='completed'?4:(m.status==='live'||m.status==='in_progress'?3:((a?1:0)+(b?1:0)===2?2:((a||b)?1:0)));
-   const side=(participantId,score,slot)=>{
-    const result=winner&&participantId?(winner===participantId?'win':'loss'):undefined;
-    return {id:participantId,position:sourcePosition(section,round,Number(m.match_number)||1,slot),...(score===null||score===undefined?{}:{score:Number(score)}),...(result?{result}:{})};
+   const side=(slot)=>{
+    const pid=m[slot==='a'?'participant_a_id':'participant_b_id'];
+    const score=m[slot==='a'?'score_a':'score_b'];
+    const won=winner&&pid&&String(pid)===winner;
+    const lost=winner&&pid&&String(pid)!==winner;
+    return '<div class="punix-tree-side'+(won?' is-winner':lost?' is-loser':'')+'"><span>'+esc(nameOf(m,slot))+'</span><b>'+(score===null||score===undefined?'—':esc(score))+'</b></div>';
    };
-   return {id:i+1,stage_id:stageId,group_id:groupId,round_id:roundId,number:Number(m.match_number)||1,child_count:0,status,opponent1:side(a,m.score_a,'a'),opponent2:side(b,m.score_b,'b')};
-  });
-  const firstRound=ordered.filter(m=>sectionKey(m)==='winners'&&roundNumber(m)===1);
-  const bracketSize=Math.max(2,firstRound.length*2);
-  const hasReset=ordered.some(m=>sectionKey(m)==='grand_final_reset');
-  const viewerData={
-   stages:[{id:stageId,tournament_id:stageTournamentId,name:active?.title||'PUNIX Tournament',type:doubleElim?'double_elimination':'single_elimination',number:1,settings:{size:bracketSize,seedOrdering:['natural'],grandFinal:hasReset?'double':'single',matchesChildCount:0}}],
-   matches,
-   matchGames:[],
-   participants:[...participants.values()]
+   const status=m.status==='completed'?'COMPLETED':(m.status==='live'||m.status==='in_progress'?'LIVE':'SCHEDULED');
+   return '<article class="punix-tree-match" data-match-id="'+esc(m.id)+'"><div class="punix-tree-match-head"><span>MATCH '+esc(m.match_number||1)+'</span><small>'+status+'</small></div>'+side('a')+side('b')+'</article>';
   };
-  host.innerHTML='<div id="punix-brackets-viewer" class="brackets-viewer"></div>';
-  try{
-   await window.bracketsViewer.render(viewerData,{
-    selector:'#punix-brackets-viewer',
-    clear:true,
-    customRoundName:(info)=>{
-     const type=String(info.groupType||'');
-     const round=Number(info.roundNumber)||1;
-     const count=Number(info.roundCount)||1;
-     if(type==='winner-bracket'){
-      if(round===count)return 'UPPER FINAL';
-      if(round===count-1)return 'UPPER SEMIFINALS';
-      if(round===count-2)return 'UPPER QUARTERFINALS';
-      return 'UPPER ROUND '+round;
-     }
-     if(type==='loser-bracket'){
-      if(round===count)return 'LOWER FINAL';
-      return 'LOWER ROUND '+round;
-     }
-     if(type==='single-bracket'){
-      if(round===count)return 'FINAL';
-      if(round===count-1)return 'SEMIFINALS';
-      if(round===count-2)return 'QUARTERFINALS';
-      return 'ROUND '+round;
-     }
-     return 'ROUND '+round;
-    },
-    showRankingTable:false,
-    showSlotsOrigin:true,
-    showLowerBracketSlotsOrigin:true
+  const roundsFor=section=>[...new Set(rows.filter(m=>sectionOf(m)===section).map(roundOf))].sort((a,b)=>a-b);
+  const laneHtml=(section,title,subtitle,connectionMode)=>{
+   const laneRows=rows.filter(m=>sectionOf(m)===section);
+   if(!laneRows.length)return '';
+   const rounds=roundsFor(section);
+   const firstCount=Math.max(1,laneRows.filter(m=>roundOf(m)===rounds[0]).length);
+   const unit=104, laneHeight=Math.max(150,firstCount*unit);
+   const columns=rounds.map((round,ri)=>{
+    const matches=laneRows.filter(m=>roundOf(m)===round).sort((a,b)=>Number(a.match_number)-Number(b.match_number));
+    const col='<div class="punix-tree-round"><h4>'+esc(m=>m)(matches[0]?.bracket_label||('ROUND '+round)).replace(/^.*?·\\s*/,'')+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
+    const cards=matches.map(m=>{
+     const count=Math.max(1,matches.length),idx=Math.max(1,Number(m.match_number)||1);
+     let center;
+     if(section==='winners')center=((idx-.5)*Math.pow(2,round-1))/(firstCount);
+     else if(section==='losers'){
+      const localRound=round;
+      center=localRound===1?((idx-.5)*2/firstCount):((idx-.5)*Math.min(2,Math.pow(2,localRound%2===0?1:0))/Math.max(1,count));
+      center=Math.max(.04,Math.min(.96,center));
+     }else center=.5;
+     const top=Math.max(0,center*laneHeight-39);
+     return '<div class="punix-tree-positioned" style="top:'+top+'px">'+matchCard(m)+'</div>';
+    }).join('');
+    return col+cards+'</div></div>';
    });
-  }catch(error){
-   console.error('PUNIX bracket rendering failed:',error);
-   host.innerHTML='<p class="tournament-status">The bracket could not be displayed. Match data is still saved.</p>';
-  }
+   const connectorHtml=rounds.slice(0,-1).map((round,ri)=>{
+    const next=rounds[ri+1],from=laneRows.filter(m=>roundOf(m)===round),to=laneRows.filter(m=>roundOf(m)===next);
+    const paths=from.map(m=>{
+     const idx=Number(m.match_number)||1;
+     const targetIndex=section==='winners'?Math.ceil(idx/2):(round%2===1?idx:Math.ceil(idx/2));
+     const sourceCenter=section==='winners'?((idx-.5)*Math.pow(2,round-1)/firstCount)*laneHeight:((idx-.5)/Math.max(1,from.length))*laneHeight;
+     const targetCenter=section==='winners'?((targetIndex-.5)*Math.pow(2,next-1)/firstCount)*laneHeight:((targetIndex-.5)/Math.max(1,to.length))*laneHeight;
+     return {sourceCenter,targetCenter};
+    });
+    const d=paths.map(p=>'M0 '+p.sourceCenter+' H27 V'+p.targetCenter+' H54').join(' ');
+    return '<svg class="punix-tree-connectors" width="54" height="'+laneHeight+'" viewBox="0 0 54 '+laneHeight+'" aria-hidden="true"><path d="'+d+'"/></svg>';
+   }).join('');
+   const roundGroups=columns.map((c,i)=>c+(i<rounds.length-1?connectorHtml.split('</svg>')[i]+'</svg>':'')).join('');
+   return '<section class="punix-tree-lane '+(section==='losers'?'is-lower':'is-upper')+'"><header class="punix-tree-lane-heading"><div><span>'+esc(title)+'</span><small>'+esc(subtitle)+'</small></div><b>'+laneRows.length+' MATCHES</b></header><div class="punix-tree-scroll"><div class="punix-tree-rounds">'+columns.map((c,i)=>c+(i<rounds.length-1?connectorHtml.split('</svg>')[i]+'</svg>':'')).join('')+'</div></div></section>';
+  };
+  const upper=laneHtml('winners',isDouble?'WINNERS BRACKET':'TOURNAMENT BRACKET',isDouble?'Stay in the upper bracket with every win':'Follow the tournament path','winner');
+  const lower=isDouble?laneHtml('losers','LOSERS BRACKET','One loss drops a team into the lower bracket','loser'):'';
+  const finals=rows.filter(m=>sectionOf(m)==='grand_final'||sectionOf(m)==='grand_final_reset').sort((a,b)=>roundOf(a)-roundOf(b));
+  const finalHtml=isDouble?'<section class="punix-tree-finals"><header class="punix-tree-lane-heading"><div><span>GRAND FINAL</span><small>Upper champion vs lower champion</small></div><b>CHAMPIONSHIP</b></header><div class="punix-tree-final-flow"><div class="punix-tree-source"><b>UPPER FINAL WINNER</b><span>Advances from Winners Bracket</span></div><div class="punix-tree-final-cards">'+(finals.length?finals.map(matchCard).join(''):'<p class="tournament-status">The Grand Final will appear here.</p>')+'</div><div class="punix-tree-source"><b>LOWER FINAL WINNER</b><span>Advances from Losers Bracket</span></div></div><p class="punix-tree-final-note">The Winners Bracket champion enters the Grand Final in slot A. The Losers Bracket champion enters slot B. A reset match is played only if the lower-bracket champion wins the first Grand Final.</p></section>':'';
+  host.innerHTML=upper+lower+finalHtml;
  }
  function watchPublicBracket(id){if(bracketRefreshTimer)clearInterval(bracketRefreshTimer);renderBracket(id);bracketRefreshTimer=setInterval(()=>{if(active?.id===id)renderBracket(id);},10000);}
  function renderList(){const q=$('tournament-search').value.trim().toLowerCase();const rows=events.filter(t=>(filter==='all'||t.status===filter)&&(t.title+' '+t.game_name).toLowerCase().includes(q));
