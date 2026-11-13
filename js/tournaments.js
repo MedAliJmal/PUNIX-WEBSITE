@@ -76,17 +76,17 @@
      const type=String(info.groupType||'');
      const round=Number(info.roundNumber)||1;
      const count=Number(info.roundCount)||1;
-     if(type==='winner_bracket'){
+     if(type==='winner-bracket'){
       if(round===count)return 'UPPER FINAL';
       if(round===count-1)return 'UPPER SEMIFINALS';
       if(round===count-2)return 'UPPER QUARTERFINALS';
       return 'UPPER ROUND '+round;
      }
-     if(type==='loser_bracket'){
+     if(type==='loser-bracket'){
       if(round===count)return 'LOWER FINAL';
       return 'LOWER ROUND '+round;
      }
-     if(type==='single_bracket'){
+     if(type==='single-bracket'){
       if(round===count)return 'FINAL';
       if(round===count-1)return 'SEMIFINALS';
       if(round===count-2)return 'QUARTERFINALS';
