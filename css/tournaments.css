@@ -42,3 +42,10 @@
 .bracket-lane-grand_final .bracket-round,.bracket-lane-grand_final_reset .bracket-round{flex-basis:100%;max-width:520px}
 
 .tournament-bracket-grid{display:grid;grid-template-columns:minmax(0,1fr);overflow:visible}.bracket-lane{min-width:0;width:100%;box-sizing:border-box}.bracket-lane-rounds{width:100%}
+
+
+/* Clear visual boundary between upper and lower elimination brackets */
+.bracket-structure-divider{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;width:100%;min-height:42px;box-sizing:border-box;color:#899697;font:800 8px Inter,Arial,sans-serif;letter-spacing:1.8px}
+.bracket-structure-divider:before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,rgba(215,182,111,.75) 12%,rgba(53,196,189,.55) 50%,rgba(215,182,111,.75) 88%,transparent)}
+.bracket-structure-divider span{position:relative;z-index:1;padding:7px 11px;background:#090b0e;border:1px solid rgba(215,182,111,.25)}
+.bracket-structure-divider i{position:relative;z-index:1;width:7px;height:7px;transform:rotate(45deg);background:var(--t-teal);box-shadow:0 0 12px rgba(53,196,189,.45)}
