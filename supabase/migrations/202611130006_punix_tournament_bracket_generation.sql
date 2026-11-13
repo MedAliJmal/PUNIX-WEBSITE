@@ -257,12 +257,14 @@ security definer
 set search_path = ''
 as $$
 begin
-  if new.status = 'confirmed' and old.status is distinct from 'confirmed'
-     and exists (
+  if exists (
        select 1 from public.tournament_matches m
        where m.tournament_id = new.tournament_id
+     ) and (
+       (new.status = 'confirmed' and old.status is distinct from 'confirmed')
+       or (old.status = 'confirmed' and new.status is distinct from 'confirmed')
      ) then
-    raise exception 'The bracket has already been generated. New entries cannot be approved after the draw.';
+    raise exception 'The bracket has already been generated. Approved entries are locked and cannot be added or removed after the draw.';
   end if;
   return new;
 end;
