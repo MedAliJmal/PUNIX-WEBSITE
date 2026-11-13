@@ -273,4 +273,22 @@ $$;
 
 revoke all on function private.block_approval_after_bracket_generation() from public, anon, authenticated;
 
+-- Backfill active single-elimination tournaments that already have approved entries.
+do $
+declare
+  v_tournament_id uuid;
+begin
+  for v_tournament_id in
+    select distinct t.id
+    from public.tournaments t
+    join public.tournament_registrations r on r.tournament_id = t.id
+    where t.format = 'single_elimination'
+      and t.status in ('upcoming', 'live')
+      and r.status = 'confirmed'
+  loop
+    perform private.sync_punix_single_elimination_bracket(v_tournament_id);
+  end loop;
+end;
+$;
+
 notify pgrst, 'reload schema';
