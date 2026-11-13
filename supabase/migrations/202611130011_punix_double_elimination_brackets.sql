@@ -282,3 +282,136 @@ begin
   loop perform private.sync_punix_double_elimination_bracket(x); end loop;
 end $$;
 notify pgrst,'reload schema';
+
+-- Ensure the legacy advancement trigger only handles single-elimination trees.
+create or replace function private.advance_punix_tournament_bracket()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_next_match public.tournament_matches%rowtype;
+  v_sibling public.tournament_matches%rowtype;
+  v_sibling_exists boolean := false;
+  v_current_done boolean;
+  v_sibling_done boolean;
+  v_current_winner uuid;
+  v_sibling_winner uuid;
+  v_next_round integer;
+  v_next_number integer;
+  v_sibling_number integer;
+  v_a uuid;
+  v_b uuid;
+  v_next_status text;
+  v_next_winner uuid;
+begin
+  if exists (select 1 from public.tournaments t where t.id=new.tournament_id and t.format='double_elimination') then return new; end if;
+  if tg_op = 'UPDATE'
+     and old.winner_registration_id is not distinct from new.winner_registration_id
+     and old.status is not distinct from new.status then
+    return new;
+  end if;
+
+  if tg_op = 'UPDATE' and old.winner_registration_id is distinct from new.winner_registration_id then
+    -- A changed result invalidates every later match on this branch.
+    with recursive descendants(round_number, match_number) as (
+      select new.round_number + 1, ((new.match_number + 1) / 2)
+      union all
+      select d.round_number + 1, ((d.match_number + 1) / 2)
+      from descendants d
+      where exists (
+        select 1 from public.tournament_matches x
+        where x.tournament_id = new.tournament_id
+          and x.round_number = d.round_number
+          and x.match_number = d.match_number
+      )
+    )
+    update public.tournament_matches x
+       set participant_a_id = null,
+           participant_b_id = null,
+           score_a = null,
+           score_b = null,
+           winner_registration_id = null,
+           status = 'scheduled'
+     where x.tournament_id = new.tournament_id
+       and (x.round_number, x.match_number) in (
+         select round_number, match_number from descendants
+       );
+  end if;
+
+  v_next_round := new.round_number + 1;
+  v_next_number := ((new.match_number + 1) / 2);
+  select * into v_next_match
+  from public.tournament_matches
+  where tournament_id = new.tournament_id
+    and round_number = v_next_round
+    and match_number = v_next_number;
+
+  if not found then
+    return new;
+  end if;
+
+  v_current_done := new.status = 'completed' and (new.winner_registration_id is not null or (new.participant_a_id is null and new.participant_b_id is null));
+  v_current_winner := case when v_current_done then new.winner_registration_id else null end;
+
+  if mod(new.match_number, 2) = 1 then
+    v_sibling_number := new.match_number + 1;
+  else
+    v_sibling_number := new.match_number - 1;
+  end if;
+
+  select * into v_sibling
+  from public.tournament_matches
+  where tournament_id = new.tournament_id
+    and round_number = new.round_number
+    and match_number = v_sibling_number;
+  v_sibling_exists := found;
+
+  if v_sibling_exists then
+    v_sibling_done := v_sibling.status = 'completed' and (v_sibling.winner_registration_id is not null or (v_sibling.participant_a_id is null and v_sibling.participant_b_id is null));
+    v_sibling_winner := case when v_sibling_done then v_sibling.winner_registration_id else null end;
+  else
+    -- An unmatched final feeder advances as a bye once its own match is complete.
+    v_sibling_done := true;
+    v_sibling_winner := null;
+  end if;
+
+  if mod(new.match_number, 2) = 1 then
+    v_a := v_current_winner;
+    v_b := v_sibling_winner;
+  else
+    v_a := v_sibling_winner;
+    v_b := v_current_winner;
+  end if;
+
+  v_next_status := 'scheduled';
+  v_next_winner := null;
+  if v_current_done and v_sibling_done then
+    if (v_a is null) <> (v_b is null) then
+      v_next_status := 'completed';
+      v_next_winner := coalesce(v_a, v_b);
+    elsif v_a is null and v_b is null then
+      v_next_status := 'completed';
+    end if;
+  end if;
+
+  update public.tournament_matches
+     set participant_a_id = v_a,
+         participant_b_id = v_b,
+         score_a = null,
+         score_b = null,
+         winner_registration_id = v_next_winner,
+         status = v_next_status
+   where id = v_next_match.id;
+
+  return new;
+end;
+$$;
+
+
+create or replace view public.public_tournament_matches with(security_barrier=true) as
+select m.id,m.tournament_id,m.round_number,m.match_number,m.participant_a_id,m.participant_b_id,m.score_a,m.score_b,m.winner_registration_id,m.scheduled_at,m.status,m.bracket_section,m.bracket_label,a.display_name as participant_a_name,b.display_name as participant_b_name
+from public.tournament_matches m left join public.public_tournament_registrations a on a.id=m.participant_a_id left join public.public_tournament_registrations b on b.id=m.participant_b_id;
+
+notify pgrst,'reload schema';
