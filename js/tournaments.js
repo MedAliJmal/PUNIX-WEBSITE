@@ -27,14 +27,11 @@
   const groupFor=section=>!doubleElim?1:({winners:1,losers:2,grand_final:3,grand_final_reset:3}[section]||1);
   const groupNumbers=[...new Set(rows.map(m=>groupFor(sectionKey(m))))].sort((a,b)=>a-b);
   const stageId=1,stageTournamentId=1;
-  const groupIds=new Map(groupNumbers.map(n=>[n,n]));
   const roundIds=new Map();let nextRoundId=1;
   const ordered=rows.slice().sort((a,b)=>groupFor(sectionKey(a))-groupFor(sectionKey(b))||roundNumber(a)-roundNumber(b)||a.match_number-b.match_number);
-  const roundCounts={};
   ordered.forEach(m=>{
    const key=groupFor(sectionKey(m))+':'+roundNumber(m);
    if(!roundIds.has(key))roundIds.set(key,nextRoundId++);
-   roundCounts[key]=(roundCounts[key]||0)+1;
   });
   const participants=new Map();
   ordered.forEach(m=>{
@@ -42,7 +39,7 @@
    if(m.participant_b_id)participants.set(String(m.participant_b_id),{id:String(m.participant_b_id),tournament_id:stageTournamentId,name:m.participant_b_name||'Participant'});
   });
   const sourcePosition=(section,round,matchNo,slot)=>{
-   if(section==='winners')return round===1?(matchNo-1)*2+(slot==='a'?1:2):(matchNo-1)*2+(slot==='a'?1:2);
+   if(section==='winners')return (matchNo-1)*2+(slot==='a'?1:2);
    if(section==='losers'){
     if(round===1)return (matchNo-1)*2+(slot==='a'?1:2);
     if(round%2===0)return matchNo;
@@ -50,7 +47,6 @@
    }
    return 1;
   };
-  const matchIds=new Map(ordered.map((m,i)=>[String(m.id),i+1]));
   const matches=ordered.map((m,i)=>{
    const section=sectionKey(m),round=roundNumber(m),groupId=groupFor(section),roundId=roundIds.get(groupId+':'+round);
    const a=m.participant_a_id?String(m.participant_a_id):null,b=m.participant_b_id?String(m.participant_b_id):null;
