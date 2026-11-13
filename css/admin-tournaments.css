@@ -26,3 +26,7 @@
 .pnx-tournament-details-grid p{margin:7px 0 0;color:#e1e5df;font:500 10px/1.6 Inter,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:850px){.pnx-admin-tournament-card{grid-template-columns:1fr}.pnx-admin-tournament-card .pnx-admin-tournament-actions{max-width:none;justify-content:flex-start}}
 @media(max-width:600px){.pnx-tournament-heading-actions{align-items:stretch;width:100%;flex-direction:column}.pnx-tournament-heading-actions>*{align-self:flex-start}.pnx-tournament-details-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* First-round bracket draw controls */
+.pnx-bracket-generate{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:12px 0;padding:13px;border:1px solid rgba(201,164,91,.24);background:rgba(201,164,91,.045)}
+.pnx-bracket-generate>div{display:grid;gap:4px}.pnx-bracket-generate strong{color:#e3c27e;font:800 9px Inter,Arial,sans-serif;letter-spacing:1px}.pnx-bracket-generate small{color:#8c999b;font:600 9px/1.5 Inter,Arial,sans-serif}.pnx-bracket-generate button[hidden]{display:none!important}
