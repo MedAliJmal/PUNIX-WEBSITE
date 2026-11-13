@@ -57,7 +57,7 @@ begin
   -- The configured capacity determines the bracket size. With no capacity,
   -- create the smallest power-of-two bracket that fits the approved entries.
   v_bracket_size := 2;
-  while v_bracket_size < coalesce(v_tournament.max_participants, v_count) loop
+  while v_bracket_size < greatest(coalesce(v_tournament.max_participants, 0), v_count) loop
     v_bracket_size := v_bracket_size * 2;
   end loop;
 
