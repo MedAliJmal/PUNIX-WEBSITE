@@ -43,6 +43,18 @@ begin
   from public.tournament_registrations where tournament_id=p_tournament_id;
 
   select count(*) into v_existing from public.tournament_matches where tournament_id=p_tournament_id;
+  -- During testing, allow a clean conversion from an unplayed single-elimination
+  -- bracket. Never erase live/completed matches or recorded scores.
+  if v_existing>0
+     and exists(select 1 from public.tournament_matches m where m.tournament_id=p_tournament_id and m.bracket_section='winners')
+     and not exists(select 1 from public.tournament_matches m where m.tournament_id=p_tournament_id
+       and (m.status<>'scheduled' or m.winner_registration_id is not null or m.score_a is not null or m.score_b is not null)) then
+    delete from public.tournament_matches where tournament_id=p_tournament_id;
+    v_existing:=0;
+  end if;
+  if v_existing>0 and not exists(select 1 from public.tournament_matches m where m.tournament_id=p_tournament_id and m.bracket_section='losers') then
+    raise exception 'This tournament already has played matches. The bracket cannot be converted automatically.';
+  end if;
   if v_existing=0 then
     n := greatest(2,coalesce(t.max_participants,0),v_confirmed);
     n := least(512,n);
