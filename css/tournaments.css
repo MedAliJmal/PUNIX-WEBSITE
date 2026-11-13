@@ -75,3 +75,33 @@
 .bracket-connectors{flex:0 0 24px;width:24px;height:calc(var(--bracket-rows,1) * 82px);margin-top:28px;overflow:visible}
 .bracket-connectors path{fill:none;stroke:rgba(53,196,189,.65);stroke-width:1.2;vector-effect:non-scaling-stroke}
 @media(max-width:620px){.bracket-round{flex-basis:225px}.bracket-connectors{flex-basis:20px;width:20px}}
+
+
+/* PUNIX theme for brackets-viewer.js */
+.tournament-bracket-grid{display:block;min-width:0;width:100%;overflow:visible;padding:18px 0}
+#punix-brackets-viewer.brackets-viewer{
+ --primary-background:#11171a;
+ --secondary-background:#0b1013;
+ --match-background:#11171a;
+ --font-color:#e7ece8;
+ --win-color:#d7b66f;
+ --loss-color:#e16d68;
+ --label-color:#35c4bd;
+ --hint-color:#899697;
+ --connector-color:rgba(53,196,189,.58);
+ --border-color:rgba(255,255,255,.15);
+ --border-hover-color:#d7b66f;
+ --text-size:11px;
+ --round-margin:34px;
+ --match-width:205px;
+ --match-horizontal-padding:9px;
+ --match-vertical-padding:7px;
+ --connector-border-width:2px;
+ --match-border-width:1px;
+ --match-border-radius:2px;
+ color:var(--font-color);
+}
+#punix-brackets-viewer .round-label,
+#punix-brackets-viewer .group-label{color:var(--t-teal)}
+#punix-brackets-viewer .match{box-shadow:0 8px 22px rgba(0,0,0,.2)}
+@media(max-width:620px){#punix-brackets-viewer.brackets-viewer{--match-width:180px;--round-margin:22px;--text-size:10px}}
