@@ -232,3 +232,15 @@
 .tournament-live-match strong{color:#e3c27e;font:900 13px Inter,Arial,sans-serif;white-space:nowrap}
 .tournament-live-match small{color:#849291;font:800 7px Inter,Arial,sans-serif}
 @media(max-width:480px){.tournament-live-match{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:5px}.tournament-live-match small{grid-column:1/-1;text-align:right}}
+
+
+/* Team identities in bracket match cards and live score rows */
+.punix-tree-side{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.punix-tree-team{display:flex;align-items:center;gap:8px;min-width:0}
+.punix-tree-team-logo,.punix-tree-team-logo-placeholder{width:24px;height:24px;flex:0 0 24px;object-fit:contain;border-radius:5px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.punix-tree-team-logo-placeholder{display:grid;place-items:center;color:#d7b66f;font:800 10px Inter,Arial,sans-serif}
+.punix-tree-team-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tournament-live-team{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
+.tournament-live-team img{width:20px;height:20px;flex:0 0 20px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.tournament-live-team>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tournament-live-team.is-away{justify-content:flex-end}
