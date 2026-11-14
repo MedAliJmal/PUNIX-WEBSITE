@@ -10,7 +10,7 @@ from public.tournaments t
 where t.id=m.tournament_id and m.best_of is null;
 
 alter table public.tournament_matches
-  alter column best_of set default 1,
+  alter column best_of drop default,
   alter column best_of set not null;
 
 alter table public.tournaments
