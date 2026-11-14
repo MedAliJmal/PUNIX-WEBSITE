@@ -30,3 +30,7 @@
 /* First-round bracket draw controls */
 .pnx-bracket-generate{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:12px 0;padding:13px;border:1px solid rgba(201,164,91,.24);background:rgba(201,164,91,.045)}
 .pnx-bracket-generate>div{display:grid;gap:4px}.pnx-bracket-generate strong{color:#e3c27e;font:800 9px Inter,Arial,sans-serif;letter-spacing:1px}.pnx-bracket-generate small{color:#8c999b;font:600 9px/1.5 Inter,Arial,sans-serif}.pnx-bracket-generate button[hidden]{display:none!important}
+
+/* Best-of series and match score cards */
+.pnx-admin-match-card{background:linear-gradient(110deg,rgba(201,164,91,.055),rgba(255,255,255,.015));border-color:rgba(201,164,91,.2)}
+.pnx-admin-match-card .pnx-match-score{display:inline-block;padding:3px 8px;margin:0 5px;color:#e3c27e;background:rgba(201,164,91,.1);border:1px solid rgba(201,164,91,.22);font:900 12px/1 Inter,Arial,sans-serif;letter-spacing:1px}
