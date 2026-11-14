@@ -2,7 +2,11 @@
 -- Remove legacy reset rows and stop creating/routing to a Grand Final Reset.
 
 delete from public.tournament_matches
-where bracket_section='grand_final_reset';
+where bracket_section='grand_final_reset'
+  and status='scheduled'
+  and winner_registration_id is null
+  and score_a is null
+  and score_b is null;
 
 update public.tournament_matches
 set winner_to_match_id=null, winner_to_slot=null
