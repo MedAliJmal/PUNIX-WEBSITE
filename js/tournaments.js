@@ -58,7 +58,7 @@
     const col='<div class="punix-tree-round"><h4>'+esc(roundTitle)+'</h4><div class="punix-tree-round-track" style="height:'+laneHeight+'px">';
     const cards=matches.map(m=>{
      const idx=Math.max(1,Number(m.match_number)||1);
-     const top=Math.max(0,centerY(round,idx,matches.length)-39);
+     const top=Math.max(0,centerY(round,idx,matches.length)-48);
      return '<div class="punix-tree-positioned" style="top:'+top+'px">'+matchCard(m)+'</div>';
     }).join('');
     return col+cards+'</div></div>';
