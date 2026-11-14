@@ -244,3 +244,32 @@
 .tournament-live-team img{width:20px;height:20px;flex:0 0 20px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
 .tournament-live-team>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tournament-live-team.is-away{justify-content:flex-end}
+
+
+/* Keep the full bracket rounds discoverable: expose horizontal scrolling. */
+.punix-tree-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(53,196,189,.75) rgba(255,255,255,.08);
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.punix-tree-scroll::-webkit-scrollbar {
+  display: block;
+  height: 8px;
+}
+.punix-tree-scroll::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.08);
+  border-radius: 8px;
+}
+.punix-tree-scroll::-webkit-scrollbar-thumb {
+  background: rgba(53,196,189,.75);
+  border-radius: 8px;
+}
+.punix-tree-lane.is-lower .punix-tree-scroll {
+  scrollbar-color: rgba(215,182,111,.8) rgba(255,255,255,.08);
+}
+.punix-tree-lane.is-lower .punix-tree-scroll::-webkit-scrollbar-thumb {
+  background: rgba(215,182,111,.8);
+}
