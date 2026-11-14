@@ -220,3 +220,15 @@
     margin-top: 28px;
   }
 }
+
+
+/* Live map scores on tournament listing cards */
+.tournament-live-scores{display:grid;gap:7px;margin:14px 0;padding:11px;border:1px solid rgba(53,196,189,.28);background:rgba(53,196,189,.055)}
+.tournament-live-heading{display:flex;align-items:center;gap:7px;color:#35c4bd;font:900 8px Inter,Arial,sans-serif;letter-spacing:1.1px}
+.tournament-live-dot{width:7px;height:7px;border-radius:50%;background:#e16d68;box-shadow:0 0 9px rgba(225,109,104,.65)}
+.tournament-live-match{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;align-items:center;gap:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.08);color:#dce3df;font:700 9px Inter,Arial,sans-serif}
+.tournament-live-match>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tournament-live-match>span:nth-of-type(2){text-align:right}
+.tournament-live-match strong{color:#e3c27e;font:900 13px Inter,Arial,sans-serif;white-space:nowrap}
+.tournament-live-match small{color:#849291;font:800 7px Inter,Arial,sans-serif}
+@media(max-width:480px){.tournament-live-match{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:5px}.tournament-live-match small{grid-column:1/-1;text-align:right}}
