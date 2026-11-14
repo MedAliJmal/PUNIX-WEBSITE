@@ -35,7 +35,7 @@
     return '<div class="punix-tree-side'+(won?' is-winner':lost?' is-loser':'')+'"><span>'+esc(nameOf(m,slot))+'</span><b>'+(score===null||score===undefined?'—':esc(score))+'</b></div>';
    };
    const status=m.status==='completed'?'COMPLETED':(m.status==='live'||m.status==='in_progress'?'LIVE':'SCHEDULED');
-   return '<article class="punix-tree-match" data-match-id="'+esc(m.id)+'"><div class="punix-tree-match-head"><span>MATCH '+esc(m.match_number||1)+'</span><small>'+status+'</small></div>'+side('a')+side('b')+'</article>';
+   return '<article class="punix-tree-match" data-match-id="'+esc(m.id)+'"><div class="punix-tree-match-head"><span>MATCH '+esc(m.match_number||1)+' · BO'+esc(m.best_of||active?.best_of||1)+'</span><small>'+status+'</small></div>'+side('a')+side('b')+'</article>';
   };
   const roundsFor=section=>[...new Set(rows.filter(m=>sectionOf(m)===section).map(roundOf))].sort((a,b)=>a-b);
   const laneHtml=(section,title,subtitle)=>{
