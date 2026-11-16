@@ -20,7 +20,8 @@ begin
   end if;
 
   if new.winner_registration_id is not null
-     and new.winner_registration_id not in (new.participant_a_id, new.participant_b_id) then
+     and new.winner_registration_id is distinct from new.participant_a_id
+     and new.winner_registration_id is distinct from new.participant_b_id then
     raise exception 'The selected winner must be one of the match participants.';
   end if;
 
