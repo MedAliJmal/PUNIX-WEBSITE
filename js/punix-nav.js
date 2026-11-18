@@ -291,5 +291,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateNavigation(error ? null : data.session);
   }).catch(() => updateNavigation(null));
 
-  client.auth.onAuthStateChange((_event, session) => updateNavigation(session));
+  // Supabase auth callbacks must stay synchronous. Running database queries directly
+  // inside this callback can hold the auth lock and prevent session refreshes.
+  client.auth.onAuthStateChange((_event, session) => {
+    Promise.resolve().then(() => { void updateNavigation(session); });
+  });
 });
