@@ -268,10 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!signedIn) return;
 
     try {
-      const { data, error } = await client.from('user_roles')
-        .select('role').eq('user_id', session.user.id).maybeSingle();
+      // A user can have more than one role row. Read matching admin roles as a list
+      // instead of maybeSingle(), which fails when multiple rows exist.
+      const { data: roles, error } = await client.from('user_roles')
+        .select('role').eq('user_id', session.user.id).in('role', ['admin', 'super_admin']).limit(1);
       if (currentCheck !== roleCheckId) return;
-      const isAdmin = !error && ['admin', 'super_admin'].includes(data?.role);
+      const isAdmin = !error && Array.isArray(roles) && roles.length > 0;
       showAdminLinks(isAdmin);
       if (isAdmin) enableAdminSupportIndicator();
       // Tournament staff access is granted per tournament assignment, not by global admin role.
@@ -287,8 +289,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  client.auth.getSession().then(({ data, error }) => {
-    updateNavigation(error ? null : data.session);
+  client.auth.getSession().then(async ({ data, error }) => {
+    if (error) {
+      updateNavigation(null);
+      return;
+    }
+    if (data.session) {
+      updateNavigation(data.session);
+      return;
+    }
+    // Fallback for cases where the persisted session is still being restored
+    // when the shared navbar initializes.
+    const { data: userData, error: userError } = await client.auth.getUser();
+    if (userError || !userData?.user) {
+      updateNavigation(null);
+      return;
+    }
+    updateNavigation({ user: userData.user });
   }).catch(() => updateNavigation(null));
 
   // Supabase auth callbacks must stay synchronous. Running database queries directly
