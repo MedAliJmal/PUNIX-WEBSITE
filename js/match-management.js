@@ -92,7 +92,7 @@
    else if(p.score_b===target&&p.score_a<target){p.winner_registration_id=b;p.status='completed';}
   }
   if(p.status==='completed'&&(!a||!b||!p.winner_registration_id||(p.winner_registration_id!==a&&p.winner_registration_id!==b)||p.score_a===null||p.score_b===null)){message('A completed match requires two participants, both scores and a valid winner.');return;}
-  if(p.status==='completed'&&((w===a&&(p.score_a!==target||p.score_b>=target))||(w===b&&(p.score_b!==target||p.score_a>=target)))){message('Invalid BO'+p.best_of+' result. The winner must reach '+target+' map wins and the opponent must have fewer.');return;}
+  if(p.status==='completed'&&((p.winner_registration_id===a&&(p.score_a!==target||p.score_b>=target))||(p.winner_registration_id===b&&(p.score_b!==target||p.score_a>=target)))){message('Invalid BO'+p.best_of+' result. The winner must reach '+target+' map wins and the opponent must have fewer.');return;}
   if(p.status!=='completed'&&((p.score_a??0)>=target||(p.score_b??0)>=target)){message('A participant has reached the BO'+p.best_of+' winning score. Complete the match and select the winner.');return;}
   $('match-save').disabled=true;message('Saving changes…');
   const r=await db.from('tournament_matches').update(p).eq('id',match.id).eq('tournament_id',match.tournament_id).select('id').maybeSingle();
