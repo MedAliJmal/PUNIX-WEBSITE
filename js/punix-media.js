@@ -99,7 +99,7 @@
       channelList.innerHTML = '<p class="pnx-media-muted">Media service is not configured. Keep your existing Supabase configuration in place.</p>';
       return;
     }
-    const db = window.supabase.createClient(config.url, config.publishableKey);
+    const db = (window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.publishableKey)));
     try {
       const [channelResult, videoResult] = await Promise.all([
         db.from('punix_media_channels').select('id,platform,channel_handle,display_name,game_name,is_featured,is_live,live_title,live_url,live_video_id,viewer_count,sort_order').eq('is_active', true).order('sort_order', {ascending:true}),
@@ -120,7 +120,7 @@
   async function requestSync() {
     if (!window.supabase || !config?.url || !config?.publishableKey) return;
     try {
-      const db = window.supabase.createClient(config.url, config.publishableKey);
+      const db = (window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.publishableKey)));
       await db.functions.invoke('punix-media-sync', {body:{source:'homepage'}});
     } catch (error) { console.info('PUNIX media sync will retry later:', error?.message || error); }
   }
