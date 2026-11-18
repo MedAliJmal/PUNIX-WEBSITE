@@ -58,7 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
     tournamentStaffLink.textContent = 'Tournament Staff';
     tournamentStaffLink.dataset.nav = 'tournament-staff';
     tournamentStaffLink.hidden = true;
-    nav.insertBefore(tournamentStaffLink, nav.querySelector('[data-nav="members"]') || null);
+    // Members lives inside the More dropdown, so it is not a direct child of nav.
+    // Append the staff link to nav to avoid insertBefore throwing and aborting navbar auth setup.
+    nav.appendChild(tournamentStaffLink);
     tournamentStaffLink.addEventListener('click', () => {
       nav.classList.remove('is-open');
       if (toggle) toggle.setAttribute('aria-expanded', 'false');
