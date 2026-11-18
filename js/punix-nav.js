@@ -294,6 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Supabase auth callbacks must stay synchronous. Running database queries directly
   // inside this callback can hold the auth lock and prevent session refreshes.
   client.auth.onAuthStateChange((_event, session) => {
-    Promise.resolve().then(() => { void updateNavigation(session); });
+    setTimeout(() => { void updateNavigation(session); }, 0);
   });
 });
