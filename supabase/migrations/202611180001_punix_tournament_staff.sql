@@ -235,7 +235,7 @@ declare
 begin
   if tg_op = 'INSERT' then
     v_new := to_jsonb(new);
-    v_tournament_id := (v_new ->> 'tournament_id')::uuid;
+    v_tournament_id := case when tg_table_name = 'tournaments' then (v_new ->> 'id')::uuid else (v_new ->> 'tournament_id')::uuid end;
     v_record_id := (v_new ->> 'id')::uuid;
   elsif tg_op = 'UPDATE' then
     v_old := to_jsonb(old);
