@@ -34,3 +34,10 @@
 /* Best-of series and match score cards */
 .pnx-admin-match-card{background:linear-gradient(110deg,rgba(201,164,91,.055),rgba(255,255,255,.015));border-color:rgba(201,164,91,.2)}
 .pnx-admin-match-card .pnx-match-score{display:inline-block;padding:3px 8px;margin:0 5px;color:#e3c27e;background:rgba(201,164,91,.1);border:1px solid rgba(201,164,91,.22);font:900 12px/1 Inter,Arial,sans-serif;letter-spacing:1px}
+
+
+/* Tournament-specific staff assignment controls */
+.pnx-staff-assign-controls{display:grid;grid-template-columns:1fr 1.2fr auto;gap:12px;align-items:end;margin:18px 0}
+.pnx-staff-assign-controls label{grid-column:1/-1;color:#c9a45b;font-size:10px;font-weight:800;letter-spacing:.14em}
+.pnx-staff-assign-controls input,.pnx-staff-assign-controls select{min-width:0;background:#0a0d11;border:1px solid #39414b;color:#f3f3ef;padding:12px;font:500 13px Inter,sans-serif}
+@media(max-width:680px){.pnx-staff-assign-controls{grid-template-columns:1fr}.pnx-staff-assign-controls label{grid-column:auto}.pnx-staff-assign-controls button{width:100%}}
