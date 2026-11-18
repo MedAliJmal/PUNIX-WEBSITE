@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b0e">
+  <meta name="description" content="Tournament-specific PUNIX staff workspace.">
+  <title>Tournament Staff | PUNIX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/punix-nav.css">
+  <link rel="stylesheet" href="css/tournament-staff.css?v=20261118-1">
+  <link rel="icon" type="image/png" href="/assets/images/punix-logo-original.png">
+</head>
+<body class="pnx-staff-page">
+<header class="pnx-site-header">
+  <a class="pnx-brand" href="index.html#top" aria-label="PUNIX home"><img src="assets/images/punix-logo-original.png" alt="PUNIX"></a>
+  <button class="pnx-menu-toggle menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+  <nav class="pnx-main-nav main-nav" aria-label="Main navigation">
+    <a href="index.html#top" data-nav="home">Home</a><a href="tournaments.html" data-nav="tournaments">Tournaments</a><a href="members.html" data-nav="members">Members</a><a href="teams.html" data-nav="teams">Teams</a>
+  </nav>
+  <div class="pnx-nav-actions"><a class="pnx-nav-cta" href="auth.html">LOG IN <span>↗</span></a></div>
+</header>
+<main class="pnx-staff-wrap">
+  <div class="pnx-staff-heading"><div><p class="pnx-staff-kicker">PUNIX / EVENT OPERATIONS</p><h1>TOURNAMENT <span>STAFF</span></h1><p>Manage only the tournaments assigned to your account.</p></div><span class="pnx-staff-session">STAFF WORKSPACE</span></div>
+  <p id="staff-gate" class="pnx-staff-message" role="status">VERIFYING YOUR STAFF ACCESS…</p>
+  <div id="staff-app" hidden>
+    <section class="pnx-staff-section"><div class="pnx-staff-section-head"><div><small>YOUR ASSIGNMENTS</small><h2>ASSIGNED TOURNAMENTS</h2></div><button id="staff-refresh" type="button">↻ REFRESH</button></div><div id="staff-tournament-list" class="pnx-staff-tournament-list"></div></section>
+    <section id="staff-workspace" class="pnx-staff-section" hidden>
+      <div class="pnx-staff-selected-head"><div><small>SELECTED EVENT</small><h2 id="staff-event-title">TOURNAMENT</h2><p id="staff-event-meta"></p></div><button id="staff-back" type="button">← ALL ASSIGNMENTS</button></div>
+      <p id="staff-event-message" class="pnx-staff-message" role="status"></p>
+      <div class="pnx-staff-tabs" role="tablist"><button type="button" data-staff-tab="settings" class="is-active">EVENT SETTINGS</button><button type="button" data-staff-tab="entries">REGISTRATIONS</button><button type="button" data-staff-tab="matches">MATCHES & RESULTS</button><button type="button" data-staff-tab="activity">ACTIVITY LOG</button></div>
+      <section id="staff-settings-panel" class="pnx-staff-panel">
+        <form id="staff-settings-form" class="pnx-staff-form">
+          <label>TOURNAMENT FORMAT<select id="staff-format"><option value="single_elimination">Single Elimination</option><option value="double_elimination">Double Elimination</option><option value="round_robin">Round Robin</option><option value="swiss">Swiss</option><option value="custom">Custom</option></select></label>
+          <label>DEFAULT MATCH SERIES<select id="staff-best-of"><option value="1">BO1</option><option value="3">BO3</option><option value="5">BO5</option></select></label>
+          <label>EVENT STATUS<select id="staff-status"><option value="draft">Draft</option><option value="upcoming">Upcoming</option><option value="live">Live</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></label>
+          <label class="pnx-staff-check"><input id="staff-registration-open" type="checkbox"> REGISTRATION OPEN</label>
+          <p class="pnx-staff-wide pnx-staff-hint">Changing the tournament format is locked after bracket generation. Default BO changes affect new matches; existing matches keep their own series setting.</p>
+          <div class="pnx-staff-wide"><button type="submit">SAVE EVENT SETTINGS ↗</button></div>
+        </form>
+      </section>
+      <section id="staff-entries-panel" class="pnx-staff-panel" hidden><div class="pnx-staff-filter"><button type="button" data-entry-filter="pending" class="is-active">PENDING</button><button type="button" data-entry-filter="confirmed">APPROVED</button><button type="button" data-entry-filter="rejected">REJECTED</button><button type="button" data-entry-filter="withdrawn">WITHDRAWN</button></div><div id="staff-entry-list" class="pnx-staff-list"></div></section>
+      <section id="staff-matches-panel" class="pnx-staff-panel" hidden><div id="staff-match-list" class="pnx-staff-list"></div><form id="staff-match-form" class="pnx-staff-form pnx-staff-match-form"><h3 class="pnx-staff-wide">EDIT MATCH RESULT</h3><input type="hidden" id="staff-match-id"><label>MATCH SERIES<select id="staff-match-best-of"><option value="1">BO1</option><option value="3">BO3</option><option value="5">BO5</option></select></label><label>ROUND<input id="staff-match-round" type="number" min="1" max="16" value="1" required></label><label>MATCH NUMBER<input id="staff-match-number" type="number" min="1" max="512" value="1" required></label><label>PARTICIPANT A<select id="staff-match-a"><option value="">TBD</option></select></label><label>PARTICIPANT B<select id="staff-match-b"><option value="">TBD</option></select></label><label>MAP WINS A<input id="staff-score-a" type="number" min="0" max="999"></label><label>MAP WINS B<input id="staff-score-b" type="number" min="0" max="999"></label><label>WINNER<select id="staff-match-winner"><option value="">No winner</option></select></label><label>MATCH STATUS<select id="staff-match-status"><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="completed">Completed</option></select></label><div class="pnx-staff-wide pnx-staff-actions"><button type="submit">SAVE MATCH / ADVANCE WINNER ↗</button><button id="staff-match-clear" type="button" class="is-secondary">CLEAR</button></div></form></section>
+      <section id="staff-activity-panel" class="pnx-staff-panel" hidden><div id="staff-activity-list" class="pnx-staff-list"></div></section>
+    </section>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/punix-nav.js" defer></script>
+<script src="js/tournament-staff.js?v=20261118-1" defer></script>
+</body></html>
