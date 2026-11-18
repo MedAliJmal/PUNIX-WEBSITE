@@ -1,7 +1,7 @@
 (() => {
   const config = window.PUNIX_SUPABASE_CONFIG;
   if (!window.supabase || !config?.url || !config?.publishableKey || document.getElementById('pnx-support-root')) return;
-  const db = window.supabase.createClient(config.url, config.publishableKey);
+  const db = (window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url, config.publishableKey)));
   const safe = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let activeUser = null;
   let supportSession = null;
