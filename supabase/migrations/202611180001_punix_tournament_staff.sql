@@ -324,4 +324,80 @@ for each row execute function private.guard_tournament_staff_registration_update
 -- controlled by the existing PUNIX bracket-generation routines.
 drop policy if exists "Tournament staff insert assigned matches" on public.tournament_matches;
 
+
+-- Staff cannot move a match into another event or alter bracket routing metadata.
+create or replace function private.guard_tournament_staff_match_updates()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if coalesce(private.has_role('admin'), false) then
+    return new;
+  end if;
+  if not exists (
+    select 1 from public.tournament_staff_assignments a
+    where a.tournament_id = old.tournament_id and a.user_id = auth.uid()
+  ) then
+    raise exception 'You are not assigned to this tournament.'
+      using errcode = '42501';
+  end if;
+  if (to_jsonb(new) - array['best_of','participant_a_id','participant_b_id','score_a','score_b','winner_registration_id','scheduled_at','status','updated_at'])
+     is distinct from
+     (to_jsonb(old) - array['best_of','participant_a_id','participant_b_id','score_a','score_b','winner_registration_id','scheduled_at','status','updated_at']) then
+    raise exception 'Tournament staff may only edit match participants, series, schedule, scores and result status.'
+      using errcode = '42501';
+  end if;
+  return new;
+end;
+$;
+revoke all on function private.guard_tournament_staff_match_updates() from public, anon, authenticated;
+drop trigger if exists punix_guard_tournament_staff_match_updates on public.tournament_matches;
+create trigger punix_guard_tournament_staff_match_updates
+before update on public.tournament_matches
+for each row execute function private.guard_tournament_staff_match_updates();
+
+-- Match participants and winners must belong to the same tournament, and must
+-- be approved entries. This prevents cross-event IDs being injected via the API.
+create or replace function private.validate_punix_match_entry_scope()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if new.participant_a_id is not null and not exists (
+    select 1 from public.tournament_registrations r
+    where r.id = new.participant_a_id
+      and r.tournament_id = new.tournament_id
+      and r.status = 'confirmed'
+  ) then
+    raise exception 'Participant A must be an approved entry in this tournament.';
+  end if;
+  if new.participant_b_id is not null and not exists (
+    select 1 from public.tournament_registrations r
+    where r.id = new.participant_b_id
+      and r.tournament_id = new.tournament_id
+      and r.status = 'confirmed'
+  ) then
+    raise exception 'Participant B must be an approved entry in this tournament.';
+  end if;
+  if new.winner_registration_id is not null and not exists (
+    select 1 from public.tournament_registrations r
+    where r.id = new.winner_registration_id
+      and r.tournament_id = new.tournament_id
+      and r.status = 'confirmed'
+  ) then
+    raise exception 'The winner must be an approved entry in this tournament.';
+  end if;
+  return new;
+end;
+$;
+revoke all on function private.validate_punix_match_entry_scope() from public, anon, authenticated;
+drop trigger if exists punix_validate_match_entry_scope on public.tournament_matches;
+create trigger punix_validate_match_entry_scope
+before insert or update on public.tournament_matches
+for each row execute function private.validate_punix_match_entry_scope();
+
 notify pgrst, 'reload schema';
