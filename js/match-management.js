@@ -85,7 +85,13 @@
   if(a&&a===b){message('A participant cannot play against itself.');return;}
   if([p.score_a,p.score_b].some(v=>v!==null&&(!Number.isInteger(v)||v<0))){message('Map wins must be non-negative whole numbers.');return;}
   const target=Math.ceil(p.best_of/2);
-  if(p.status==='completed'&&(!a||!b||!w||(w!==a&&w!==b)||p.score_a===null||p.score_b===null)){message('A completed match requires two participants, both scores and a valid winner.');return;}
+  // A decisive map score is enough to complete the match. This prevents a
+  // saved winning score from remaining SCHEDULED and blocking bracket routing.
+  if(a&&b&&p.score_a!==null&&p.score_b!==null){
+   if(p.score_a===target&&p.score_b<target){p.winner_registration_id=a;p.status='completed';}
+   else if(p.score_b===target&&p.score_a<target){p.winner_registration_id=b;p.status='completed';}
+  }
+  if(p.status==='completed'&&(!a||!b||!p.winner_registration_id||(p.winner_registration_id!==a&&p.winner_registration_id!==b)||p.score_a===null||p.score_b===null)){message('A completed match requires two participants, both scores and a valid winner.');return;}
   if(p.status==='completed'&&((w===a&&(p.score_a!==target||p.score_b>=target))||(w===b&&(p.score_b!==target||p.score_a>=target)))){message('Invalid BO'+p.best_of+' result. The winner must reach '+target+' map wins and the opponent must have fewer.');return;}
   if(p.status!=='completed'&&((p.score_a??0)>=target||(p.score_b??0)>=target)){message('A participant has reached the BO'+p.best_of+' winning score. Complete the match and select the winner.');return;}
   $('match-save').disabled=true;message('Saving changes…');
