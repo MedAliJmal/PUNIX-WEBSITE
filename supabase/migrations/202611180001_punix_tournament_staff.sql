@@ -248,6 +248,12 @@ begin
     v_record_id := (v_old ->> 'id')::uuid;
   end if;
 
+  -- Skip child audit inserts during a parent tournament cascade delete.
+  if not exists (select 1 from public.tournaments t where t.id = v_tournament_id) then
+    if tg_op = 'DELETE' then return old; end if;
+    return new;
+  end if;
+
   insert into public.tournament_staff_activity(
     tournament_id, actor_user_id, action, record_id, before_data, after_data
   ) values (
@@ -269,6 +275,11 @@ for each row execute function private.log_punix_tournament_activity();
 drop trigger if exists punix_log_match_activity on public.tournament_matches;
 create trigger punix_log_match_activity
 after insert or update or delete on public.tournament_matches
+for each row execute function private.log_punix_tournament_activity();
+
+drop trigger if exists punix_log_tournament_settings_activity on public.tournaments;
+create trigger punix_log_tournament_settings_activity
+after update on public.tournaments
 for each row execute function private.log_punix_tournament_activity();
 
 
