@@ -41,3 +41,6 @@
 .pnx-staff-assign-controls label{grid-column:1/-1;color:#c9a45b;font-size:10px;font-weight:800;letter-spacing:.14em}
 .pnx-staff-assign-controls input,.pnx-staff-assign-controls select{min-width:0;background:#0a0d11;border:1px solid #39414b;color:#f3f3ef;padding:12px;font:500 13px Inter,sans-serif}
 @media(max-width:680px){.pnx-staff-assign-controls{grid-template-columns:1fr}.pnx-staff-assign-controls label{grid-column:auto}.pnx-staff-assign-controls button{width:100%}}
+
+/* Match finder: quick search and bracket/status filters */
+.pnx-match-tools{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(2,minmax(150px,.8fr));gap:10px;margin:18px 0 8px}.pnx-match-tools input,.pnx-match-tools select{width:100%;min-width:0;padding:12px 13px;background:#090e11;border:1px solid rgba(255,255,255,.14);color:#edf0ec;font:600 10px Inter,Arial,sans-serif;letter-spacing:.06em}.pnx-match-count{margin:8px 0;color:#9ba7a8;font:800 9px Inter,Arial,sans-serif;letter-spacing:.12em}.pnx-admin-match-card{align-items:center}.pnx-admin-match-card>div{min-width:0}.pnx-admin-match-card>div small{line-height:1.8}.pnx-admin-match-card>button{flex-shrink:0}@media(max-width:700px){.pnx-match-tools{grid-template-columns:1fr}.pnx-admin-match-card{align-items:flex-start;flex-direction:column}.pnx-admin-match-card>button{width:100%}}
