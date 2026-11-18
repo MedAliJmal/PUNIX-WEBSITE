@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const escapeHtml=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const safeUrl=(value)=>{const v=String(value||'').trim();if(!v)return '';if(/^(assets\/|\.\/|\.\.\/|\/|#)/.test(v))return v;try{const u=new URL(v);return u.protocol==='https:'?v:''}catch{return ''}};
   try{
-    const db=window.supabase.createClient(config.url,config.publishableKey);
+    const db=(window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url,config.publishableKey)));
     const {data,error}=await db.from('latest_updates').select('id,title,category,summary,image_url,link_url,link_label,published_at,display_order').eq('is_published',true).order('display_order',{ascending:true}).order('published_at',{ascending:false}).limit(6);
     if(error||!data?.length)return;
     grid.innerHTML=data.map(item=>{
