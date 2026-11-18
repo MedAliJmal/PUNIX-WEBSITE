@@ -637,6 +637,13 @@
       }
       gate.hidden = true;
       app.hidden = false;
+      // The dashboard has independently verified this administrator session; keep the shared navbar account CTA in sync.
+      const accountLink = document.querySelector('.pnx-nav-cta');
+      if (accountLink) {
+        accountLink.href = 'profile.html';
+        accountLink.innerHTML = 'MY PROFILE <span aria-hidden="true">↗</span>';
+        accountLink.setAttribute('aria-label', 'Open my profile');
+      }
       supportAdminUserId = session.user.id;
       startTournamentEntryAlerts(session.user.id);
       document.querySelectorAll('[data-section]').forEach((button) => button.addEventListener('click', () => openSection(button.dataset.section)));
