@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'index.html': hash === '#sponsors' ? 'sponsors' : hash === '#about' ? 'about' : hash === '#creators' ? 'creators' : hash === '#watch' ? 'watch' : hash === '#esports' ? 'esports' : hash === '#anime' ? 'anime' : hash === '#community' ? 'community' : hash === '#news' ? 'news' : 'home',
     'anime-news.html': 'anime-news',
     'members.html': 'members', 'teams.html': 'teams', 'tournaments.html': 'tournaments',
-    'admin.html': 'admin', 'game-hub.html': 'game-hub', 'world-esports-news.html': 'world-esports-news'
+    'admin.html': 'admin', 'game-hub.html': 'game-hub', 'world-esports-news.html': 'world-esports-news',
+    'tournament-staff.html': 'tournament-staff'
   };
   const active = activeByPage[path] || (path === 'profile.html' || path === 'member.html' ? 'members' : '');
   if (active) {
@@ -50,6 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const memberLink = header.querySelector('.pnx-nav-cta');
+  let tournamentStaffLink = nav?.querySelector('[data-nav="tournament-staff"]') || null;
+  if (nav && !tournamentStaffLink) {
+    tournamentStaffLink = document.createElement('a');
+    tournamentStaffLink.href = 'tournament-staff.html';
+    tournamentStaffLink.textContent = 'Tournament Staff';
+    tournamentStaffLink.dataset.nav = 'tournament-staff';
+    tournamentStaffLink.hidden = true;
+    nav.insertBefore(tournamentStaffLink, nav.querySelector('[data-nav="members"]') || null);
+    tournamentStaffLink.addEventListener('click', () => {
+      nav.classList.remove('is-open');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+    });
+  }
+  const showTournamentStaffLink = show => {
+    if (!tournamentStaffLink) return;
+    tournamentStaffLink.hidden = !show;
+    if (show) tournamentStaffLink.removeAttribute('aria-hidden');
+    else tournamentStaffLink.setAttribute('aria-hidden', 'true');
+  };
   const communityCta = document.querySelector('.pnx-community-cta');
   const communityCtaNote = document.querySelector('.pnx-community-cta-note');
   const discordInvite = 'https://discord.gg/P94NF5truS';
@@ -148,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Keep registration hidden until Supabase confirms the visitor is signed out.
   updateCommunityCta(false);
   showAdminLinks(false);
+  showTournamentStaffLink(false);
 
   const config = window.PUNIX_SUPABASE_CONFIG;
   if (!window.supabase || !config?.url || !config?.publishableKey) {
@@ -242,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMemberLink(signedIn);
     updateCommunityCta(signedIn);
     showAdminLinks(false);
+    showTournamentStaffLink(false);
     hideAdminSupportIndicator();
     if (!signedIn) return;
 
@@ -252,6 +274,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const isAdmin = !error && ['admin', 'super_admin'].includes(data?.role);
       showAdminLinks(isAdmin);
       if (isAdmin) enableAdminSupportIndicator();
+      // Tournament staff access is granted per tournament assignment, not by global admin role.
+      const { data: staffAssignments, error: staffError } = await client.from('tournament_staff_assignments')
+        .select('id').eq('user_id', session.user.id).limit(1);
+      if (currentCheck !== roleCheckId) return;
+      showTournamentStaffLink(!staffError && Array.isArray(staffAssignments) && staffAssignments.length > 0);
     } catch (_) {
       if (currentCheck === roleCheckId) {
         showAdminLinks(false);
