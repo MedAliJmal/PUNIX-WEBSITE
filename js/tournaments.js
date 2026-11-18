@@ -112,8 +112,11 @@
  async function setupRegistration(t){
   const form=$('registration-form'),note=$('registration-note'),teamField=$('registration-team-field'),teamNameInput=$('registration-team-name'),discordInput=$('registration-discord'),ignInput=$('registration-ign'),discordLabel=$('registration-discord-label'),ignLabel=$('registration-ign-label'),rosterField=$('registration-roster-field'),logoField=$('registration-logo-field'),logoInput=$('registration-team-logo');
   if(!form||!note||!teamField||!teamNameInput||!discordInput||!ignInput||!discordLabel||!ignLabel||!rosterField||!logoField||!logoInput){if(note)note.textContent='The tournament form is incomplete or out of date. Please refresh the page; if this continues, contact PUNIX support.';return;}
-  form.hidden=true;
   const authState=await db.auth.getSession();session=authState.data?.session||window.PUNIX_AUTH_SESSION||session||null;window.PUNIX_AUTH_SESSION=session;
+  const setupKey=t.id+':'+(session?.user?.id||'guest');
+  // Repeated auth/profile events must not rebuild a form the member is already filling in.
+  if(form.dataset.setupKey===setupKey&&!form.hidden)return;
+  form.hidden=true;
   if(authState.error&&!session){note.textContent='Could not verify your PUNIX session. Please reload the page and try again.';return;}
   if(t.status!=='upcoming'||!t.registration_open||(t.registration_deadline&&new Date(t.registration_deadline)<=new Date())){note.textContent='Registration is currently closed.';return;}
   if(!session?.user?.id){note.innerHTML='Sign in with your PUNIX account to enter. <a href="auth.html">MEMBER ACCESS ↗</a>';return;}
@@ -130,6 +133,7 @@
   discordInput.placeholder='Discord username';ignInput.placeholder=t.entry_type==='team'?'Captain in-game name':'Your player name';
   note.textContent=t.entry_type==='team'?'Register your independent team as captain. Add the required starters and any substitutes. Teammates do not need PUNIX accounts; PUNIX will review the full roster.':'Enter your Discord and in-game name so PUNIX can contact you.';
   form.hidden=false;
+  form.dataset.setupKey=setupKey;
  }
  $('registration-form').addEventListener('submit',async e=>{
   e.preventDefault();
