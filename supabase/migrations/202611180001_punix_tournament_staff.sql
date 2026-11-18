@@ -271,4 +271,46 @@ create trigger punix_log_match_activity
 after insert or update or delete on public.tournament_matches
 for each row execute function private.log_punix_tournament_activity();
 
+
+-- Keep staff updates limited to the operational fields exposed in their workspace.
+create or replace function private.guard_tournament_staff_registration_updates()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $
+begin
+  if coalesce(private.has_role('admin'), false) then
+    return new;
+  end if;
+  if not exists (
+    select 1 from public.tournament_staff_assignments a
+    where a.tournament_id = old.tournament_id and a.user_id = auth.uid()
+  ) then
+    raise exception 'You are not assigned to this tournament.'
+      using errcode = '42501';
+  end if;
+  if (to_jsonb(new) - array['status','reviewed_at','reviewed_by'])
+     is distinct from
+     (to_jsonb(old) - array['status','reviewed_at','reviewed_by']) then
+    raise exception 'Tournament staff may only review registration status.'
+      using errcode = '42501';
+  end if;
+  if new.status is distinct from old.status
+     and (new.reviewed_by is distinct from auth.uid() or new.reviewed_at is null) then
+    raise exception 'A registration review must record the reviewing staff account and time.';
+  end if;
+  return new;
+end;
+$;
+revoke all on function private.guard_tournament_staff_registration_updates() from public, anon, authenticated;
+drop trigger if exists punix_guard_tournament_staff_registration_updates on public.tournament_registrations;
+create trigger punix_guard_tournament_staff_registration_updates
+before update on public.tournament_registrations
+for each row execute function private.guard_tournament_staff_registration_updates();
+
+-- Staff edit existing bracket rows; bracket generation and row creation remain
+-- controlled by the existing PUNIX bracket-generation routines.
+drop policy if exists "Tournament staff insert assigned matches" on public.tournament_matches;
+
 notify pgrst, 'reload schema';
