@@ -3,7 +3,7 @@
   const config=window.PUNIX_SUPABASE_CONFIG;
   if(!target||!window.supabase||!config?.url||!config?.publishableKey)return;
   const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const db=window.supabase.createClient(config.url,config.publishableKey);
+  const db=(window.PUNIX_SUPABASE_CLIENT || (window.PUNIX_SUPABASE_CLIENT = window.supabase.createClient(config.url,config.publishableKey)));
   db.from('sponsors').select('id,name,logo_url,website_url,is_featured,display_order').eq('is_published',true).not('logo_url','is',null).neq('logo_url','').order('display_order',{ascending:true}).order('is_featured',{ascending:false}).then(({data,error})=>{
     if(error||!data?.length)return;
     target.dataset.count=String(data.length);
