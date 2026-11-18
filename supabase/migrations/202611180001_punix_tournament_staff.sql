@@ -289,7 +289,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 begin
   if coalesce(private.has_role('admin'), false) then
     return new;
@@ -313,7 +313,7 @@ begin
   end if;
   return new;
 end;
-$;
+$$;
 revoke all on function private.guard_tournament_staff_registration_updates() from public, anon, authenticated;
 drop trigger if exists punix_guard_tournament_staff_registration_updates on public.tournament_registrations;
 create trigger punix_guard_tournament_staff_registration_updates
@@ -331,7 +331,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 begin
   if coalesce(private.has_role('admin'), false) then
     return new;
@@ -351,7 +351,7 @@ begin
   end if;
   return new;
 end;
-$;
+$$;
 revoke all on function private.guard_tournament_staff_match_updates() from public, anon, authenticated;
 drop trigger if exists punix_guard_tournament_staff_match_updates on public.tournament_matches;
 create trigger punix_guard_tournament_staff_match_updates
@@ -365,7 +365,7 @@ returns trigger
 language plpgsql
 security definer
 set search_path = ''
-as $
+as $$
 begin
   if new.participant_a_id is not null and not exists (
     select 1 from public.tournament_registrations r
@@ -393,7 +393,7 @@ begin
   end if;
   return new;
 end;
-$;
+$$;
 revoke all on function private.validate_punix_match_entry_scope() from public, anon, authenticated;
 drop trigger if exists punix_validate_match_entry_scope on public.tournament_matches;
 create trigger punix_validate_match_entry_scope
