@@ -109,7 +109,15 @@
   $('registration-roster-summary').textContent=min===max?min+' STARTERS · UP TO '+subs+' SUBS':min+'–'+max+' STARTERS · UP TO '+subs+' SUBS';
   $('registration-roster-help').textContent='You are the captain and count as one starter. Fill the required starter slots; extra starters and substitutes are optional.';
  }
+ // Prevent overlapping detail/auth flows from hiding and rebuilding the form concurrently.
  async function setupRegistration(t){
+  const form=$('registration-form');
+  if(form?.dataset.setupPending==='true')return;
+  if(form)form.dataset.setupPending='true';
+  try{return await performRegistrationSetup(t);}
+  finally{if(form)delete form.dataset.setupPending;}
+ }
+ async function performRegistrationSetup(t){
   const form=$('registration-form'),note=$('registration-note'),teamField=$('registration-team-field'),teamNameInput=$('registration-team-name'),discordInput=$('registration-discord'),ignInput=$('registration-ign'),discordLabel=$('registration-discord-label'),ignLabel=$('registration-ign-label'),rosterField=$('registration-roster-field'),logoField=$('registration-logo-field'),logoInput=$('registration-team-logo');
   if(!form||!note||!teamField||!teamNameInput||!discordInput||!ignInput||!discordLabel||!ignLabel||!rosterField||!logoField||!logoInput){if(note)note.textContent='The tournament form is incomplete or out of date. Please refresh the page; if this continues, contact PUNIX support.';return;}
   const authState=await db.auth.getSession();session=authState.data?.session||window.PUNIX_AUTH_SESSION||session||null;window.PUNIX_AUTH_SESSION=session;
